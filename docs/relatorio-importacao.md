@@ -7,8 +7,8 @@ Ficheiro: `materiais armazem.xlsx` · gerado por `scripts/importar-excel.mjs` em
 | Linhas lidas | 1996 |
 | Materiais importados | 1906 |
 | Linhas repetidas (mesmo material e posição) somadas | 87 |
-| Ligados a uma posição do modelo 3D | 1274 |
-| Sem ligação ao 3D (ver abaixo) | 632 |
+| Ligados a uma posição do modelo 3D | 1280 |
+| Sem ligação ao 3D (ver abaixo) | 626 |
 | Observações das fotografias mantidas | 6 |
 | Observações substituídas por materiais do Excel | 0 (—) |
 
@@ -21,7 +21,6 @@ Ficheiro: `materiais armazem.xlsx` · gerado por `scripts/importar-excel.mjs` em
 | M100 (ainda sem correspondência no modelo) | 61 |
 | ESCRITORIO (ainda sem correspondência no modelo) | 38 |
 | Zona 1A (não representada no 3D) | 22 |
-| ARM06 (armário ainda sem correspondência no modelo) | 6 |
 | Zona 1D (não representada no 3D) | 3 |
 | Posição incompleta (sem prateleira/coluna) no corredor 1B16 | 3 |
 | Formato de posição inválido (possível gralha no Excel) | 3 |

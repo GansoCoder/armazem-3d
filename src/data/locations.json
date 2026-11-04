@@ -198,7 +198,7 @@
     "estrutura": "AR01",
     "modulo": 1,
     "nivel": 0,
-    "descricao": "Armário ARM (ARM01–ARM05) junto ao portão 2 · Prateleira ARM01",
+    "descricao": "Armário ARM (ARM01–ARM06) junto ao portão 2 · Prateleira ARM01",
     "origemCodigo": "parcial",
     "estadoValidacao": "estimado"
   },
@@ -209,7 +209,7 @@
     "estrutura": "AR01",
     "modulo": 1,
     "nivel": 1,
-    "descricao": "Armário ARM (ARM01–ARM05) junto ao portão 2 · Prateleira ARM02",
+    "descricao": "Armário ARM (ARM01–ARM06) junto ao portão 2 · Prateleira ARM02",
     "origemCodigo": "parcial",
     "estadoValidacao": "estimado"
   },
@@ -220,7 +220,7 @@
     "estrutura": "AR01",
     "modulo": 1,
     "nivel": 2,
-    "descricao": "Armário ARM (ARM01–ARM05) junto ao portão 2 · Prateleira ARM03",
+    "descricao": "Armário ARM (ARM01–ARM06) junto ao portão 2 · Prateleira ARM03",
     "origemCodigo": "parcial",
     "estadoValidacao": "estimado"
   },
@@ -231,7 +231,7 @@
     "estrutura": "AR01",
     "modulo": 1,
     "nivel": 3,
-    "descricao": "Armário ARM (ARM01–ARM05) junto ao portão 2 · Prateleira ARM04",
+    "descricao": "Armário ARM (ARM01–ARM06) junto ao portão 2 · Prateleira ARM04",
     "origemCodigo": "parcial",
     "estadoValidacao": "estimado"
   },
@@ -242,7 +242,18 @@
     "estrutura": "AR01",
     "modulo": 1,
     "nivel": 4,
-    "descricao": "Armário ARM (ARM01–ARM05) junto ao portão 2 · Prateleira ARM05",
+    "descricao": "Armário ARM (ARM01–ARM06) junto ao portão 2 · Prateleira ARM05",
+    "origemCodigo": "parcial",
+    "estadoValidacao": "estimado"
+  },
+  {
+    "id": "AR-01-M1-N5",
+    "codigo": "ARM06",
+    "zona": "Parede dos portões (corredores 01–03)",
+    "estrutura": "AR01",
+    "modulo": 1,
+    "nivel": 5,
+    "descricao": "Armário ARM (ARM01–ARM06) junto ao portão 2 · Prateleira ARM06",
     "origemCodigo": "parcial",
     "estadoValidacao": "estimado"
   },

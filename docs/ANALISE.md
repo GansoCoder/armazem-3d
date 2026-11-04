@@ -84,7 +84,7 @@ O que se aprendeu com ele:
 
 1. ~~Que estruturas são os corredores 1B12 e 1B15–1B17?~~ Respondido pelo esquema (4/11/2026). Falta: onde ficam **1B18** e **1B19** (contraplacado)? E as estantes 15–17 são porta-paletes? Quantas colunas têm?
 1b. Os contentores da fila de baixo são o **1B14A01D** e o **1B13A01D**?
-2. Onde ficam os armários **ARM01–ARM06**, a posição **M100** e o **ESCRITORIO**? O compartimento fechado com o postigo é o escritório?
+2. ~~Onde ficam os armários ARM01–ARM06?~~ No armário "ARM" junto ao portão 2 (indicação do armazém, 4/11/2026); assumido ARM01 = prateleira de baixo. Falta: **ESQ-ARM1**, a posição **M100** e o **ESCRITORIO**? O compartimento fechado com o postigo é o escritório?
 3. Em que extremo de cada corredor começa a coluna 01? O modelo assume o extremo de cima do esquema (lado dos portões). E quantas colunas e prateleiras tem cada estante? Os valores atuais vêm do Excel.
 4. As zonas **1C**, **1A**, **1D** e **1E** devem ser desenhadas? Se sim, é preciso um vídeo ou uma planta de cada uma.
 5. Planta real e dimensões do pavilhão; posição do portão.

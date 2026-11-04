@@ -53,7 +53,7 @@ Formato oficial do armazém (indicado pelo responsável):
 - O código sem caixa (`1B10A02`) é gerado na localização (`locations.json → codigo`); a caixa é guardada na peça (`parts.json → caixa`).
 - Corredores no modelo (esquema do armazém): 01–17, 20 e 21. O 03 é a zona dos rolos brancos (`1B03`), o 13 e o 14 são os contentores de ferro, e as colunas 04 e 05 do corredor 04 são armários. O armário "ARM" junto ao corredor 01 não tem número.
 - Em todas as filas, a coluna 01 está no extremo de cima do esquema (lado das etiquetas). Nas estruturas viradas para a direita isto é indicado com `colunasInvertidas: true`.
-- O armário "ARM" junto ao portão 2 tem as posições `ARM01`–`ARM05` (`prefixoCodigo: "ARM"`): cada número é uma prateleira, com a ARM01 em baixo, e a letra seguinte é a caixa (`ARM03C`). `ARM06` e `ESQ-ARM1` continuam sem 3D.
+- O armário "ARM" junto ao portão 2 tem as posições `ARM01`–`ARM06` (`prefixoCodigo: "ARM"`): cada número é uma prateleira, com a ARM01 em baixo, e a letra seguinte é a caixa (`ARM03C`). `ESQ-ARM1` continua sem 3D.
 - Colunas com prateleira por confirmar mostram o código parcial com "?" no lugar da letra, ex.: `1B11?01`.
 - Peças cuja prateleira ainda não se sabe ficam na **coluna** (ex.: `EL-01-M1`), mostrada no 3D como um contorno da coluna inteira.
 - A pesquisa aceita o código completo ou parcial (`1B10`, `1b10a02c`).
@@ -68,7 +68,7 @@ node scripts/importar-excel.mjs "materiais armazem.xlsx"
 - Lê as colunas **Material**, **Texto breve de material**, **Posição no depósito**, **Estoque total** e **Valor de Stock** (reconhecidas pelo cabeçalho).
 - Linhas repetidas com o mesmo material e a mesma posição são somadas.
 - Liga cada posição a uma célula do 3D (`1B08F02E` → corredor 08, prateleira F, coluna 02, caixa E). Nos contentores (corredores 13 e 14), a letra final identifica o contentor.
-- As posições que o modelo ainda não tem (outras zonas, `ND`, `M100`, `ESCRITORIO`, `ARM06`, `ESQ-ARM1`, corredores 18 e 19) continuam na listagem e na pesquisa, com a marca **sem 3D**.
+- As posições que o modelo ainda não tem (outras zonas, `ND`, `M100`, `ESCRITORIO`, `ESQ-ARM1`, corredores 18 e 19) continuam na listagem e na pesquisa, com a marca **sem 3D**.
 - Mantém o que foi acrescentado à mão nos registos (fotografias, notas, categoria, fabricante, stock mínimo, modelo 3D).
 - **UQE**: quando a designação diz explicitamente "UQE2300" ou "UQE3500" (incluindo "UQE2300/2400"), a peça fica com essa UQE, marcada **estimado**. As restantes ficam "Nenhuma". Uma UQE escolhida à mão é mantida nas importações seguintes.
 - Escreve [`docs/relatorio-importacao.md`](docs/relatorio-importacao.md) com os totais, as posições por ligar e as possíveis gralhas no Excel.
@@ -171,7 +171,7 @@ Não existe servidor. As alterações feitas na interface ficam **apenas no `loc
 
 ## Dados que ainda precisam de validação
 
-Ver a lista completa em [`docs/ANALISE.md`](docs/ANALISE.md#4-dúvidas-para-confirmação-humana). Em resumo: onde ficam os corredores 1B18 e 1B19, os armários ARM01–ARM06, M100 e o escritório; se as zonas 1A, 1C, 1D e 1E devem ser desenhadas; em que extremo começa a coluna 01; tipo e comprimento das estantes 15–17; letra dos contentores da fila de baixo; dimensões reais; onde ficam agora os 6 artigos observados nas fotografias.
+Ver a lista completa em [`docs/ANALISE.md`](docs/ANALISE.md#4-dúvidas-para-confirmação-humana). Em resumo: onde ficam os corredores 1B18 e 1B19, o armário ESQ-ARM1, M100 e o escritório; se a ordem das prateleiras ARM01–ARM06 (ARM01 em baixo) está certa; se as zonas 1A, 1C, 1D e 1E devem ser desenhadas; em que extremo começa a coluna 01; tipo e comprimento das estantes 15–17; letra dos contentores da fila de baixo; dimensões reais; onde ficam agora os 6 artigos observados nas fotografias.
 
 ## Estrutura do projeto
 
