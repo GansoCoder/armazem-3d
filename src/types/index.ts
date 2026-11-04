@@ -135,6 +135,11 @@ export interface EstruturaEstante extends EstruturaBase {
   niveis: number[]
   altura: number
   nomesNiveis?: string[]
+  /**
+   * Estruturas sem corredor cujas prateleiras têm código próprio: prefixo + número da prateleira
+   * (01 = a mais baixa), ex.: "ARM" → ARM01, ARM02… A letra seguinte (ARM03C) é a caixa.
+   */
+  prefixoCodigo?: string
   cores: Cores
   divisoriasVerticais?: boolean
 }

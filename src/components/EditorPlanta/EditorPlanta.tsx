@@ -173,6 +173,20 @@ function FormEstrutura({ e, trabalho, aplicar, aoFocar }: {
           </label>
         )}
       </div>
+      {estante && !e.corredor && (
+        <label title="Ex.: ARM — as prateleiras ficam ARM01 (a mais baixa), ARM02…, e a letra seguinte é a caixa">
+          <span>Código das prateleiras <span className="texto-sec">(sem corredor; ex.: ARM)</span></span>
+          <input
+            className="mono"
+            value={estante.prefixoCodigo ?? ''}
+            placeholder="Nenhum"
+            onChange={(ev) => {
+              const v = ev.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 8)
+              mudarEstante({ prefixoCodigo: v || undefined })
+            }}
+          />
+        </label>
+      )}
       {estante && (
         <label>
           <span>Grupo <span className="texto-sec">(agrupa as localizações)</span></span>

@@ -145,7 +145,7 @@
     },
     {
       "id": "AR01",
-      "nome": "Armário (ARM) junto ao corredor 01",
+      "nome": "Armário ARM (ARM01–ARM05) junto ao portão 2",
       "rotulo": "ARM",
       "tipo": "armario",
       "zona": "Parede dos portões (corredores 01–03)",
@@ -160,9 +160,10 @@
       "profundidade": 0.5,
       "niveis": [
         0.1,
-        0.55,
-        1,
-        1.45
+        0.42,
+        0.75,
+        1.07,
+        1.4
       ],
       "altura": 1.95,
       "cores": {
@@ -172,7 +173,8 @@
       },
       "fotografias": [],
       "estadoGeometria": "estimado",
-      "notas": "Marcado \"ARM\" no esquema, entre o corredor 01 e o portão 2. Armário fechado; prateleiras estimadas. Não se sabe se corresponde a algum dos códigos ARM01–ARM06 do Excel."
+      "notas": "Marcado \"ARM\" no esquema, entre o corredor 01 e o portão 2. Tem os materiais das posições ARM01 a ARM05 do Excel (indicação do armazém). Cada número foi considerado uma prateleira, com a ARM01 em baixo (como as letras das prateleiras); a letra seguinte é a caixa (ARM03C = prateleira ARM03, caixa C). Ordem das prateleiras por confirmar.",
+      "prefixoCodigo": "ARM"
     },
     {
       "id": "R02",

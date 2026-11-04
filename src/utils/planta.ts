@@ -60,6 +60,20 @@ export function gerarLocalizacoes(layout: Layout, existentes: Localizacao[] = []
           origemCodigo: corredor ? origemCodigo : 'provisorio',
         })
       }
+    } else if (PRATELEIRAS.has(e.tipo) && e.prefixoCodigo && !corredor) {
+      // prateleiras numeradas (ex.: armário ARM01–ARM05): uma localização por prateleira
+      const pref = prefixoLocalizacao(e)
+      for (let m = 1; m <= e.modulos; m++) {
+        const sufixoColuna = e.modulos > 1 ? `-${pad(m)}` : ''
+        for (let n = 0; n < e.niveis.length; n++) {
+          const cod = `${e.prefixoCodigo}${pad(n + 1)}${sufixoColuna}`
+          add({
+            id: `${pref}-M${m}-N${n}`, codigo: cod, ...base, modulo: m, nivel: n,
+            descricao: `${e.nome} · Prateleira ${cod}`,
+            origemCodigo: 'parcial',
+          })
+        }
+      }
     } else if (PRATELEIRAS.has(e.tipo)) {
       const pref = prefixoLocalizacao(e)
       for (let m = 1; m <= e.modulos; m++) {
@@ -123,7 +137,15 @@ function ligarCom(
 ): Ligacao {
   if (!pos) return { motivo: 'Sem posição no Excel' }
   if (pos === 'ND') return { motivo: 'ND (posição não definida)' }
-  if (/^(ESQ-)?ARM\d+/.test(pos)) return { motivo: 'Armários ARM01–ARM06 (ainda sem correspondência no modelo)' }
+  // prateleiras numeradas de um armário: ARM03C = prateleira ARM03, caixa C
+  const arm = pos.match(/^([A-Z]+)(\d{2})([A-Z])?$/)
+  if (arm && !/^\d/.test(pos)) {
+    const [, prefixo, num, caixa = null] = arm
+    const loc = porCodigo.get(`${prefixo}${num}`)
+    if (loc) return { loc, caixa }
+  }
+  const outroArmario = pos.match(/^((?:ESQ-)?ARM\d+)/)
+  if (outroArmario) return { motivo: `${outroArmario[1].replace(/^(ARM\d{2})[A-Z]$/, '$1')} (armário ainda sem correspondência no modelo)` }
 
   let m = pos.match(/^(\d[A-Z])(\d{2})([A-Z])(\d{2})([A-Z])?$/)
   if (m) {

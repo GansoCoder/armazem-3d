@@ -50,7 +50,9 @@ export function LocationPanel() {
   // estruturas com número de corredor seguem o formato oficial: prateleira (letra) + coluna
   const contentor = estrutura?.tipo === 'contentores'
   const zonaChao = estrutura?.tipo === 'zona-chao'
-  const formatoOficial = !contentor && !zonaChao && (prateleiras || !!estrutura?.corredor)
+  // prateleiras com código próprio (ex.: armário ARM01–ARM05)
+  const numerada = !!estrutura && 'prefixoCodigo' in estrutura && !!estrutura.prefixoCodigo && !estrutura.corredor
+  const formatoOficial = !contentor && !zonaChao && !numerada && (prateleiras || !!estrutura?.corredor)
   const coluna = ehColuna(loc, estrutura?.tipo)
   // numa célula, mostrar também as peças da mesma coluna cuja prateleira ainda não é conhecida
   const idColuna = prateleiras && !coluna ? [...locs.values()].find((l) => l.estrutura === loc.estrutura && l.modulo === loc.modulo && l.nivel === null)?.id : undefined
@@ -86,15 +88,21 @@ export function LocationPanel() {
             </div>
           )}
           {formatoOficial && <div className="campo"><dt>Prateleira</dt><dd>{loc.nivel !== null ? String.fromCharCode(65 + loc.nivel) : <span className="por-confirmar">Por confirmar</span>}</dd></div>}
+          {numerada && loc.nivel !== null && (
+            <div className="campo">
+              <dt>Prateleira</dt>
+              <dd><span className="mono">{loc.codigo}</span> <span className="texto-sec">({loc.nivel + 1}.ª a contar de baixo)</span> <Estimado /></dd>
+            </div>
+          )}
           {(contentor || zonaChao) && estrutura?.corredor && <div className="campo"><dt>Corredor</dt><dd>{estrutura.corredor}</dd></div>}
           {contentor && loc.codigo && <div className="campo"><dt>Contentor</dt><dd>{loc.codigo.slice(-1)} <span className="texto-sec">(caixa da posição {loc.codigo.slice(0, -1)})</span></dd></div>}
-          {!contentor && loc.modulo !== null && (
+          {!contentor && !numerada && loc.modulo !== null && (
             <div className="campo">
               <dt>{formatoOficial ? 'Coluna' : 'Módulo'}</dt>
               <dd>{formatoOficial ? String(loc.coluna ?? loc.modulo).padStart(2, '0') : loc.modulo}</dd>
             </div>
           )}
-          {!formatoOficial && loc.nivel !== null && <div className="campo"><dt>Nível</dt><dd>{nomeNivel ?? loc.nivel}</dd></div>}
+          {!formatoOficial && !numerada && loc.nivel !== null && <div className="campo"><dt>Nível</dt><dd>{nomeNivel ?? loc.nivel}</dd></div>}
           {loc.codigo && <div className="campo"><dt>ID interno</dt><dd className="mono texto-sec">{loc.id}</dd></div>}
           <div className="campo"><dt>Código</dt><dd>{ORIGEM_CODIGO[loc.origemCodigo]}</dd></div>
           <div className="campo"><dt>Posição 3D</dt><dd>{loc.estadoValidacao === 'confirmado' ? 'Confirmada' : <>Aproximada <Estimado /></>}</dd></div>

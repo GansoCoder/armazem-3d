@@ -7,8 +7,8 @@ Ficheiro: `materiais armazem.xlsx` · gerado por `scripts/importar-excel.mjs` em
 | Linhas lidas | 1996 |
 | Materiais importados | 1906 |
 | Linhas repetidas (mesmo material e posição) somadas | 87 |
-| Ligados a uma posição do modelo 3D | 1259 |
-| Sem ligação ao 3D (ver abaixo) | 647 |
+| Ligados a uma posição do modelo 3D | 1274 |
+| Sem ligação ao 3D (ver abaixo) | 632 |
 | Observações das fotografias mantidas | 6 |
 | Observações substituídas por materiais do Excel | 0 (—) |
 
@@ -20,11 +20,12 @@ Ficheiro: `materiais armazem.xlsx` · gerado por `scripts/importar-excel.mjs` em
 | ND (posição não definida) | 179 |
 | M100 (ainda sem correspondência no modelo) | 61 |
 | ESCRITORIO (ainda sem correspondência no modelo) | 38 |
-| Armários ARM01–ARM06 (ainda sem correspondência no modelo) | 24 |
 | Zona 1A (não representada no 3D) | 22 |
+| ARM06 (armário ainda sem correspondência no modelo) | 6 |
 | Zona 1D (não representada no 3D) | 3 |
 | Posição incompleta (sem prateleira/coluna) no corredor 1B16 | 3 |
 | Formato de posição inválido (possível gralha no Excel) | 3 |
+| ESQ-ARM1 (armário ainda sem correspondência no modelo) | 3 |
 | Posição incompleta (sem prateleira/coluna) no corredor 1B17 | 2 |
 | Corredor 1B18 (ainda não colocado no modelo 3D) | 1 |
 | Corredor 1B19 (ainda não colocado no modelo 3D) | 1 |

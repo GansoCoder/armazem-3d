@@ -53,6 +53,7 @@ Formato oficial do armazém (indicado pelo responsável):
 - O código sem caixa (`1B10A02`) é gerado na localização (`locations.json → codigo`); a caixa é guardada na peça (`parts.json → caixa`).
 - Corredores no modelo (esquema do armazém): 01–17, 20 e 21. O 03 é a zona dos rolos brancos (`1B03`), o 13 e o 14 são os contentores de ferro, e as colunas 04 e 05 do corredor 04 são armários. O armário "ARM" junto ao corredor 01 não tem número.
 - Em todas as filas, a coluna 01 está no extremo de cima do esquema (lado das etiquetas). Nas estruturas viradas para a direita isto é indicado com `colunasInvertidas: true`.
+- O armário "ARM" junto ao portão 2 tem as posições `ARM01`–`ARM05` (`prefixoCodigo: "ARM"`): cada número é uma prateleira, com a ARM01 em baixo, e a letra seguinte é a caixa (`ARM03C`). `ARM06` e `ESQ-ARM1` continuam sem 3D.
 - Colunas com prateleira por confirmar mostram o código parcial com "?" no lugar da letra, ex.: `1B11?01`.
 - Peças cuja prateleira ainda não se sabe ficam na **coluna** (ex.: `EL-01-M1`), mostrada no 3D como um contorno da coluna inteira.
 - A pesquisa aceita o código completo ou parcial (`1B10`, `1b10a02c`).
@@ -67,7 +68,7 @@ node scripts/importar-excel.mjs "materiais armazem.xlsx"
 - Lê as colunas **Material**, **Texto breve de material**, **Posição no depósito**, **Estoque total** e **Valor de Stock** (reconhecidas pelo cabeçalho).
 - Linhas repetidas com o mesmo material e a mesma posição são somadas.
 - Liga cada posição a uma célula do 3D (`1B08F02E` → corredor 08, prateleira F, coluna 02, caixa E). Nos contentores (corredores 13 e 14), a letra final identifica o contentor.
-- As posições que o modelo ainda não tem (outras zonas, `ND`, `M100`, `ESCRITORIO`, armários `ARM…`, corredores 18 e 19) continuam na listagem e na pesquisa, com a marca **sem 3D**.
+- As posições que o modelo ainda não tem (outras zonas, `ND`, `M100`, `ESCRITORIO`, `ARM06`, `ESQ-ARM1`, corredores 18 e 19) continuam na listagem e na pesquisa, com a marca **sem 3D**.
 - Mantém o que foi acrescentado à mão nos registos (fotografias, notas, categoria, fabricante, stock mínimo, modelo 3D).
 - **UQE**: quando a designação diz explicitamente "UQE2300" ou "UQE3500" (incluindo "UQE2300/2400"), a peça fica com essa UQE, marcada **estimado**. As restantes ficam "Nenhuma". Uma UQE escolhida à mão é mantida nas importações seguintes.
 - Escreve [`docs/relatorio-importacao.md`](docs/relatorio-importacao.md) com os totais, as posições por ligar e as possíveis gralhas no Excel.
@@ -137,7 +138,7 @@ Quando houver medidas reais, basta corrigir estes valores; não é preciso mexer
 Na vista 3D, carregue em **Editar planta**:
 
 1. **Nova**: escolha o tipo (estante ligeira, porta-paletes, armário, estante de vidros, zona de chão) e carregue em "Nova". Para alterar uma existente, escolha-a na lista ou clique nela no 3D.
-2. Indique o **corredor** (2 dígitos), o número de **colunas** e de **prateleiras**, a primeira coluna (ex.: 4 se continua outra estrutura) e de que lado fica a coluna 01.
+2. Indique o **corredor** (2 dígitos) — ou, num armário sem corredor, o **código das prateleiras** (ex.: `ARM` → ARM01, ARM02…) — o número de **colunas** e de **prateleiras**, a primeira coluna (ex.: 4 se continua outra estrutura) e de que lado fica a coluna 01.
 3. Ajuste as **medidas** e a **posição**: setas (passo de 10 cm, 50 cm ou 1 m), coordenadas X/Z, e os botões da frente (para baixo, direita, cima, esquerda).
 4. O resumo mostra os **códigos gerados** (ex.: `1B18A01 … 1B18D04`), quantas peças ficam ligadas e que materiais do Excel desse corredor ainda não cabem (para aumentar colunas ou prateleiras).
 5. **Guardar** (com confirmação): a planta fica neste navegador e toda a aplicação passa a usá-la; as peças do Excel são religadas automaticamente pela posição. Códigos repetidos entre estruturas impedem a gravação.
