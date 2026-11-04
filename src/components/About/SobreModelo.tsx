@@ -37,7 +37,6 @@ export function SobreModelo() {
           <h3>Vídeos usados</h3>
           <p className="texto-sec">
             Vídeo 1 (65 s) e vídeo 2 (32 s): usados na primeira versão da planta, entretanto substituída pelo esquema do armazém.
-            Os fotogramas continuam como fotografias de referência das estruturas.
           </p>
         </section>
 

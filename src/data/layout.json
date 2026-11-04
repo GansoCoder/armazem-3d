@@ -67,20 +67,7 @@
         "prateleiras": "#b48a5a"
       },
       "divisoriasVerticais": true,
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/estante-vidros.jpg",
-          "thumb": "/assets/localizacoes/estante-vidros-thumb.jpg",
-          "legenda": "Estante de vidros com etiquetas verdes 20 e 21 (recorte da foto 1)",
-          "tipo": "localizacao"
-        },
-        {
-          "src": "/assets/localizacoes/video-vidros-20-21.jpg",
-          "thumb": "/assets/localizacoes/video-vidros-20-21-thumb.jpg",
-          "legenda": "Filas de vidros 20 e 21, vistas do corredor principal (vídeo 2)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "2 colunas e 2 prateleiras (A, B) segundo o Excel. Etiqueta e coluna 01 assumidas no extremo virado para o portão 1."
     },
@@ -115,20 +102,7 @@
         "prateleiras": "#b48a5a"
       },
       "divisoriasVerticais": true,
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/estante-vidros.jpg",
-          "thumb": "/assets/localizacoes/estante-vidros-thumb.jpg",
-          "legenda": "Estante de vidros com etiquetas verdes 20 e 21 (recorte da foto 1)",
-          "tipo": "localizacao"
-        },
-        {
-          "src": "/assets/localizacoes/video-vidros-20-21.jpg",
-          "thumb": "/assets/localizacoes/video-vidros-20-21-thumb.jpg",
-          "legenda": "Filas de vidros 20 e 21, vistas do corredor principal (vídeo 2)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "2 colunas e 2 prateleiras (A, B) segundo o Excel. Etiqueta e coluna 01 assumidas no extremo virado para o portão 1."
     },
@@ -165,14 +139,7 @@
         "montantes": "#b9c2cc",
         "vigas": "#e2b318"
       },
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/video-corredor-01.jpg",
-          "thumb": "/assets/localizacoes/video-corredor-01-thumb.jpg",
-          "legenda": "Porta-paletes 01 com o armário cinzento, junto à porta (vídeo 1)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "Entre o portão 1 e o armário (ARM). Etiqueta 01 junto ao armário. 2 colunas e 4 prateleiras (A–D) segundo o Excel; sentido de numeração das colunas por confirmar."
     },
@@ -203,14 +170,7 @@
         "vigas": "#b3bbc3",
         "prateleiras": "#c3cad2"
       },
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/video-corredor-01.jpg",
-          "thumb": "/assets/localizacoes/video-corredor-01-thumb.jpg",
-          "legenda": "Armário cinzento entre o porta-paletes 01 e a porta (vídeo 1)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "Marcado \"ARM\" no esquema, entre o corredor 01 e o portão 2. Armário fechado; prateleiras estimadas. Não se sabe se corresponde a algum dos códigos ARM01–ARM06 do Excel."
     },
@@ -244,14 +204,7 @@
         "montantes": "#2a4fa8",
         "vigas": "#e8622c"
       },
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/video-corredor-02.jpg",
-          "thumb": "/assets/localizacoes/video-corredor-02-thumb.jpg",
-          "legenda": "Estante do corredor 02 (vídeo 1)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "À direita do portão 2. 1 coluna e 3 prateleiras (A–C) segundo o Excel; caixas Philips e tubos (vídeo 1)."
     },
@@ -270,14 +223,7 @@
       "conteudo": "rolos",
       "largura": 2.5,
       "profundidade": 1,
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/video-corredor-03.jpg",
-          "thumb": "/assets/localizacoes/video-corredor-03-thumb.jpg",
-          "legenda": "Etiqueta 03 no montante, com os rolos brancos ao lado (vídeo 1)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "Rolos de matéria filtrante (posição 1B03A no Excel). Etiqueta 03 no montante da estante 02, junto aos rolos."
     },
@@ -429,20 +375,7 @@
           "z": 1.735
         }
       ],
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/contentores-gradeados.jpg",
-          "thumb": "/assets/localizacoes/contentores-gradeados-thumb.jpg",
-          "legenda": "Contentores com etiquetas 42173490, 42173428 e 42173653 (recorte da foto 2)",
-          "tipo": "localizacao"
-        },
-        {
-          "src": "/assets/localizacoes/video-contentores.jpg",
-          "thumb": "/assets/localizacoes/video-contentores-thumb.jpg",
-          "legenda": "Contentores gradeados (vídeo 2)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "Cada contentor é uma caixa da posição 1B14A01. A, B e C seguem o esquema do armazém (A em cima, B e C do lado esquerdo); o D, na fila de baixo, foi deduzido pela sequência."
     },
@@ -484,20 +417,7 @@
           "z": 1.735
         }
       ],
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/contentores-gradeados.jpg",
-          "thumb": "/assets/localizacoes/contentores-gradeados-thumb.jpg",
-          "legenda": "Contentores com etiquetas 42173490, 42173428 e 42173653 (recorte da foto 2)",
-          "tipo": "localizacao"
-        },
-        {
-          "src": "/assets/localizacoes/video-contentores.jpg",
-          "thumb": "/assets/localizacoes/video-contentores-thumb.jpg",
-          "legenda": "Contentores gradeados (vídeo 2)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "Cada contentor é uma caixa da posição 1B13A01. A, B e C seguem o esquema do armazém (A em cima, B e C do lado direito); o D, na fila de baixo, foi deduzido pela sequência."
     },
@@ -562,20 +482,7 @@
         "vigas": "#c3cad2",
         "prateleiras": "#b48a5a"
       },
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/video-corredor-11.jpg",
-          "thumb": "/assets/localizacoes/video-corredor-11-thumb.jpg",
-          "legenda": "Topo do corredor 11, junto à porta (vídeo 1)",
-          "tipo": "localizacao"
-        },
-        {
-          "src": "/assets/localizacoes/estantes-ligeiras-frente.jpg",
-          "thumb": "/assets/localizacoes/estantes-ligeiras-frente-thumb.jpg",
-          "legenda": "Estante ligeira com cilindros e motores (recorte da foto 2)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "Fila dupla 12|11 (costas com costas). 4 colunas e 6 prateleiras (A–F), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
     },
@@ -609,14 +516,7 @@
         "vigas": "#c3cad2",
         "prateleiras": "#b48a5a"
       },
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/video-corredor-10.jpg",
-          "thumb": "/assets/localizacoes/video-corredor-10-thumb.jpg",
-          "legenda": "Etiqueta do corredor 10 (vídeo 1)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "Fila dupla 10|9. 5 colunas e 7 prateleiras (A–G), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
     },
@@ -667,8 +567,8 @@
       },
       "rotacaoY": -90,
       "corredor": "08",
-      "modulos": 5,
-      "larguraModulo": 1.3,
+      "modulos": 6,
+      "larguraModulo": 1.08,
       "profundidade": 0.5,
       "niveis": [
         0.1,
@@ -686,7 +586,7 @@
       },
       "fotografias": [],
       "estadoGeometria": "estimado",
-      "notas": "Fila dupla 8|7. 5 colunas e 6 prateleiras (A–F), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
+      "notas": "Fila dupla 8|7. 6 colunas, alinhadas com as do corredor 7 (costas com costas, os montantes coincidem); o Excel só tem posições nas colunas 01–05, a coluna 06 está vazia. 6 prateleiras (A–F) segundo o Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
     },
     {
       "id": "EL07",
@@ -721,14 +621,7 @@
         "vigas": "#c3cad2",
         "prateleiras": "#b48a5a"
       },
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/video-corredor-07.jpg",
-          "thumb": "/assets/localizacoes/video-corredor-07-thumb.jpg",
-          "legenda": "Etiqueta do corredor 07 (vídeo 1)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "Fila dupla 8|7. 6 colunas e 9 prateleiras (A–I), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
     },
@@ -799,14 +692,7 @@
         "vigas": "#c3cad2",
         "prateleiras": "#b48a5a"
       },
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/video-corredores-04-05.jpg",
-          "thumb": "/assets/localizacoes/video-corredores-04-05-thumb.jpg",
-          "legenda": "Corredor entre as filas 04 e 05 (vídeo 1)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "Fila dupla 6|5. 5 colunas e 7 prateleiras (A–G), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
     },
@@ -837,14 +723,7 @@
         "vigas": "#c3cad2",
         "prateleiras": "#b48a5a"
       },
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/video-corredores-04-05.jpg",
-          "thumb": "/assets/localizacoes/video-corredores-04-05-thumb.jpg",
-          "legenda": "Corredor entre as filas 04 e 05 (vídeo 1)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "Fila simples junto à parede; as duas últimas colunas (04 e 05) são armários (estrutura AR04). 3 colunas e 4 prateleiras (A–D), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
     },
@@ -879,14 +758,7 @@
         "vigas": "#b3bbc3",
         "prateleiras": "#c3cad2"
       },
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/video-armario.jpg",
-          "thumb": "/assets/localizacoes/video-armario-thumb.jpg",
-          "legenda": "Armário cinzento no fim do corredor 04 (vídeo 1)",
-          "tipo": "localizacao"
-        }
-      ],
+      "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "As duas últimas \"estantes\" do corredor 04 são armários (esquema do armazém). Assumidas como colunas 04 e 05: no Excel são as únicas colunas do corredor 04 com prateleiras E–G (as colunas 01–03 só vão até à D)."
     }
@@ -897,14 +769,6 @@
       "nome": "Contentores de ferro",
       "x": -0.9,
       "z": -0.45,
-      "largura": 1,
-      "profundidade": 1
-    },
-    {
-      "id": "z-fora",
-      "nome": "Outra área (atrás da parede)",
-      "x": 4.25,
-      "z": 6.4,
       "largura": 1,
       "profundidade": 1
     }
