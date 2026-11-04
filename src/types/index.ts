@@ -65,6 +65,8 @@ export interface Localizacao {
   codigo: string | null
   /** Código de uma coluna com prateleira por confirmar, ex.: 1B11?01. */
   codigoParcial?: string | null
+  /** Número oficial da coluna (01, 02…), quando difere do índice do módulo (ex.: armários do corredor 04). */
+  coluna?: number | null
   zona: string
   estrutura: string
   /** Índice do módulo/coluna (1 = primeiro) ou null quando a localização abrange toda a estrutura. */
@@ -108,8 +110,12 @@ interface EstruturaBase {
   corredor?: string | null
   /** true quando o número do corredor foi deduzido (ex.: pela sequência) e não lido numa etiqueta. */
   corredorInferido?: boolean
-  /** Extremo onde está a etiqueta verde do corredor: "inicio" (coluna 01, por defeito) ou "fim". */
+  /** Extremo onde está a etiqueta verde do corredor: "inicio" (lado da coluna 01, por defeito) ou "fim". */
   ladoEtiqueta?: 'inicio' | 'fim'
+  /** true: a coluna 01 fica no extremo +x local (em vez de −x), para todas as filas começarem do mesmo lado. */
+  colunasInvertidas?: boolean
+  /** Número da primeira coluna (por defeito 1). Ex.: os armários do corredor 04 são as colunas 04 e 05. */
+  colunaInicial?: number
   fotografias?: Fotografia[]
   estadoGeometria: EstadoValidacao
   notas?: string
@@ -136,12 +142,19 @@ export interface EstruturaContentores extends EstruturaBase {
   profundidadeContentor: number
   alturaContentor: number
   empilhamento: number
+  /**
+   * Posição de cada contentor (coordenadas locais, em metros), pela ordem das letras A, B, C…
+   * "rodado" = contentor virado 90°. Sem disposição, os contentores ficam numa grelha colunas × filas.
+   */
+  disposicao?: { x: number; z: number; rodado?: boolean }[]
 }
 
 export interface EstruturaZonaChao extends EstruturaBase {
   tipo: 'zona-chao'
   largura: number
   profundidade: number
+  /** Desenho do conteúdo (ex.: "rolos" = rolos brancos deitados). */
+  conteudo?: 'rolos'
 }
 
 export type Estrutura = EstruturaEstante | EstruturaContentores | EstruturaZonaChao
@@ -177,6 +190,8 @@ export interface ElementoDecorativo {
   rotulo?: string
   /** Largura (para portões e compartimentos) ou número de unidades (para pilhas). */
   largura?: number
+  /** Altura do vão (portões e portas). */
+  altura?: number
   profundidade?: number
   quantidade?: number
 }
@@ -186,7 +201,15 @@ export interface Layout {
   aviso: string
   /** Código da zona do armazém representada (primeiro elemento do código de posição). */
   codigoZona: string
-  edificio: { xMin: number; xMax: number; zMin: number; zMax: number; altura: number }
+  edificio: {
+    xMin: number
+    xMax: number
+    zMin: number
+    zMax: number
+    altura: number
+    /** Contorno das paredes (polígono), quando a planta não é um retângulo. */
+    contorno?: Vec2[]
+  }
   estruturas: Estrutura[]
   zonas: ZonaPiso[]
   elementos: ElementoDecorativo[]

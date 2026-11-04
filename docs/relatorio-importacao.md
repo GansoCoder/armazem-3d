@@ -1,16 +1,16 @@
 # Relatório de importação do Excel
 
-Ficheiro: `materiais armazem.xlsx` · gerado por `scripts/importar-excel.mjs` em 2026-11-03.
+Ficheiro: `materiais armazem.xlsx` · gerado por `scripts/importar-excel.mjs` em 2026-11-04.
 
 | | |
 |---|---|
 | Linhas lidas | 1996 |
 | Materiais importados | 1906 |
 | Linhas repetidas (mesmo material e posição) somadas | 87 |
-| Ligados a uma posição do modelo 3D | 1205 |
-| Sem ligação ao 3D (ver abaixo) | 701 |
+| Ligados a uma posição do modelo 3D | 1259 |
+| Sem ligação ao 3D (ver abaixo) | 647 |
 | Observações das fotografias mantidas | 6 |
-| Observações substituídas por materiais do Excel | 6 (Painéis de vidro (conjunto); Painéis de vidro de grande formato (conjunto); Painéis de vidro (conjunto); Painéis de vidro de grande formato (conjunto); Componentes cilíndricos; Motores elétricos / motorredutores) |
+| Observações substituídas por materiais do Excel | 0 (—) |
 
 ## Materiais sem ligação ao 3D, por motivo
 
@@ -20,14 +20,12 @@ Ficheiro: `materiais armazem.xlsx` · gerado por `scripts/importar-excel.mjs` em
 | ND (posição não definida) | 179 |
 | M100 (ainda sem correspondência no modelo) | 61 |
 | ESCRITORIO (ainda sem correspondência no modelo) | 38 |
-| Corredor 1B15 (ainda não colocado no modelo 3D) | 25 |
 | Armários ARM01–ARM06 (ainda sem correspondência no modelo) | 24 |
 | Zona 1A (não representada no 3D) | 22 |
-| Corredor 1B12 (ainda não colocado no modelo 3D) | 13 |
-| Corredor 1B16 (ainda não colocado no modelo 3D) | 12 |
-| Corredor 1B17 (ainda não colocado no modelo 3D) | 9 |
 | Zona 1D (não representada no 3D) | 3 |
+| Posição incompleta (sem prateleira/coluna) no corredor 1B16 | 3 |
 | Formato de posição inválido (possível gralha no Excel) | 3 |
+| Posição incompleta (sem prateleira/coluna) no corredor 1B17 | 2 |
 | Corredor 1B18 (ainda não colocado no modelo 3D) | 1 |
 | Corredor 1B19 (ainda não colocado no modelo 3D) | 1 |
 | Zona 1E (não representada no 3D) | 1 |
@@ -48,7 +46,3 @@ Estes materiais aparecem na listagem e na pesquisa com a posição do Excel; só
 
 - **1B18** (1): Contraplacado de Bétula Classe 3 - B/BB
 - **1B19** (1): Contraplacado fenólico antiderrapante
-- **1B16** (12): Folha borracha preta reforço têxtil 5mm; Mola hélice secção circular, exterior; Mola hélice secção circular, interior; Mola hel. int. enrolamento à esquerda
-- **1B17** (9): Trapo algodão branco lavado; Rampa deficientes direita em aço inox; Anel tórico; Junta para a tampa dos balanceiros
-- **1B15** (25): Chapa policarbonato 580x380 mm; Chapa policarbonato 950x580 mm; Chapa policarbonato 420x297 mm; Molduras 580x380 mm com perfil de 25mm
-- **1B12** (13): Motor ventil. condensador ar cond. salão; Amort 02H-1393-01 (Suspensão Secundária); Amortecedor vertical tipo 02V 1721 Koni; Amortecedor vertical 92-5096-001 Koni

@@ -1,4 +1,5 @@
 import { Edges, Grid, Html } from '@react-three/drei'
+import { useMemo } from 'react'
 import * as THREE from 'three'
 import type { ElementoDecorativo, Layout, ZonaPiso } from '../../types'
 import { graus } from '../../utils/geometria'
@@ -13,16 +14,38 @@ export function Edificio({ layout }: { layout: Layout }) {
   const D = zMax - zMin
   const cx = (xMin + xMax) / 2
   const cz = (zMin + zMax) / 2
-  const paredes: { p: [number, number, number]; r: number; w: number }[] = [
-    { p: [cx, altura / 2, zMin], r: 0, w: W },
-    { p: [cx, altura / 2, zMax], r: 0, w: W },
-    { p: [xMin, altura / 2, cz], r: Math.PI / 2, w: D },
-    { p: [xMax, altura / 2, cz], r: Math.PI / 2, w: D },
-  ]
+  const contorno = useMemo(
+    () => layout.edificio.contorno ?? [{ x: xMin, z: zMin }, { x: xMax, z: zMin }, { x: xMax, z: zMax }, { x: xMin, z: zMax }],
+    [layout.edificio.contorno, xMin, xMax, zMin, zMax],
+  )
+
+  const { chao, fora, arestas } = useMemo(() => {
+    // o plano do chão é desenhado em xy e rodado −90° em x: y do desenho = −z do mundo
+    const forma = new THREE.Shape(contorno.map((p) => new THREE.Vector2(p.x, -p.z)))
+    // o que fica dentro do retângulo envolvente mas fora das paredes (tapa a grelha)
+    const exterior = new THREE.Shape([
+      new THREE.Vector2(xMin, -zMin), new THREE.Vector2(xMax, -zMin), new THREE.Vector2(xMax, -zMax), new THREE.Vector2(xMin, -zMax),
+    ])
+    exterior.holes.push(new THREE.Path(contorno.map((p) => new THREE.Vector2(p.x, -p.z))))
+    const pts: number[] = []
+    contorno.forEach((a, i) => {
+      const b = contorno[(i + 1) % contorno.length]
+      for (const y of [0, altura]) pts.push(a.x, y, a.z, b.x, y, b.z)
+      pts.push(a.x, 0, a.z, a.x, altura, a.z)
+    })
+    const linhas = new THREE.BufferGeometry()
+    linhas.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3))
+    return { chao: new THREE.ShapeGeometry(forma), fora: new THREE.ShapeGeometry(exterior), arestas: linhas }
+  }, [contorno, altura, xMin, xMax, zMin, zMax])
+
+  const paredes = contorno.map((a, i) => {
+    const b = contorno[(i + 1) % contorno.length]
+    return { p: [(a.x + b.x) / 2, altura / 2, (a.z + b.z) / 2] as [number, number, number], r: -Math.atan2(b.z - a.z, b.x - a.x), w: Math.hypot(b.x - a.x, b.z - a.z) }
+  })
+
   return (
     <group>
-      <mesh rotation-x={-Math.PI / 2} position={[cx, 0, cz]} raycast={naoClicavel}>
-        <planeGeometry args={[W, D]} />
+      <mesh rotation-x={-Math.PI / 2} geometry={chao} raycast={naoClicavel}>
         <meshStandardMaterial color="#1f2f40" roughness={0.95} />
       </mesh>
       <Grid
@@ -37,15 +60,17 @@ export function Edificio({ layout }: { layout: Layout }) {
         fadeDistance={90}
         infiniteGrid={false}
       />
+      <mesh rotation-x={-Math.PI / 2} position-y={0.008} geometry={fora} raycast={naoClicavel}>
+        <meshBasicMaterial color="#0e2133" />
+      </mesh>
       {paredes.map((w, i) => (
         <mesh key={i} position={w.p} rotation-y={w.r} raycast={naoClicavel}>
           <planeGeometry args={[w.w, altura]} />
           <meshStandardMaterial color="#9fb3c8" transparent opacity={0.05} side={THREE.DoubleSide} depthWrite={false} />
         </mesh>
       ))}
-      <lineSegments raycast={naoClicavel}>
-        <edgesGeometry args={[new THREE.BoxGeometry(W, altura, D)]} />
-        <lineBasicMaterial color="#3d5a78" transparent opacity={0.5} />
+      <lineSegments geometry={arestas} raycast={naoClicavel}>
+        <lineBasicMaterial color="#3d5a78" transparent opacity={0.6} />
       </lineSegments>
     </group>
   )
@@ -147,8 +172,8 @@ function Elemento({ el }: { el: ElementoDecorativo }) {
       break
     case 'portao':
       conteudo = (
-        <mesh position={[0, 2.1, -0.02]}>
-          <planeGeometry args={[el.largura ?? 4, 4.2]} />
+        <mesh position={[0, (el.altura ?? 4.2) / 2, -0.02]}>
+          <planeGeometry args={[el.largura ?? 4, el.altura ?? 4.2]} />
           <meshStandardMaterial color="#e8eef3" transparent opacity={0.22} side={THREE.DoubleSide} depthWrite={false} />
         </mesh>
       )
@@ -207,7 +232,7 @@ export function Decoracao({ layout, rotulos }: { layout: Layout; rotulos: boolea
         <group key={el.id}>
           <Elemento el={el} />
           {rotulos && el.rotulo && (el.tipo === 'portao' || el.tipo === 'compartimento') && (
-            <Html position={[el.posicao.x, el.tipo === 'portao' ? 4.6 : 3.4, el.posicao.z]} center zIndexRange={[9, 0]}>
+            <Html position={[el.posicao.x, el.tipo === 'portao' ? (el.altura ?? 4.2) + 0.4 : 3.4, el.posicao.z]} center zIndexRange={[9, 0]}>
               <div className="rotulo-zona">{el.rotulo}</div>
             </Html>
           )}

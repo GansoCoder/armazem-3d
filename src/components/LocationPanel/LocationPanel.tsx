@@ -49,7 +49,8 @@ export function LocationPanel() {
   const prateleiras = estrutura?.tipo === 'estante-ligeira' || estrutura?.tipo === 'armario'
   // estruturas com número de corredor seguem o formato oficial: prateleira (letra) + coluna
   const contentor = estrutura?.tipo === 'contentores'
-  const formatoOficial = !contentor && (prateleiras || !!estrutura?.corredor)
+  const zonaChao = estrutura?.tipo === 'zona-chao'
+  const formatoOficial = !contentor && !zonaChao && (prateleiras || !!estrutura?.corredor)
   const coluna = ehColuna(loc, estrutura?.tipo)
   // numa célula, mostrar também as peças da mesma coluna cuja prateleira ainda não é conhecida
   const idColuna = prateleiras && !coluna ? [...locs.values()].find((l) => l.estrutura === loc.estrutura && l.modulo === loc.modulo && l.nivel === null)?.id : undefined
@@ -85,12 +86,12 @@ export function LocationPanel() {
             </div>
           )}
           {formatoOficial && <div className="campo"><dt>Prateleira</dt><dd>{loc.nivel !== null ? String.fromCharCode(65 + loc.nivel) : <span className="por-confirmar">Por confirmar</span>}</dd></div>}
-          {contentor && estrutura?.corredor && <div className="campo"><dt>Corredor</dt><dd>{estrutura.corredor}</dd></div>}
+          {(contentor || zonaChao) && estrutura?.corredor && <div className="campo"><dt>Corredor</dt><dd>{estrutura.corredor}</dd></div>}
           {contentor && loc.codigo && <div className="campo"><dt>Contentor</dt><dd>{loc.codigo.slice(-1)} <span className="texto-sec">(caixa da posição {loc.codigo.slice(0, -1)})</span></dd></div>}
           {!contentor && loc.modulo !== null && (
             <div className="campo">
               <dt>{formatoOficial ? 'Coluna' : 'Módulo'}</dt>
-              <dd>{formatoOficial ? String(loc.modulo).padStart(2, '0') : loc.modulo}</dd>
+              <dd>{formatoOficial ? String(loc.coluna ?? loc.modulo).padStart(2, '0') : loc.modulo}</dd>
             </div>
           )}
           {!formatoOficial && loc.nivel !== null && <div className="campo"><dt>Nível</dt><dd>{nomeNivel ?? loc.nivel}</dd></div>}

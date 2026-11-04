@@ -34,13 +34,18 @@ function add(loc) {
 for (const e of layout.estruturas) {
   const base = { zona: e.zona, estrutura: e.id }
   const corredor = e.corredor ?? null
-  const codigo = (m, n) => (corredor ? `${layout.codigoZona}${corredor}${letra(n)}${pad(m)}` : null)
+  // número oficial da coluna: os armários do corredor 04, por exemplo, começam na coluna 04
+  const col = (m) => (e.colunaInicial ?? 1) + m - 1
+  const codigo = (m, n) => (corredor ? `${layout.codigoZona}${corredor}${letra(n)}${pad(col(m))}` : null)
   // corredor lido numa etiqueta → código parcialmente confirmado; deduzido → provisório
   const origemCodigo = corredor && !e.corredorInferido ? 'parcial' : 'provisorio'
 
   if (e.tipo === 'zona-chao') {
-    const id = e.id === 'RCXC' ? 'RCX-CHAO' : `${e.id}-01`
-    add({ id, codigo: null, ...base, modulo: null, nivel: null, descricao: e.nome, origemCodigo: 'provisorio' })
+    // zona com número de corredor (ex.: rolos brancos = corredor 03): código parcial sem prateleira/coluna
+    add({
+      id: `${e.id}-01`, codigo: null, codigoParcial: corredor ? `${layout.codigoZona}${corredor}` : null, ...base,
+      modulo: null, nivel: null, descricao: e.nome, origemCodigo: corredor ? origemCodigo : 'provisorio',
+    })
   } else if (e.tipo === 'contentores') {
     for (let i = 1; i <= e.colunas * e.filas; i++) {
       const fila = Math.ceil(i / e.colunas)
@@ -60,15 +65,15 @@ for (const e of layout.estruturas) {
     for (let m = 1; m <= e.modulos; m++) {
       // coluna inteira: usada quando a prateleira de uma peça ainda não é conhecida
       add({
-        id: `${pref}-M${m}`, codigo: null, ...base, modulo: m, nivel: null,
-        codigoParcial: corredor ? `${layout.codigoZona}${corredor}?${pad(m)}` : null,
-        descricao: `${e.nome} · Coluna ${pad(m)} · prateleira por confirmar`,
+        id: `${pref}-M${m}`, codigo: null, ...base, modulo: m, coluna: col(m), nivel: null,
+        codigoParcial: corredor ? `${layout.codigoZona}${corredor}?${pad(col(m))}` : null,
+        descricao: `${e.nome} · Coluna ${pad(col(m))} · prateleira por confirmar`,
         origemCodigo,
       })
       for (let n = 0; n < e.niveis.length; n++) {
         add({
-          id: `${pref}-M${m}-N${n}`, codigo: codigo(m, n), ...base, modulo: m, nivel: n,
-          descricao: `${e.nome} · Prateleira ${letra(n)} · Coluna ${pad(m)}`,
+          id: `${pref}-M${m}-N${n}`, codigo: codigo(m, n), ...base, modulo: m, coluna: col(m), nivel: n,
+          descricao: `${e.nome} · Prateleira ${letra(n)} · Coluna ${pad(col(m))}`,
           origemCodigo,
         })
       }
@@ -78,8 +83,8 @@ for (const e of layout.estruturas) {
       for (let n = 0; n < e.niveis.length; n++) {
         const nomeNivel = e.nomesNiveis?.[n] ?? `Nível ${n}`
         add({
-          id: `${e.id}-M${m}-N${n}`, codigo: codigo(m, n), ...base, modulo: m, nivel: n,
-          descricao: corredor ? `${e.nome} · Prateleira ${letra(n)} · Coluna ${pad(m)}` : `${e.nome} · Módulo ${m} · ${nomeNivel}`,
+          id: `${e.id}-M${m}-N${n}`, codigo: codigo(m, n), ...base, modulo: m, ...(corredor ? { coluna: col(m) } : {}), nivel: n,
+          descricao: corredor ? `${e.nome} · Prateleira ${letra(n)} · Coluna ${pad(col(m))}` : `${e.nome} · Módulo ${m} · ${nomeNivel}`,
           origemCodigo,
         })
       }

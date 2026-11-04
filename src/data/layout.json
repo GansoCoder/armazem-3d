@@ -1,71 +1,88 @@
 {
-  "versao": 4,
+  "versao": 5,
   "codigoZona": "1B",
-  "aviso": "Representação aproximada e não à escala. Disposição interpretada a partir de 4 fotografias e 2 vídeos; posições, dimensões e número de módulos são estimativas.",
+  "aviso": "Representação aproximada e não à escala. Disposição segundo o esquema desenhado pelo armazém; dimensões, número de colunas e prateleiras estimados a partir das fotografias, vídeos e posições do Excel.",
   "edificio": {
-    "xMin": -16,
-    "xMax": 27.5,
-    "zMin": -10,
-    "zMax": 3,
-    "altura": 7
+    "xMin": -10,
+    "xMax": 10,
+    "zMin": -7,
+    "zMax": 9,
+    "altura": 7,
+    "contorno": [
+      {
+        "x": -10,
+        "z": -7
+      },
+      {
+        "x": 10,
+        "z": -7
+      },
+      {
+        "x": 10,
+        "z": 3.9
+      },
+      {
+        "x": -1.5,
+        "z": 3.9
+      },
+      {
+        "x": -1.5,
+        "z": 9
+      },
+      {
+        "x": -10,
+        "z": 9
+      }
+    ]
   },
   "estruturas": [
     {
-      "id": "PPA",
-      "nome": "Porta-paletes A (vigas amarelas)",
-      "rotulo": "Porta-paletes A",
-      "tipo": "porta-paletes",
-      "zona": "Corredor principal",
+      "id": "EV21",
+      "nome": "Estante de vidros — corredor 21",
+      "rotulo": "Vidros 21",
+      "tipo": "estante-vidros",
+      "zona": "Estantes de vidros 20–21",
       "posicao": {
-        "x": -6.0,
-        "z": -9.4
+        "x": -8.2,
+        "z": -5.7
       },
       "rotacaoY": 0,
-      "corredor": null,
-      "modulos": 5,
-      "larguraModulo": 2.6,
-      "profundidade": 1.1,
+      "corredor": "21",
+      "colunasInvertidas": true,
+      "modulos": 2,
+      "larguraModulo": 1.6,
+      "profundidade": 1,
       "niveis": [
-        0,
-        1.0,
-        1.9,
-        2.8,
-        3.8
+        0.15,
+        1.55
       ],
-      "altura": 4.6,
+      "altura": 2.6,
       "nomesNiveis": [
-        "Chão",
-        "Nível 1",
-        "Nível 2",
-        "Nível 3",
-        "Nível 4 (topo)"
+        "Prateleira A (inferior)",
+        "Prateleira B (superior)"
       ],
       "cores": {
-        "montantes": "#b9c2cc",
-        "vigas": "#e2b318"
+        "montantes": "#2a4fa8",
+        "vigas": "#e8622c",
+        "prateleiras": "#b48a5a"
       },
+      "divisoriasVerticais": true,
       "fotografias": [
         {
-          "src": "/assets/localizacoes/porta-paletes-a.jpg",
-          "thumb": "/assets/localizacoes/porta-paletes-a-thumb.jpg",
-          "legenda": "Porta-paletes de vigas amarelas (recorte da foto 3)",
+          "src": "/assets/localizacoes/estante-vidros.jpg",
+          "thumb": "/assets/localizacoes/estante-vidros-thumb.jpg",
+          "legenda": "Estante de vidros com etiquetas verdes 20 e 21 (recorte da foto 1)",
           "tipo": "localizacao"
         },
         {
-          "src": "/assets/armazem/foto-1.jpg",
-          "thumb": "/assets/armazem/foto-1-thumb.jpg",
-          "legenda": "Vista a partir do portão (foto 1)",
-          "tipo": "localizacao"
-        },
-        {
-          "src": "/assets/localizacoes/video-corredor-principal.jpg",
-          "thumb": "/assets/localizacoes/video-corredor-principal-thumb.jpg",
-          "legenda": "Corredor principal com os empilhadores ao fundo (vídeo 2)",
+          "src": "/assets/localizacoes/video-vidros-20-21.jpg",
+          "thumb": "/assets/localizacoes/video-vidros-20-21-thumb.jpg",
+          "legenda": "Filas de vidros 20 e 21, vistas do corredor principal (vídeo 2)",
           "tipo": "localizacao"
         }
       ],
       "estadoGeometria": "estimado",
-      "notas": "Junto à parede do fundo, do lado norte do corredor principal. 5 módulos estimados pelo vídeo; número de corredor por confirmar."
+      "notas": "2 colunas e 2 prateleiras (A, B) segundo o Excel. Etiqueta e coluna 01 assumidas no extremo virado para o portão 1."
     },
     {
       "id": "EV20",
@@ -74,14 +91,15 @@
       "tipo": "estante-vidros",
       "zona": "Estantes de vidros 20–21",
       "posicao": {
-        "x": 1.6,
-        "z": -8.4
+        "x": -8.2,
+        "z": -4.2
       },
-      "rotacaoY": 90,
+      "rotacaoY": 0,
       "corredor": "20",
+      "colunasInvertidas": true,
       "modulos": 2,
-      "larguraModulo": 1.4,
-      "profundidade": 1.0,
+      "larguraModulo": 1.6,
+      "profundidade": 1,
       "niveis": [
         0.15,
         1.55
@@ -112,227 +130,29 @@
         }
       ],
       "estadoGeometria": "estimado",
-      "notas": "Etiqueta no topo virado para o corredor principal (vídeo 2). 2 colunas e 2 prateleiras (A, B) segundo o Excel; coluna 01 assumida no topo com a etiqueta."
-    },
-    {
-      "id": "EV21",
-      "nome": "Estante de vidros — corredor 21",
-      "rotulo": "Vidros 21",
-      "tipo": "estante-vidros",
-      "zona": "Estantes de vidros 20–21",
-      "posicao": {
-        "x": 3.3,
-        "z": -8.4
-      },
-      "rotacaoY": 90,
-      "corredor": "21",
-      "modulos": 2,
-      "larguraModulo": 1.4,
-      "profundidade": 1.0,
-      "niveis": [
-        0.15,
-        1.55
-      ],
-      "altura": 2.6,
-      "nomesNiveis": [
-        "Prateleira A (inferior)",
-        "Prateleira B (superior)"
-      ],
-      "cores": {
-        "montantes": "#2a4fa8",
-        "vigas": "#e8622c",
-        "prateleiras": "#b48a5a"
-      },
-      "divisoriasVerticais": true,
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/estante-vidros.jpg",
-          "thumb": "/assets/localizacoes/estante-vidros-thumb.jpg",
-          "legenda": "Estante de vidros com etiquetas verdes 20 e 21 (recorte da foto 1)",
-          "tipo": "localizacao"
-        },
-        {
-          "src": "/assets/localizacoes/video-vidros-20-21.jpg",
-          "thumb": "/assets/localizacoes/video-vidros-20-21-thumb.jpg",
-          "legenda": "Filas de vidros 20 e 21, vistas do corredor principal (vídeo 2)",
-          "tipo": "localizacao"
-        }
-      ],
-      "estadoGeometria": "estimado",
-      "notas": "Etiqueta no topo virado para o corredor principal (vídeo 2). 2 colunas e 2 prateleiras (A, B) segundo o Excel; coluna 01 assumida no topo com a etiqueta."
-    },
-    {
-      "id": "ZC",
-      "nome": "Zona de chão junto à estante 20",
-      "rotulo": "Zona de chão",
-      "tipo": "zona-chao",
-      "zona": "Estantes de vidros 20–21",
-      "posicao": {
-        "x": -0.6,
-        "z": -6.3
-      },
-      "rotacaoY": 0,
-      "largura": 2.2,
-      "profundidade": 1.2,
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/zona-chao-caixotes.jpg",
-          "thumb": "/assets/localizacoes/zona-chao-caixotes-thumb.jpg",
-          "legenda": "Caixotes de madeira com módulos metálicos (recorte da foto 1)",
-          "tipo": "localizacao"
-        }
-      ],
-      "estadoGeometria": "estimado"
-    },
-    {
-      "id": "RCX",
-      "nome": "Porta-paletes da Receção e Expedição",
-      "rotulo": "Receção e Expedição",
-      "tipo": "porta-paletes",
-      "zona": "Corredor principal",
-      "posicao": {
-        "x": -5.6,
-        "z": -4.5
-      },
-      "rotacaoY": 180,
-      "corredor": null,
-      "modulos": 6,
-      "larguraModulo": 2.6,
-      "profundidade": 1.1,
-      "niveis": [
-        0,
-        1.3,
-        2.4,
-        3.5
-      ],
-      "altura": 4.6,
-      "nomesNiveis": [
-        "Chão",
-        "Nível 1",
-        "Nível 2",
-        "Nível 3 (topo)"
-      ],
-      "cores": {
-        "montantes": "#b9c2cc",
-        "vigas": "#e2b318"
-      },
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/rececao-expedicao.jpg",
-          "thumb": "/assets/localizacoes/rececao-expedicao-thumb.jpg",
-          "legenda": "Sinal \"Área de Receção e Expedição\" (recorte da foto 2)",
-          "tipo": "localizacao"
-        }
-      ],
-      "estadoGeometria": "estimado",
-      "notas": "Lado sul do corredor principal, até aos empilhadores. O sinal \"Área de Receção e Expedição\" está no topo virado para os contentores. 6 módulos estimados; número de corredor por confirmar."
-    },
-    {
-      "id": "RCXC",
-      "nome": "Paletes no chão — Receção e Expedição",
-      "rotulo": "Paletes (chão)",
-      "tipo": "zona-chao",
-      "zona": "Área de Receção e Expedição",
-      "posicao": {
-        "x": 5.2,
-        "z": -3.6
-      },
-      "rotacaoY": 0,
-      "largura": 2.2,
-      "profundidade": 2.0,
-      "estadoGeometria": "estimado"
-    },
-    {
-      "id": "CG13",
-      "nome": "Contentores gradeados — corredor 13",
-      "rotulo": "Contentores 13",
-      "tipo": "contentores",
-      "zona": "Contentores gradeados",
-      "posicao": {
-        "x": 11.3,
-        "z": -2.82
-      },
-      "rotacaoY": 180,
-      "colunas": 3,
-      "filas": 1,
-      "larguraContentor": 1.24,
-      "profundidadeContentor": 0.84,
-      "alturaContentor": 0.97,
-      "empilhamento": 2,
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/contentores-gradeados.jpg",
-          "thumb": "/assets/localizacoes/contentores-gradeados-thumb.jpg",
-          "legenda": "Contentores com etiquetas 42173490, 42173428 e 42173653 (recorte da foto 2)",
-          "tipo": "localizacao"
-        },
-        {
-          "src": "/assets/localizacoes/video-contentores.jpg",
-          "thumb": "/assets/localizacoes/video-contentores-thumb.jpg",
-          "legenda": "Contentores em frente ao compartimento com o postigo (vídeo 2)",
-          "tipo": "localizacao"
-        }
-      ],
-      "estadoGeometria": "estimado",
-      "notas": "Cada contentor é uma caixa da posição 1B13A01 (A, B, C…), segundo o Excel. Ordem dos contentores e disposição das duas filas estimadas.",
-      "corredor": "13"
-    },
-    {
-      "id": "CG14",
-      "nome": "Contentores gradeados — corredor 14",
-      "rotulo": "Contentores 14",
-      "tipo": "contentores",
-      "zona": "Contentores gradeados",
-      "posicao": {
-        "x": 11.3,
-        "z": -1.98
-      },
-      "rotacaoY": 180,
-      "colunas": 4,
-      "filas": 1,
-      "larguraContentor": 1.24,
-      "profundidadeContentor": 0.84,
-      "alturaContentor": 0.97,
-      "empilhamento": 2,
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/contentores-gradeados.jpg",
-          "thumb": "/assets/localizacoes/contentores-gradeados-thumb.jpg",
-          "legenda": "Contentores com etiquetas 42173490, 42173428 e 42173653 (recorte da foto 2)",
-          "tipo": "localizacao"
-        },
-        {
-          "src": "/assets/localizacoes/video-contentores.jpg",
-          "thumb": "/assets/localizacoes/video-contentores-thumb.jpg",
-          "legenda": "Contentores em frente ao compartimento com o postigo (vídeo 2)",
-          "tipo": "localizacao"
-        }
-      ],
-      "estadoGeometria": "estimado",
-      "notas": "Cada contentor é uma caixa da posição 1B14A01 (A, B, C…), segundo o Excel. Ordem dos contentores e disposição das duas filas estimadas.",
-      "corredor": "14"
+      "notas": "2 colunas e 2 prateleiras (A, B) segundo o Excel. Etiqueta e coluna 01 assumidas no extremo virado para o portão 1."
     },
     {
       "id": "R01",
       "nome": "Porta-paletes — corredor 01",
       "rotulo": "Corredor 01",
       "tipo": "porta-paletes",
-      "zona": "Corredores 01–03 (junto à porta)",
+      "zona": "Parede dos portões (corredores 01–03)",
       "posicao": {
-        "x": 7.3,
-        "z": -9.4
+        "x": -1.73,
+        "z": -6.42
       },
       "rotacaoY": 0,
       "corredor": "01",
       "ladoEtiqueta": "fim",
       "modulos": 2,
-      "larguraModulo": 2.7,
-      "profundidade": 1.1,
+      "larguraModulo": 2.55,
+      "profundidade": 1,
       "niveis": [
         0,
-        1.0,
-        2.0,
-        3.0
+        1,
+        2,
+        3
       ],
       "altura": 3.8,
       "nomesNiveis": [
@@ -354,17 +174,17 @@
         }
       ],
       "estadoGeometria": "estimado",
-      "notas": "Etiqueta 01 junto ao armário cinzento e à porta. 2 colunas e 4 prateleiras (A–D) segundo o Excel; sentido de numeração das colunas por confirmar."
+      "notas": "Entre o portão 1 e o armário (ARM). Etiqueta 01 junto ao armário. 2 colunas e 4 prateleiras (A–D) segundo o Excel; sentido de numeração das colunas por confirmar."
     },
     {
-      "id": "AR02",
-      "nome": "Armário cinzento junto à porta",
-      "rotulo": "Armário",
+      "id": "AR01",
+      "nome": "Armário (ARM) junto ao corredor 01",
+      "rotulo": "ARM",
       "tipo": "armario",
-      "zona": "Corredores 01–03 (junto à porta)",
+      "zona": "Parede dos portões (corredores 01–03)",
       "posicao": {
-        "x": 13.25,
-        "z": -9.6
+        "x": 1.3,
+        "z": -6.65
       },
       "rotacaoY": 0,
       "corredor": null,
@@ -374,7 +194,7 @@
       "niveis": [
         0.1,
         0.55,
-        1.0,
+        1,
         1.45
       ],
       "altura": 1.95,
@@ -392,22 +212,22 @@
         }
       ],
       "estadoGeometria": "estimado",
-      "notas": "Armário metálico fechado; o interior não é visível no vídeo. Prateleiras estimadas."
+      "notas": "Marcado \"ARM\" no esquema, entre o corredor 01 e o portão 2. Armário fechado; prateleiras estimadas. Não se sabe se corresponde a algum dos códigos ARM01–ARM06 do Excel."
     },
     {
       "id": "R02",
       "nome": "Estante azul/laranja — corredor 02",
       "rotulo": "Corredor 02",
       "tipo": "porta-paletes",
-      "zona": "Corredores 01–03 (junto à porta)",
+      "zona": "Parede dos portões (corredores 01–03)",
       "posicao": {
-        "x": 17.95,
-        "z": -9.45
+        "x": 5.6,
+        "z": -6.5
       },
       "rotacaoY": 0,
       "corredor": "02",
       "modulos": 1,
-      "larguraModulo": 2.7,
+      "larguraModulo": 3.1,
       "profundidade": 0.9,
       "niveis": [
         0,
@@ -433,79 +253,301 @@
         }
       ],
       "estadoGeometria": "estimado",
-      "notas": "Junto à porta, do lado oposto ao corredor 01; caixas Philips e tubos. Dimensões e número de módulos estimados."
+      "notas": "À direita do portão 2. 1 coluna e 3 prateleiras (A–C) segundo o Excel; caixas Philips e tubos (vídeo 1)."
     },
     {
-      "id": "R03",
-      "nome": "Estante azul/laranja — corredor 03",
-      "rotulo": "Corredor 03",
-      "tipo": "porta-paletes",
-      "zona": "Corredores 01–03 (junto à porta)",
+      "id": "ZR",
+      "nome": "Rolos brancos — corredor 03",
+      "rotulo": "Rolos brancos",
+      "tipo": "zona-chao",
+      "zona": "Parede dos portões (corredores 01–03)",
       "posicao": {
-        "x": 20.85,
-        "z": -9.45
+        "x": 8.65,
+        "z": -6.45
       },
       "rotacaoY": 0,
       "corredor": "03",
-      "modulos": 1,
-      "larguraModulo": 2.7,
-      "profundidade": 0.9,
-      "niveis": [
-        0,
-        0.9,
-        1.8
-      ],
-      "altura": 2.6,
-      "nomesNiveis": [
-        "Chão",
-        "Nível 1",
-        "Nível 2 (topo)"
-      ],
-      "cores": {
-        "montantes": "#2a4fa8",
-        "vigas": "#e8622c"
-      },
+      "conteudo": "rolos",
+      "largura": 2.5,
+      "profundidade": 1,
       "fotografias": [
         {
           "src": "/assets/localizacoes/video-corredor-03.jpg",
           "thumb": "/assets/localizacoes/video-corredor-03-thumb.jpg",
-          "legenda": "Estante do corredor 03 (vídeo 1)",
+          "legenda": "Etiqueta 03 no montante, com os rolos brancos ao lado (vídeo 1)",
           "tipo": "localizacao"
         }
       ],
       "estadoGeometria": "estimado",
-      "notas": "Caixas brancas no topo; rolos brancos encostados ao lado. Dimensões e número de módulos estimados."
+      "notas": "Rolos de matéria filtrante (posição 1B03A no Excel). Etiqueta 03 no montante da estante 02, junto aos rolos."
     },
     {
-      "id": "ZR",
-      "nome": "Rolos/volumes brancos junto ao corredor 03",
-      "rotulo": "Rolos brancos",
-      "tipo": "zona-chao",
-      "zona": "Corredores 01–03 (junto à porta)",
+      "id": "PP17",
+      "nome": "Porta-paletes — corredor 17",
+      "rotulo": "Corredor 17",
+      "tipo": "porta-paletes",
+      "zona": "Corredores 15–17",
       "posicao": {
-        "x": 23.7,
-        "z": -9.2
+        "x": -9.45,
+        "z": 2.75
       },
-      "rotacaoY": 0,
-      "largura": 2.4,
-      "profundidade": 1.4,
-      "estadoGeometria": "estimado"
+      "rotacaoY": 90,
+      "corredor": "17",
+      "colunasInvertidas": true,
+      "modulos": 4,
+      "larguraModulo": 2.6,
+      "profundidade": 1.1,
+      "niveis": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "altura": 3.8,
+      "nomesNiveis": [
+        "Prateleira A (chão)",
+        "Prateleira B",
+        "Prateleira C",
+        "Prateleira D (topo)"
+      ],
+      "cores": {
+        "montantes": "#b9c2cc",
+        "vigas": "#e2b318"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "Estrutura comprida no esquema (continua para lá do limite do desenho). 4 colunas e 4 prateleiras (A–D) segundo o Excel. O tipo de estante (porta-paletes) e o comprimento são estimados."
     },
     {
-      "id": "EL01",
-      "nome": "Estante ligeira — corredor 11 (cilindros e motores)",
-      "rotulo": "Corredor 11",
-      "tipo": "estante-ligeira",
-      "zona": "Estantes ligeiras (corredores 04–11)",
+      "id": "PP16",
+      "nome": "Porta-paletes — corredor 16",
+      "rotulo": "Corredor 16",
+      "tipo": "porta-paletes",
+      "zona": "Corredores 15–17",
       "posicao": {
-        "x": 14.0,
-        "z": -4.4
+        "x": -4.75,
+        "z": 2.75
       },
       "rotacaoY": -90,
-      "corredor": "11",
+      "corredor": "16",
       "modulos": 4,
-      "larguraModulo": 1.2,
-      "profundidade": 0.8,
+      "larguraModulo": 2.6,
+      "profundidade": 1.1,
+      "niveis": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "altura": 3.8,
+      "nomesNiveis": [
+        "Prateleira A (chão)",
+        "Prateleira B",
+        "Prateleira C",
+        "Prateleira D (topo)"
+      ],
+      "cores": {
+        "montantes": "#b9c2cc",
+        "vigas": "#e2b318"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "Estrutura comprida no esquema (continua para lá do limite do desenho). 4 colunas e 4 prateleiras (A–D) segundo o Excel. O tipo de estante (porta-paletes) e o comprimento são estimados."
+    },
+    {
+      "id": "PP15",
+      "nome": "Porta-paletes — corredor 15",
+      "rotulo": "Corredor 15",
+      "tipo": "porta-paletes",
+      "zona": "Corredores 15–17",
+      "posicao": {
+        "x": -3.6,
+        "z": 2.75
+      },
+      "rotacaoY": 90,
+      "corredor": "15",
+      "colunasInvertidas": true,
+      "modulos": 4,
+      "larguraModulo": 2.6,
+      "profundidade": 1.1,
+      "niveis": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "altura": 3.8,
+      "nomesNiveis": [
+        "Prateleira A (chão)",
+        "Prateleira B",
+        "Prateleira C",
+        "Prateleira D (topo)"
+      ],
+      "cores": {
+        "montantes": "#b9c2cc",
+        "vigas": "#e2b318"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "Estrutura comprida no esquema (continua para lá do limite do desenho). 4 colunas e 4 prateleiras (A–D) segundo o Excel. O tipo de estante (porta-paletes) e o comprimento são estimados."
+    },
+    {
+      "id": "CG14",
+      "nome": "Contentores de ferro — corredor 14",
+      "rotulo": "Contentores 14",
+      "tipo": "contentores",
+      "zona": "Contentores de ferro",
+      "posicao": {
+        "x": -0.9,
+        "z": -0.45
+      },
+      "rotacaoY": 0,
+      "corredor": "14",
+      "colunas": 4,
+      "filas": 1,
+      "larguraContentor": 1.24,
+      "profundidadeContentor": 0.84,
+      "alturaContentor": 0.97,
+      "empilhamento": 2,
+      "disposicao": [
+        {
+          "x": -0.67,
+          "z": -1.735
+        },
+        {
+          "x": -0.87,
+          "z": -0.645,
+          "rodado": true
+        },
+        {
+          "x": -0.87,
+          "z": 0.645,
+          "rodado": true
+        },
+        {
+          "x": -0.67,
+          "z": 1.735
+        }
+      ],
+      "fotografias": [
+        {
+          "src": "/assets/localizacoes/contentores-gradeados.jpg",
+          "thumb": "/assets/localizacoes/contentores-gradeados-thumb.jpg",
+          "legenda": "Contentores com etiquetas 42173490, 42173428 e 42173653 (recorte da foto 2)",
+          "tipo": "localizacao"
+        },
+        {
+          "src": "/assets/localizacoes/video-contentores.jpg",
+          "thumb": "/assets/localizacoes/video-contentores-thumb.jpg",
+          "legenda": "Contentores gradeados (vídeo 2)",
+          "tipo": "localizacao"
+        }
+      ],
+      "estadoGeometria": "estimado",
+      "notas": "Cada contentor é uma caixa da posição 1B14A01. A, B e C seguem o esquema do armazém (A em cima, B e C do lado esquerdo); o D, na fila de baixo, foi deduzido pela sequência."
+    },
+    {
+      "id": "CG13",
+      "nome": "Contentores de ferro — corredor 13",
+      "rotulo": "Contentores 13",
+      "tipo": "contentores",
+      "zona": "Contentores de ferro",
+      "posicao": {
+        "x": -0.9,
+        "z": -0.45
+      },
+      "rotacaoY": 0,
+      "corredor": "13",
+      "colunas": 4,
+      "filas": 1,
+      "larguraContentor": 1.24,
+      "profundidadeContentor": 0.84,
+      "alturaContentor": 0.97,
+      "empilhamento": 2,
+      "disposicao": [
+        {
+          "x": 0.67,
+          "z": -1.735
+        },
+        {
+          "x": 0.87,
+          "z": -0.645,
+          "rodado": true
+        },
+        {
+          "x": 0.87,
+          "z": 0.645,
+          "rodado": true
+        },
+        {
+          "x": 0.67,
+          "z": 1.735
+        }
+      ],
+      "fotografias": [
+        {
+          "src": "/assets/localizacoes/contentores-gradeados.jpg",
+          "thumb": "/assets/localizacoes/contentores-gradeados-thumb.jpg",
+          "legenda": "Contentores com etiquetas 42173490, 42173428 e 42173653 (recorte da foto 2)",
+          "tipo": "localizacao"
+        },
+        {
+          "src": "/assets/localizacoes/video-contentores.jpg",
+          "thumb": "/assets/localizacoes/video-contentores-thumb.jpg",
+          "legenda": "Contentores gradeados (vídeo 2)",
+          "tipo": "localizacao"
+        }
+      ],
+      "estadoGeometria": "estimado",
+      "notas": "Cada contentor é uma caixa da posição 1B13A01. A, B e C seguem o esquema do armazém (A em cima, B e C do lado direito); o D, na fila de baixo, foi deduzido pela sequência."
+    },
+    {
+      "id": "EL12",
+      "nome": "Estante ligeira — corredor 12",
+      "rotulo": "Corredor 12",
+      "tipo": "estante-ligeira",
+      "zona": "Estantes ligeiras (corredores 04–12)",
+      "posicao": {
+        "x": 1.55,
+        "z": -0.15
+      },
+      "rotacaoY": -90,
+      "corredor": "12",
+      "modulos": 4,
+      "larguraModulo": 1.6,
+      "profundidade": 0.5,
+      "niveis": [
+        0.1,
+        0.83,
+        1.57,
+        2.3
+      ],
+      "altura": 2.5,
+      "cores": {
+        "montantes": "#c3cad2",
+        "vigas": "#c3cad2",
+        "prateleiras": "#b48a5a"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "Fila dupla 12|11 (costas com costas). 4 colunas e 4 prateleiras (A–D), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
+    },
+    {
+      "id": "EL11",
+      "nome": "Estante ligeira — corredor 11",
+      "rotulo": "Corredor 11",
+      "tipo": "estante-ligeira",
+      "zona": "Estantes ligeiras (corredores 04–12)",
+      "posicao": {
+        "x": 2.1,
+        "z": -0.15
+      },
+      "rotacaoY": 90,
+      "corredor": "11",
+      "colunasInvertidas": true,
+      "modulos": 4,
+      "larguraModulo": 1.6,
+      "profundidade": 0.5,
       "niveis": [
         0.1,
         0.54,
@@ -535,23 +577,23 @@
         }
       ],
       "estadoGeometria": "estimado",
-      "notas": "Corredor 11: 4 colunas e 6 prateleiras (A–F), segundo as posições do Excel."
+      "notas": "Fila dupla 12|11 (costas com costas). 4 colunas e 6 prateleiras (A–F), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
     },
     {
-      "id": "EL02",
+      "id": "EL10",
       "nome": "Estante ligeira — corredor 10",
       "rotulo": "Corredor 10",
       "tipo": "estante-ligeira",
-      "zona": "Estantes ligeiras (corredores 04–11)",
+      "zona": "Estantes ligeiras (corredores 04–12)",
       "posicao": {
-        "x": 15.7,
-        "z": -3.8
+        "x": 3.8,
+        "z": -0.25
       },
       "rotacaoY": -90,
       "corredor": "10",
       "modulos": 5,
-      "larguraModulo": 1.2,
-      "profundidade": 0.6,
+      "larguraModulo": 1.3,
+      "profundidade": 0.5,
       "niveis": [
         0.1,
         0.47,
@@ -576,23 +618,24 @@
         }
       ],
       "estadoGeometria": "estimado",
-      "notas": "Corredor 10: 5 colunas e 7 prateleiras (A–G), segundo as posições do Excel."
+      "notas": "Fila dupla 10|9. 5 colunas e 7 prateleiras (A–G), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
     },
     {
-      "id": "EL03",
+      "id": "EL09",
       "nome": "Estante ligeira — corredor 09",
       "rotulo": "Corredor 09",
       "tipo": "estante-ligeira",
-      "zona": "Estantes ligeiras (corredores 04–11)",
+      "zona": "Estantes ligeiras (corredores 04–12)",
       "posicao": {
-        "x": 17.4,
-        "z": -3.8
+        "x": 4.35,
+        "z": -0.25
       },
-      "rotacaoY": -90,
+      "rotacaoY": 90,
       "corredor": "09",
+      "colunasInvertidas": true,
       "modulos": 5,
-      "larguraModulo": 1.2,
-      "profundidade": 0.6,
+      "larguraModulo": 1.3,
+      "profundidade": 0.5,
       "niveis": [
         0.1,
         0.47,
@@ -610,24 +653,23 @@
       },
       "fotografias": [],
       "estadoGeometria": "estimado",
-      "notas": "Número 09 deduzido pela sequência (a etiqueta não aparece no vídeo); o Excel tem posições 1B09…, o que é coerente. 5 colunas e 7 prateleiras segundo o Excel.",
-      "corredorInferido": true
+      "notas": "Fila dupla 10|9. 5 colunas e 7 prateleiras (A–G), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
     },
     {
-      "id": "EL04",
+      "id": "EL08",
       "nome": "Estante ligeira — corredor 08",
       "rotulo": "Corredor 08",
       "tipo": "estante-ligeira",
-      "zona": "Estantes ligeiras (corredores 04–11)",
+      "zona": "Estantes ligeiras (corredores 04–12)",
       "posicao": {
-        "x": 19.1,
-        "z": -3.8
+        "x": 5.75,
+        "z": -0.25
       },
       "rotacaoY": -90,
       "corredor": "08",
       "modulos": 5,
-      "larguraModulo": 1.2,
-      "profundidade": 0.6,
+      "larguraModulo": 1.3,
+      "profundidade": 0.5,
       "niveis": [
         0.1,
         0.54,
@@ -644,23 +686,24 @@
       },
       "fotografias": [],
       "estadoGeometria": "estimado",
-      "notas": "Corredor 08: 5 colunas e 6 prateleiras (A–F), segundo as posições do Excel."
+      "notas": "Fila dupla 8|7. 5 colunas e 6 prateleiras (A–F), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
     },
     {
-      "id": "EL05",
+      "id": "EL07",
       "nome": "Estante ligeira — corredor 07",
       "rotulo": "Corredor 07",
       "tipo": "estante-ligeira",
-      "zona": "Estantes ligeiras (corredores 04–11)",
+      "zona": "Estantes ligeiras (corredores 04–12)",
       "posicao": {
-        "x": 20.8,
-        "z": -3.2
+        "x": 6.3,
+        "z": -0.25
       },
-      "rotacaoY": -90,
+      "rotacaoY": 90,
       "corredor": "07",
+      "colunasInvertidas": true,
       "modulos": 6,
-      "larguraModulo": 1.2,
-      "profundidade": 0.6,
+      "larguraModulo": 1.08,
+      "profundidade": 0.5,
       "niveis": [
         0.1,
         0.38,
@@ -687,23 +730,23 @@
         }
       ],
       "estadoGeometria": "estimado",
-      "notas": "Corredor 07: 6 colunas e 9 prateleiras (A–I), segundo as posições do Excel."
+      "notas": "Fila dupla 8|7. 6 colunas e 9 prateleiras (A–I), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
     },
     {
       "id": "EL06",
       "nome": "Estante ligeira — corredor 06",
       "rotulo": "Corredor 06",
       "tipo": "estante-ligeira",
-      "zona": "Estantes ligeiras (corredores 04–11)",
+      "zona": "Estantes ligeiras (corredores 04–12)",
       "posicao": {
-        "x": 22.5,
-        "z": -3.8
+        "x": 7.7,
+        "z": -0.25
       },
       "rotacaoY": -90,
       "corredor": "06",
       "modulos": 5,
-      "larguraModulo": 1.2,
-      "profundidade": 0.6,
+      "larguraModulo": 1.3,
+      "profundidade": 0.5,
       "niveis": [
         0.1,
         0.38,
@@ -723,112 +766,114 @@
       },
       "fotografias": [],
       "estadoGeometria": "estimado",
-      "notas": "Corredor 06: 5 colunas e 9 prateleiras (A–I), segundo as posições do Excel."
+      "notas": "Fila dupla 6|5. 5 colunas e 9 prateleiras (A–I), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
     },
     {
-      "id": "EL07",
+      "id": "EL05",
       "nome": "Estante ligeira — corredor 05",
       "rotulo": "Corredor 05",
       "tipo": "estante-ligeira",
-      "zona": "Estantes ligeiras (corredores 04–11)",
+      "zona": "Estantes ligeiras (corredores 04–12)",
       "posicao": {
-        "x": 24.2,
-        "z": -3.8
+        "x": 8.25,
+        "z": -0.25
       },
-      "rotacaoY": -90,
+      "rotacaoY": 90,
       "corredor": "05",
+      "colunasInvertidas": true,
       "modulos": 5,
-      "larguraModulo": 1.2,
-      "profundidade": 0.6,
-      "niveis": [
-        0.1,
-        0.47,
-        0.83,
-        1.2,
-        1.57,
-        1.93,
-        2.3
-      ],
-      "altura": 2.5,
-      "cores": {
-        "montantes": "#c3cad2",
-        "vigas": "#c3cad2",
-        "prateleiras": "#b48a5a"
-      },
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/video-corredores-04-05.jpg",
-          "thumb": "/assets/localizacoes/video-corredores-04-05-thumb.jpg",
-          "legenda": "Corredor entre as filas 04 e 05 (vídeo 1)",
-          "tipo": "localizacao"
-        }
-      ],
-      "estadoGeometria": "estimado",
-      "notas": "Corredor 05: 5 colunas e 7 prateleiras (A–G), segundo as posições do Excel."
-    },
-    {
-      "id": "EL08",
-      "nome": "Estante ligeira — corredor 04",
-      "rotulo": "Corredor 04",
-      "tipo": "estante-ligeira",
-      "zona": "Estantes ligeiras (corredores 04–11)",
-      "posicao": {
-        "x": 25.9,
-        "z": -3.8
-      },
-      "rotacaoY": -90,
-      "corredor": "04",
-      "modulos": 5,
-      "larguraModulo": 1.2,
-      "profundidade": 0.6,
-      "niveis": [
-        0.1,
-        0.47,
-        0.83,
-        1.2,
-        1.57,
-        1.93,
-        2.3
-      ],
-      "altura": 2.5,
-      "cores": {
-        "montantes": "#c3cad2",
-        "vigas": "#c3cad2",
-        "prateleiras": "#b48a5a"
-      },
-      "fotografias": [
-        {
-          "src": "/assets/localizacoes/video-corredores-04-05.jpg",
-          "thumb": "/assets/localizacoes/video-corredores-04-05-thumb.jpg",
-          "legenda": "Corredor entre as filas 04 e 05 (vídeo 1)",
-          "tipo": "localizacao"
-        }
-      ],
-      "estadoGeometria": "estimado",
-      "notas": "Corredor 04: 5 colunas e 7 prateleiras (A–G), segundo as posições do Excel."
-    },
-    {
-      "id": "AR01",
-      "nome": "Armário cinzento — fundo do corredor 04/05",
-      "rotulo": "Armário",
-      "tipo": "armario",
-      "zona": "Estantes ligeiras (corredores 04–11)",
-      "posicao": {
-        "x": 25.05,
-        "z": 1.15
-      },
-      "rotacaoY": 180,
-      "corredor": null,
-      "modulos": 1,
-      "larguraModulo": 1.0,
+      "larguraModulo": 1.3,
       "profundidade": 0.5,
       "niveis": [
         0.1,
-        0.55,
-        1.0,
-        1.45
+        0.47,
+        0.83,
+        1.2,
+        1.57,
+        1.93,
+        2.3
       ],
-      "altura": 1.95,
+      "altura": 2.5,
+      "cores": {
+        "montantes": "#c3cad2",
+        "vigas": "#c3cad2",
+        "prateleiras": "#b48a5a"
+      },
+      "fotografias": [
+        {
+          "src": "/assets/localizacoes/video-corredores-04-05.jpg",
+          "thumb": "/assets/localizacoes/video-corredores-04-05-thumb.jpg",
+          "legenda": "Corredor entre as filas 04 e 05 (vídeo 1)",
+          "tipo": "localizacao"
+        }
+      ],
+      "estadoGeometria": "estimado",
+      "notas": "Fila dupla 6|5. 5 colunas e 7 prateleiras (A–G), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
+    },
+    {
+      "id": "EL04",
+      "nome": "Estante ligeira — corredor 04",
+      "rotulo": "Corredor 04",
+      "tipo": "estante-ligeira",
+      "zona": "Estantes ligeiras (corredores 04–12)",
+      "posicao": {
+        "x": 9.7,
+        "z": -1.12
+      },
+      "rotacaoY": -90,
+      "corredor": "04",
+      "modulos": 3,
+      "larguraModulo": 1.58,
+      "profundidade": 0.5,
+      "niveis": [
+        0.1,
+        0.83,
+        1.57,
+        2.3
+      ],
+      "altura": 2.5,
+      "cores": {
+        "montantes": "#c3cad2",
+        "vigas": "#c3cad2",
+        "prateleiras": "#b48a5a"
+      },
+      "fotografias": [
+        {
+          "src": "/assets/localizacoes/video-corredores-04-05.jpg",
+          "thumb": "/assets/localizacoes/video-corredores-04-05-thumb.jpg",
+          "legenda": "Corredor entre as filas 04 e 05 (vídeo 1)",
+          "tipo": "localizacao"
+        }
+      ],
+      "estadoGeometria": "estimado",
+      "notas": "Fila simples junto à parede; as duas últimas colunas (04 e 05) são armários (estrutura AR04). 3 colunas e 4 prateleiras (A–D), segundo as posições do Excel. Coluna 01 assumida no topo do esquema, do lado da etiqueta."
+    },
+    {
+      "id": "AR04",
+      "nome": "Armários — corredor 04 (colunas 04 e 05)",
+      "rotulo": "Armários 04",
+      "tipo": "armario",
+      "zona": "Estantes ligeiras (corredores 04–12)",
+      "posicao": {
+        "x": 9.7,
+        "z": 2.2
+      },
+      "rotacaoY": -90,
+      "corredor": "04",
+      "colunaInicial": 4,
+      "modulos": 2,
+      "larguraModulo": 0.9,
+      "profundidade": 0.5,
+      "niveis": [
+        0.1,
+        0.38,
+        0.65,
+        0.92,
+        1.2,
+        1.48,
+        1.75
+      ],
+      "altura": 2,
       "cores": {
         "montantes": "#9aa3ac",
         "vigas": "#b3bbc3",
@@ -838,200 +883,63 @@
         {
           "src": "/assets/localizacoes/video-armario.jpg",
           "thumb": "/assets/localizacoes/video-armario-thumb.jpg",
-          "legenda": "Armário cinzento no fundo do corredor entre as filas 04 e 05 (vídeo 1)",
+          "legenda": "Armário cinzento no fim do corredor 04 (vídeo 1)",
           "tipo": "localizacao"
         }
       ],
       "estadoGeometria": "estimado",
-      "notas": "Armário metálico fechado de duas portas; o interior não é visível. Prateleiras estimadas."
-    },
-    {
-      "id": "ZP",
-      "nome": "Paletes junto à parede do fundo",
-      "rotulo": "Paletes",
-      "tipo": "zona-chao",
-      "zona": "Corredor principal",
-      "posicao": {
-        "x": -15.0,
-        "z": -5.6
-      },
-      "rotacaoY": 90,
-      "largura": 2.4,
-      "profundidade": 1.4,
-      "estadoGeometria": "estimado",
-      "notas": "Paletes de madeira e volumes brancos ao fundo do corredor principal, ao lado dos empilhadores."
+      "notas": "As duas últimas \"estantes\" do corredor 04 são armários (esquema do armazém). Assumidas como colunas 04 e 05: no Excel são as únicas colunas do corredor 04 com prateleiras E–G (as colunas 01–03 só vão até à D)."
     }
   ],
   "zonas": [
     {
-      "id": "z-pp",
-      "nome": "Corredor principal",
-      "x": -6.0,
-      "z": -6.9,
-      "largura": 13,
-      "profundidade": 3
-    },
-    {
       "id": "z-cg",
-      "nome": "Contentores",
-      "x": 11.3,
-      "z": -4.0,
-      "largura": 4,
+      "nome": "Contentores de ferro",
+      "x": -0.9,
+      "z": -0.45,
+      "largura": 1,
       "profundidade": 1
     },
     {
-      "id": "z-porta",
-      "nome": "Corredores 01–03",
-      "x": 13.5,
-      "z": -7.6,
-      "largura": 6,
-      "profundidade": 1
-    },
-    {
-      "id": "z-el",
-      "nome": "Estantes ligeiras 04–11",
-      "x": 20.0,
-      "z": 2.0,
-      "largura": 10,
+      "id": "z-fora",
+      "nome": "Outra área (atrás da parede)",
+      "x": 4.25,
+      "z": 6.4,
+      "largura": 1,
       "profundidade": 1
     }
   ],
   "elementos": [
     {
-      "id": "e-empilhador",
-      "tipo": "empilhador",
-      "posicao": {
-        "x": -13.4,
-        "z": -7.2
-      },
-      "rotacaoY": 90,
-      "rotulo": "Empilhador"
-    },
-    {
-      "id": "e-empilhador-2",
-      "tipo": "empilhador",
-      "posicao": {
-        "x": -14.6,
-        "z": -8.2
-      },
-      "rotacaoY": 90
-    },
-    {
-      "id": "e-porta-paletes",
-      "tipo": "porta-paletes-manual",
-      "posicao": {
-        "x": -3.0,
-        "z": -7.6
-      },
-      "rotacaoY": 20
-    },
-    {
-      "id": "e-extintor-ev",
-      "tipo": "extintor",
-      "posicao": {
-        "x": 2.45,
-        "z": -5.35
-      },
-      "rotulo": "Extintor"
-    },
-    {
-      "id": "e-extintor-el",
-      "tipo": "extintor",
-      "posicao": {
-        "x": 16.55,
-        "z": -7.3
-      }
-    },
-    {
-      "id": "e-portao",
+      "id": "e-portao-1",
       "tipo": "portao",
       "posicao": {
-        "x": 15.0,
-        "z": -10
+        "x": -5.35,
+        "z": -7
       },
-      "largura": 2.6,
+      "largura": 2,
+      "rotulo": "Portão 1"
+    },
+    {
+      "id": "e-portao-2",
+      "tipo": "portao",
+      "posicao": {
+        "x": 2.9,
+        "z": -7
+      },
+      "largura": 2,
+      "rotulo": "Portão 2"
+    },
+    {
+      "id": "e-porta",
+      "tipo": "portao",
+      "posicao": {
+        "x": 2.9,
+        "z": 3.9
+      },
+      "largura": 1,
+      "altura": 2.1,
       "rotulo": "Porta"
-    },
-    {
-      "id": "e-compartimento",
-      "tipo": "compartimento",
-      "posicao": {
-        "x": 10.6,
-        "z": 1.0
-      },
-      "largura": 5.2,
-      "profundidade": 4.0,
-      "rotulo": "Compartimento fechado"
-    },
-    {
-      "id": "e-quadro",
-      "tipo": "quadro-eletrico",
-      "posicao": {
-        "x": 9.0,
-        "z": -1.0
-      }
-    },
-    {
-      "id": "e-postigo",
-      "tipo": "postigo",
-      "posicao": {
-        "x": 11.6,
-        "z": -1.0
-      }
-    },
-    {
-      "id": "e-bobina",
-      "tipo": "bobina",
-      "posicao": {
-        "x": 9.0,
-        "z": -4.4
-      }
-    },
-    {
-      "id": "e-paletes-zp",
-      "tipo": "paletes",
-      "posicao": {
-        "x": -15.0,
-        "z": -6.2
-      },
-      "quantidade": 6
-    },
-    {
-      "id": "e-sacos-zp",
-      "tipo": "sacos",
-      "posicao": {
-        "x": -15.0,
-        "z": -4.6
-      },
-      "quantidade": 2
-    },
-    {
-      "id": "e-caixotes-zc",
-      "tipo": "caixotes",
-      "posicao": {
-        "x": -0.6,
-        "z": -6.3
-      },
-      "quantidade": 2
-    },
-    {
-      "id": "e-caixas-rcx",
-      "tipo": "caixas",
-      "posicao": {
-        "x": 5.2,
-        "z": -3.6
-      },
-      "quantidade": 3
-    },
-    {
-      "id": "e-rolos",
-      "tipo": "sacos",
-      "posicao": {
-        "x": 23.7,
-        "z": -9.2
-      },
-      "rotacaoY": 90,
-      "quantidade": 2
     }
   ]
 }

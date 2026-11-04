@@ -2,7 +2,7 @@
 
 Aplicação web para consultar visualmente o armazém de peças: modelo 3D navegável, pesquisa em tempo real, listagem e ficha de cada peça, com ligação direta entre a peça e a sua localização no 3D.
 
-> **Dados:** os materiais, as posições, as quantidades e os valores vêm da lista de materiais (Excel). A planta 3D foi interpretada a partir de 4 fotografias e 2 vídeos, por isso é aproximada e não está à escala. Ver [`docs/ANALISE.md`](docs/ANALISE.md).
+> **Dados:** os materiais, as posições, as quantidades e os valores vêm da lista de materiais (Excel). A planta 3D segue o esquema desenhado pelo armazém (disposição e números dos corredores); as dimensões são estimadas, por isso não está à escala. Ver [`docs/ANALISE.md`](docs/ANALISE.md).
 
 ## Instalar e executar
 
@@ -49,7 +49,8 @@ Formato oficial do armazém (indicado pelo responsável):
 
 - A zona está em `layout.json → codigoZona`; o corredor de cada estrutura em `estruturas[].corredor`.
 - O código sem caixa (`1B10A02`) é gerado na localização (`locations.json → codigo`); a caixa é guardada na peça (`parts.json → caixa`).
-- Corredores com número: 01–11, 20 e 21 (vistos nos vídeos; o 09 foi deduzido e aparece com "?"). O porta-paletes A, a Receção e Expedição, os contentores e os armários mostram o id provisório até terem número.
+- Corredores no modelo (esquema do armazém): 01–17, 20 e 21. O 03 é a zona dos rolos brancos (`1B03`), o 13 e o 14 são os contentores de ferro, e as colunas 04 e 05 do corredor 04 são armários. O armário "ARM" junto ao corredor 01 não tem número.
+- Em todas as filas, a coluna 01 está no extremo de cima do esquema (lado das etiquetas). Nas estruturas viradas para a direita isto é indicado com `colunasInvertidas: true`.
 - Colunas com prateleira por confirmar mostram o código parcial com "?" no lugar da letra, ex.: `1B11?01`.
 - Peças cuja prateleira ainda não se sabe ficam na **coluna** (ex.: `EL-01-M1`), mostrada no 3D como um contorno da coluna inteira.
 - A pesquisa aceita o código completo ou parcial (`1B10`, `1b10a02c`).
@@ -64,7 +65,7 @@ node scripts/importar-excel.mjs "materiais armazem.xlsx"
 - Lê as colunas **Material**, **Texto breve de material**, **Posição no depósito**, **Estoque total** e **Valor de Stock** (reconhecidas pelo cabeçalho).
 - Linhas repetidas com o mesmo material e a mesma posição são somadas.
 - Liga cada posição a uma célula do 3D (`1B08F02E` → corredor 08, prateleira F, coluna 02, caixa E). Nos contentores (corredores 13 e 14), a letra final identifica o contentor.
-- As posições que o modelo ainda não tem (outras zonas, `ND`, `M100`, `ESCRITORIO`, armários `ARM…`, corredores 12 e 15–19) continuam na listagem e na pesquisa, com a marca **sem 3D**.
+- As posições que o modelo ainda não tem (outras zonas, `ND`, `M100`, `ESCRITORIO`, armários `ARM…`, corredores 18 e 19) continuam na listagem e na pesquisa, com a marca **sem 3D**.
 - Mantém o que foi acrescentado à mão nos registos (fotografias, notas, categoria, fabricante, stock mínimo, modelo 3D).
 - Escreve [`docs/relatorio-importacao.md`](docs/relatorio-importacao.md) com os totais, as posições por ligar e as possíveis gralhas no Excel.
 
@@ -85,7 +86,7 @@ Os dados estão separados da interface em `src/data/`. `src/data/fonte.ts` é o 
   "categoria": "Freio",
   "quantidade": null,
   "stockMinimo": null,
-  "localizacaoId": "CG-01",
+  "localizacaoId": "CG14-01",
   "fotografias": [{ "src": "/assets/pecas/x.jpg", "thumb": "/assets/pecas/x-thumb.jpg", "legenda": "…", "tipo": "peca" }],
   "modelo3D": null,
   "fabricante": null,
@@ -118,13 +119,16 @@ node scripts/gerar-localizacoes.mjs
 
 ### Planta 3D — `src/data/layout.json`
 
-- `edificio`: limites do pavilhão (metros estimados).
-- `estruturas`: `porta-paletes`, `estante-vidros`, `estante-ligeira`, `armario`, `contentores` ou `zona-chao`, com `posicao` (centro), `rotacaoY` (graus; a frente fica virada para +z local), número de módulos, larguras, profundidade, alturas dos níveis, cores e fotografias de referência.
-- `zonas`: rótulos no chão. `elementos`: contexto (empilhador, extintores, portão…), não são localizações.
+- `edificio`: limites do pavilhão (metros estimados) e `contorno`, o polígono das paredes (a planta é em L: a parede com a porta corta o canto de baixo à direita).
+- `estruturas`: `porta-paletes`, `estante-vidros`, `estante-ligeira`, `armario`, `contentores` ou `zona-chao`, com `posicao` (centro), `rotacaoY` (graus; a frente fica virada para +z local: 0 = para baixo no esquema, 90 = para a direita, −90 = para a esquerda), número de módulos, larguras, profundidade, alturas dos níveis, cores e fotografias de referência.
+  - `colunasInvertidas`: a coluna 01 fica no outro extremo; `colunaInicial`: número da primeira coluna (os armários do corredor 04 começam na 04).
+  - Contentores: `disposicao` dá a posição de cada contentor (A, B, C…) e se está rodado; sem ela ficam em grelha.
+  - Zona de chão: `conteudo: "rolos"` desenha os rolos brancos.
+- `zonas`: rótulos no chão. `elementos`: contexto (portões, porta…), não são localizações. Os empilhadores, extintores e restantes elementos da planta antiga foram retirados, porque o esquema não indica onde estão.
 
 Quando houver medidas reais, basta corrigir estes valores; não é preciso mexer no código.
 
-**Adicionar uma estante ou um armário:** acrescente um objeto a `estruturas` (copie o de `EL02` e mude `id`, `nome`, `rotulo`, `posicao`, `rotacaoY`, `corredor`, `modulos` = n.º de colunas e `niveis` = altura de cada prateleira, de baixo para cima). Para um armário use `"tipo": "armario"` (ids `AR01`, `AR02`…). Depois corra `node scripts/gerar-localizacoes.mjs`: as células e os códigos `1B…` são criados automaticamente.
+**Adicionar uma estante ou um armário:** acrescente um objeto a `estruturas` (copie o de `EL10` e mude `id`, `nome`, `rotulo`, `posicao`, `rotacaoY`, `corredor`, `modulos` = n.º de colunas e `niveis` = altura de cada prateleira, de baixo para cima). Para um armário use `"tipo": "armario"` (ids `AR01`, `AR02`…). Depois corra `node scripts/gerar-localizacoes.mjs`: as células e os códigos `1B…` são criados automaticamente.
 
 ### Fotografias e modelos 3D
 
@@ -142,7 +146,7 @@ Não existe servidor. As alterações feitas na interface ficam **apenas no `loc
 
 ## Dados que ainda precisam de validação
 
-Ver a lista completa em [`docs/ANALISE.md`](docs/ANALISE.md#4-dúvidas-para-confirmação-humana). Em resumo: onde ficam os corredores 1B12 e 1B15–1B19, os armários ARM01–ARM06, M100 e o escritório; se as zonas 1A, 1C, 1D e 1E devem ser desenhadas; sentido de numeração das colunas; dimensões reais (incluindo confirmar "494 UN"); designação de R76467100; referências dos artigos observados sem código; conteúdo das estantes ligeiras e da fila de trás dos contentores.
+Ver a lista completa em [`docs/ANALISE.md`](docs/ANALISE.md#4-dúvidas-para-confirmação-humana). Em resumo: onde ficam os corredores 1B18 e 1B19, os armários ARM01–ARM06, M100 e o escritório; se as zonas 1A, 1C, 1D e 1E devem ser desenhadas; em que extremo começa a coluna 01; tipo e comprimento das estantes 15–17; letra dos contentores da fila de baixo; dimensões reais; onde ficam agora os 6 artigos observados nas fotografias.
 
 ## Estrutura do projeto
 

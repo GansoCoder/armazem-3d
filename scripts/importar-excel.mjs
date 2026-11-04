@@ -90,6 +90,11 @@ function ligar(pos) {
     if (z !== zona) return { motivo: `Zona ${z} (não representada no 3D)` }
     const e = estruturaPorCorredor.get(corr)
     if (!e) return { motivo: `Corredor ${z}${corr} (ainda não colocado no modelo 3D)` }
+    // zona de chão com número de corredor (ex.: rolos brancos, 1B03A): uma só localização
+    if (e.tipo === 'zona-chao') {
+      const loc = localizacoes.find((l) => l.estrutura === e.id)
+      if (loc) return { loc, caixa: null }
+    }
     // estrutura com uma só coluna: a coluna 01 está implícita
     if (prat && e.modulos === 1) {
       const loc = porCodigo.get(`${z}${corr}${prat}01`)

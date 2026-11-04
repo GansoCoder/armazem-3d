@@ -47,6 +47,22 @@ Os dois vídeos começam no mesmo ponto: o corredor entre as filas 11 e 10, vira
 
 Ainda estimado: distâncias, dimensões, número de colunas e prateleiras de cada estante, sentido de numeração das colunas. A cena 3D mostra o aviso "não está à escala".
 
+## 3a. Esquema do armazém (4/11/2026)
+
+O responsável enviou um esquema da planta com o número de cada estante, que substitui a disposição interpretada das fotografias e vídeos:
+
+- **Parede de cima**, com o portão 1 e o portão 2: vidros 21 e 20 (horizontais, à esquerda), porta-paletes 01 com o armário "ARM", porta-paletes 02 e os rolos brancos do corredor 03.
+- **Lado esquerdo:** estante 17 encostada à parede e a fila dupla 16|15, compridas (continuam para lá do desenho).
+- **Contentores de ferro** ao centro: corredor 14 à esquerda e 13 à direita, com A em cima e B e C de lado (exemplos de localização no esquema). O D, na fila de baixo, foi deduzido pela sequência; o Excel só tem 1B14A01D.
+- **Estantes ligeiras costas com costas:** 12|11, 10|9, 8|7, 6|5 e o 04 sozinho, encostado à parede direita. As duas últimas estantes do 04 são armários.
+- **Parede de baixo** com a porta; a parede corta o canto de baixo à direita (outra área).
+
+No modelo:
+- Medidas: 1 px do esquema ≈ 1 cm. Os corredores entre as filas de estantes ligeiras foram alargados para ~0,9 m, porque no esquema são mais estreitos do que as próprias estantes.
+- Coluna 01 de cada fila no extremo de cima, do lado das etiquetas. As duas colunas de armário do corredor 04 foram consideradas a 04 e a 05: no Excel são as únicas colunas do 04 com prateleiras E–G.
+- 15, 16 e 17 desenhados como porta-paletes de 4 colunas × 4 prateleiras (A–D), segundo o Excel; o tipo e o comprimento são estimados.
+- Os seis artigos observados nas fotografias estavam em estruturas que deixaram de existir (porta-paletes A, Receção e Expedição, zonas de chão): ficaram com a localização por confirmar e uma nota.
+
 ## 3b. Lista de materiais (Excel)
 
 O ficheiro `materiais armazem.xlsx` tem 1996 linhas e 1906 materiais distintos (os 87 repetidos estão na mesma posição e foram somados). O relatório da importação está em [`relatorio-importacao.md`](relatorio-importacao.md).
@@ -66,9 +82,10 @@ O que se aprendeu com ele:
 
 **Respondido (3/11/2026):** o código oficial é zona + corredor + prateleira (A = a mais baixa) + coluna + caixa, ex.: `1B09A02C`. A zona fotografada é a **1B**; o corredor **10** é a fila EL-02. Quantidades: ignorar por agora. Faltam estantes e armários no modelo.
 
-1. Que estruturas são os corredores **1B12** (amortecedores, motores), **1B15** (chapas de policarbonato), **1B16** (molas, borracha), **1B17** (juntas, trapos), **1B18** e **1B19** (contraplacado)? Serão o porta-paletes A, o da Receção e Expedição ou outras estantes?
+1. ~~Que estruturas são os corredores 1B12 e 1B15–1B17?~~ Respondido pelo esquema (4/11/2026). Falta: onde ficam **1B18** e **1B19** (contraplacado)? E as estantes 15–17 são porta-paletes? Quantas colunas têm?
+1b. Os contentores da fila de baixo são o **1B14A01D** e o **1B13A01D**?
 2. Onde ficam os armários **ARM01–ARM06**, a posição **M100** e o **ESCRITORIO**? O compartimento fechado com o postigo é o escritório?
-3. Em que extremo de cada corredor começa a coluna 01? E quantas colunas e prateleiras tem cada estante? Os valores atuais são estimados.
+3. Em que extremo de cada corredor começa a coluna 01? O modelo assume o extremo de cima do esquema (lado dos portões). E quantas colunas e prateleiras tem cada estante? Os valores atuais vêm do Excel.
 4. As zonas **1C**, **1A**, **1D** e **1E** devem ser desenhadas? Se sim, é preciso um vídeo ou uma planta de cada uma.
 5. Planta real e dimensões do pavilhão; posição do portão.
 6. Designação de R76467100 e qual o artigo da prateleira a que corresponde.

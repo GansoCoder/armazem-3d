@@ -1,4 +1,4 @@
-import type { Estrutura, EstruturaEstante, Layout, Localizacao } from '../types'
+import type { Estrutura, EstruturaContentores, EstruturaEstante, Layout, Localizacao } from '../types'
 
 export interface Caixa {
   /** Centro em coordenadas locais da estrutura. */
@@ -8,15 +8,43 @@ export interface Caixa {
 
 export const graus = (g: number) => (g * Math.PI) / 180
 
+/** Contentores com a sua posição local e tamanho em planta (largura em x, profundidade em z). */
+export function contentoresLocais(e: EstruturaContentores): { x: number; z: number; w: number; d: number }[] {
+  if (e.disposicao?.length) {
+    return e.disposicao.map((c) => ({
+      x: c.x,
+      z: c.z,
+      w: c.rodado ? e.profundidadeContentor : e.larguraContentor,
+      d: c.rodado ? e.larguraContentor : e.profundidadeContentor,
+    }))
+  }
+  const W = e.colunas * e.larguraContentor
+  const D = e.filas * e.profundidadeContentor
+  return Array.from({ length: e.colunas * e.filas }, (_, i) => ({
+    x: -W / 2 + ((i % e.colunas) + 0.5) * e.larguraContentor,
+    z: D / 2 - (Math.floor(i / e.colunas) + 0.5) * e.profundidadeContentor,
+    w: e.larguraContentor,
+    d: e.profundidadeContentor,
+  }))
+}
+
+/** Retângulo (local) que envolve todos os contentores. */
+function limitesContentores(e: EstruturaContentores) {
+  const cs = contentoresLocais(e)
+  const x0 = Math.min(...cs.map((c) => c.x - c.w / 2))
+  const x1 = Math.max(...cs.map((c) => c.x + c.w / 2))
+  const z0 = Math.min(...cs.map((c) => c.z - c.d / 2))
+  const z1 = Math.max(...cs.map((c) => c.z + c.d / 2))
+  return { x0, x1, z0, z1 }
+}
+
 /** Comprimento × profundidade da planta de uma estrutura (coordenadas locais). */
 export function dimensoes(e: Estrutura): { comprimento: number; profundidade: number; altura: number } {
   switch (e.tipo) {
-    case 'contentores':
-      return {
-        comprimento: e.colunas * e.larguraContentor,
-        profundidade: e.filas * e.profundidadeContentor,
-        altura: e.alturaContentor * e.empilhamento,
-      }
+    case 'contentores': {
+      const { x0, x1, z0, z1 } = limitesContentores(e)
+      return { comprimento: x1 - x0, profundidade: z1 - z0, altura: e.alturaContentor * e.empilhamento }
+    }
     case 'zona-chao':
       return { comprimento: e.largura, profundidade: e.profundidade, altura: 1.2 }
     default:
@@ -26,9 +54,11 @@ export function dimensoes(e: Estrutura): { comprimento: number; profundidade: nu
 
 function caixaEstante(e: EstruturaEstante, modulo: number | null, nivel: number | null): Caixa {
   const L = e.modulos * e.larguraModulo
-  const [x0, x1] = modulo === null
+  // colunasInvertidas: a coluna 01 fica no extremo +x local
+  const m = modulo === null ? null : e.colunasInvertidas ? e.modulos - modulo + 1 : modulo
+  const [x0, x1] = m === null
     ? [-L / 2, L / 2]
-    : [-L / 2 + (modulo - 1) * e.larguraModulo, -L / 2 + modulo * e.larguraModulo]
+    : [-L / 2 + (m - 1) * e.larguraModulo, -L / 2 + m * e.larguraModulo]
   const [y0, y1] = nivel === null
     ? [e.niveis[0], e.altura]
     : [e.niveis[nivel], e.niveis[nivel + 1] ?? e.altura]
@@ -42,17 +72,13 @@ function caixaEstante(e: EstruturaEstante, modulo: number | null, nivel: number 
 /** Volume de uma localização em coordenadas locais da sua estrutura. */
 export function caixaLocal(e: Estrutura, loc: Pick<Localizacao, 'modulo' | 'nivel'>): Caixa {
   if (e.tipo === 'contentores') {
-    const W = e.colunas * e.larguraContentor
-    const D = e.filas * e.profundidadeContentor
     const H = e.alturaContentor * e.empilhamento
-    if (loc.modulo === null) return { centro: [0, H / 2, 0], tamanho: [W, H, D] }
-    const i = loc.modulo - 1
-    const fila = Math.floor(i / e.colunas)
-    const col = i % e.colunas
-    return {
-      centro: [-W / 2 + (col + 0.5) * e.larguraContentor, H / 2, D / 2 - (fila + 0.5) * e.profundidadeContentor],
-      tamanho: [e.larguraContentor - 0.04, H + 0.04, e.profundidadeContentor - 0.04],
+    const c = loc.modulo === null ? undefined : contentoresLocais(e)[loc.modulo - 1]
+    if (!c) {
+      const { x0, x1, z0, z1 } = limitesContentores(e)
+      return { centro: [(x0 + x1) / 2, H / 2, (z0 + z1) / 2], tamanho: [x1 - x0, H, z1 - z0] }
     }
+    return { centro: [c.x, H / 2, c.z], tamanho: [c.w - 0.04, H + 0.04, c.d - 0.04] }
   }
   if (e.tipo === 'zona-chao') {
     return { centro: [0, 0.6, 0], tamanho: [e.largura, 1.2, e.profundidade] }

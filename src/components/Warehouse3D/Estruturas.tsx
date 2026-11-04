@@ -2,7 +2,7 @@ import { Edges, Html } from '@react-three/drei'
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import type { Estrutura, EstruturaContentores, EstruturaEstante, Layout } from '../../types'
-import { dimensoes, graus, paraMundo } from '../../utils/geometria'
+import { contentoresLocais, dimensoes, graus, paraMundo } from '../../utils/geometria'
 
 /**
  * Geometria das estruturas (montantes, vigas, prateleiras), agrupada por cor em InstancedMesh
@@ -169,26 +169,39 @@ export function Estantes({ layout, estruturaFoco }: { layout: Layout; estruturaF
 }
 
 function Contentores({ e }: { e: EstruturaContentores }) {
-  const { comprimento: W, profundidade: D } = dimensoes(e)
-  const caixas: [number, number, number][] = []
-  for (let f = 0; f < e.filas; f++)
-    for (let c = 0; c < e.colunas; c++)
-      for (let k = 0; k < e.empilhamento; k++)
-        caixas.push([
-          -W / 2 + (c + 0.5) * e.larguraContentor,
-          e.alturaContentor * (k + 0.5),
-          D / 2 - (f + 0.5) * e.profundidadeContentor,
-        ])
+  const caixas = contentoresLocais(e).flatMap((c) =>
+    Array.from({ length: e.empilhamento }, (_, k) => ({ p: [c.x, e.alturaContentor * (k + 0.5), c.z] as [number, number, number], w: c.w, d: c.d })),
+  )
   return (
     <group position={[e.posicao.x, 0, e.posicao.z]} rotation-y={graus(e.rotacaoY)}>
-      {caixas.map((p, i) => (
-        <mesh key={i} position={p} raycast={naoClicavel}>
-          <boxGeometry args={[e.larguraContentor - 0.06, e.alturaContentor - 0.04, e.profundidadeContentor - 0.06]} />
+      {caixas.map((c, i) => (
+        <mesh key={i} position={c.p} raycast={naoClicavel}>
+          <boxGeometry args={[c.w - 0.06, e.alturaContentor - 0.04, c.d - 0.06]} />
           <meshStandardMaterial color="#8d98a3" transparent opacity={0.35} roughness={0.8} depthWrite={false} />
           <Edges color="#c6ced6" />
         </mesh>
       ))}
     </group>
+  )
+}
+
+/** Rolos brancos deitados (matéria filtrante), em duas camadas, ao longo do comprimento da zona. */
+function Rolos({ largura, profundidade }: { largura: number; profundidade: number }) {
+  const r = 0.24
+  const comp = Math.min(2, largura - 0.2)
+  const porFila = Math.max(1, Math.floor(profundidade / (2 * r)))
+  const rolos: [number, number, number][] = []
+  for (let i = 0; i < porFila; i++) rolos.push([0, r, -profundidade / 2 + r + i * 2 * r + (profundidade - porFila * 2 * r) / 2])
+  for (let i = 0; i < porFila - 1; i++) rolos.push([0, r * 2.7, (rolos[i][2] + rolos[i + 1][2]) / 2])
+  return (
+    <>
+      {rolos.map((p, i) => (
+        <mesh key={i} position={p} rotation-z={Math.PI / 2} raycast={naoClicavel}>
+          <cylinderGeometry args={[r, r, comp, 20]} />
+          <meshStandardMaterial color="#eef1f4" roughness={0.7} />
+        </mesh>
+      ))}
+    </>
   )
 }
 
@@ -200,6 +213,7 @@ function ZonaChao({ e }: { e: Extract<Estrutura, { tipo: 'zona-chao' }> }) {
         <meshBasicMaterial color="#F0A43A" transparent opacity={0.06} />
         <Edges color="#c9a050" />
       </mesh>
+      {e.conteudo === 'rolos' && <Rolos largura={e.largura} profundidade={e.profundidade} />}
     </group>
   )
 }
@@ -212,6 +226,22 @@ export function OutrasEstruturas({ layout }: { layout: Layout }) {
       )}
     </>
   )
+}
+
+/** Onde fica a etiqueta verde do corredor (coordenadas do mundo), ou null se a estrutura não tiver etiqueta própria. */
+function posicaoEtiqueta(e: Estrutura): [number, number, number] | null {
+  if (e.tipo === 'contentores') {
+    // por cima do contentor A
+    const a = contentoresLocais(e)[0]
+    return a ? paraMundo(e, [a.x, e.alturaContentor * e.empilhamento + 0.35, a.z]) : null
+  }
+  if (e.tipo === 'zona-chao') return paraMundo(e, [-e.largura / 2, 1.65, 0])
+  // estruturas que continuam a numeração de outra (ex.: armários do corredor 04) não repetem a etiqueta
+  if ((e.colunaInicial ?? 1) > 1) return null
+  const L = e.modulos * e.larguraModulo
+  // a etiqueta fica do lado da coluna 01, salvo indicação em contrário
+  const ladoMais = (e.ladoEtiqueta === 'fim') !== !!e.colunasInvertidas
+  return paraMundo(e, [(ladoMais ? 1 : -1) * (L / 2 + 0.04), Math.min(1.65, e.altura - 0.2), 0])
 }
 
 /** Rótulos das estruturas e etiquetas físicas visíveis nas fotografias (ex.: "20" e "21"). */
@@ -232,15 +262,13 @@ export function Rotulos({ layout, visiveis }: { layout: Layout; visiveis: boolea
       })}
       {layout.estruturas.map((e) => {
         // etiqueta verde do corredor, no topo da estrutura (como no armazém)
-        if (!e.corredor || e.tipo === 'zona-chao') return null
-        const L = e.tipo === 'contentores' ? e.colunas * e.larguraContentor : e.modulos * e.larguraModulo
-        const alturaTotal = e.tipo === 'contentores' ? e.alturaContentor * e.empilhamento : e.altura
-        const x = (e.ladoEtiqueta === 'fim' ? 1 : -1) * (L / 2 + 0.04)
+        const p = posicaoEtiqueta(e)
+        if (!e.corredor || !p) return null
         return (
-          <Html key={`${e.id}-corredor`} position={paraMundo(e, [x, Math.min(1.65, alturaTotal - 0.2), 0])} center zIndexRange={[10, 0]}>
+          <Html key={`${e.id}-corredor`} position={p} center zIndexRange={[10, 0]}>
             <div
               className={`etiqueta-verde ${e.corredorInferido ? 'inferida' : ''}`}
-              title={e.corredorInferido ? `Corredor ${e.corredor} (deduzido, etiqueta não vista)` : `Etiqueta do corredor ${e.corredor} (vista no vídeo/fotografias)`}
+              title={e.corredorInferido ? `Corredor ${e.corredor} (deduzido, etiqueta não vista)` : `Corredor ${e.corredor}`}
             >
               {e.corredor}{e.corredorInferido && '?'}
             </div>

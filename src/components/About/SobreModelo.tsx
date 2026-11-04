@@ -21,11 +21,12 @@ export function SobreModelo() {
         <section>
           <h3>O que é real e o que é estimado</h3>
           <ul className="lista-pontos">
-            <li><strong>Lido nas fotografias e vídeos:</strong> referências 42173490, 42173428, 42173653 e R76467100; designações das etiquetas; etiquetas de corredor 01–08, 10, 11, 20 e 21; sinal “Área de Receção e Expedição”; inscrição “494 UN”.</li>
+            <li><strong>Esquema do armazém:</strong> disposição das estantes e número de cada corredor (01–17, 20 e 21), portões, porta e exemplos de localização dos contentores.</li>
+            <li><strong>Lido nas fotografias e vídeos:</strong> referências 42173490, 42173428, 42173653 e R76467100; designações das etiquetas; sinal “Área de Receção e Expedição”; inscrição “494 UN”.</li>
             <li><strong>Formato de código</strong> (indicado pelo armazém): zona <code>1B</code> + corredor + prateleira (A = a mais baixa) + coluna + caixa, ex.: <code>1B09A02C</code>.</li>
-            <li><strong>Estimado:</strong> dimensões do pavilhão, distâncias entre zonas, número de colunas e prateleiras de cada estante, sentido de numeração das colunas e posição exata de cada peça. O corredor 09 foi deduzido pela sequência.</li>
+            <li><strong>Estimado:</strong> dimensões do pavilhão e das estantes, larguras dos corredores, tipo das estantes 15–17, sentido de numeração das colunas (coluna 01 assumida do lado dos portões) e letra D dos contentores da fila de baixo.</li>
             <li><strong>Lista de materiais (Excel):</strong> referência, designação, posição, quantidade e valor de cada material vêm do ficheiro “materiais armazem.xlsx”. As posições cujo corredor ou zona ainda não está desenhado aparecem como “sem 3D”.</li>
-            <li><strong>Por confirmar:</strong> categorias e fabricantes (não existem no Excel), localização dos corredores 1B12 e 1B15–1B19, dos armários ARM01–ARM06, de M100 e do escritório, e as zonas 1A, 1C, 1D e 1E.</li>
+            <li><strong>Por confirmar:</strong> categorias e fabricantes (não existem no Excel), localização dos corredores 1B18 e 1B19, dos armários ARM01–ARM06, de M100 e do escritório, as zonas 1A, 1C, 1D e 1E, e onde ficam os artigos observados nas fotografias.</li>
           </ul>
           <p className="texto-sec">
             {pecas.length} registos ({pecas.filter((p) => p.fonte === 'excel').length} do Excel, {pecas.filter((p) => p.fonte === 'excel' && p.localizacaoId).length} com posição no 3D) · {localizacoes.length} localizações.
@@ -35,8 +36,8 @@ export function SobreModelo() {
         <section>
           <h3>Vídeos usados</h3>
           <p className="texto-sec">
-            Vídeo 1 (65 s): a partir da porta, corredores 01–11 e armários. Vídeo 2 (32 s): contentores, Receção e Expedição,
-            vidros 20–21 e corredor principal até aos empilhadores. Fotogramas guardados como fotografias de referência das estruturas.
+            Vídeo 1 (65 s) e vídeo 2 (32 s): usados na primeira versão da planta, entretanto substituída pelo esquema do armazém.
+            Os fotogramas continuam como fotografias de referência das estruturas.
           </p>
         </section>
 
