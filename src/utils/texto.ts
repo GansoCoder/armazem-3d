@@ -1,3 +1,5 @@
+import type { Uqe } from '../types'
+
 /** Minúsculas e sem acentos, para comparações tolerantes. */
 export function normalizar(texto: string | null | undefined): string {
   return (texto ?? '')
@@ -42,4 +44,10 @@ const EUR = new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' 
 
 export function formatarValor(v: number | null | undefined): string {
   return v === null || v === undefined ? '—' : EUR.format(v)
+}
+
+export const OPCOES_UQE: Uqe[] = ['nenhuma', '2300', '3500']
+
+export function rotuloUqe(u: Uqe | undefined): string {
+  return !u || u === 'nenhuma' ? 'Nenhuma' : `UQE ${u}`
 }

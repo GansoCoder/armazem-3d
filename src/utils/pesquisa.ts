@@ -27,7 +27,7 @@ function pontuarPeca(p: Peca, tokens: string[], ctx: Contexto): number {
   // posição completa com caixa, ex.: 1b10a02c (a do Excel quando existe)
   const posicao = normalizar(p.posicaoOrigem ?? (loc?.codigo ? `${loc.codigo}${p.caixa ?? ''}` : ''))
   const resto = normalizar(
-    [p.descricao, p.categoria, p.fabricante, p.notas, p.localizacaoId, textoLocalizacao(loc, ctx)].join(' '),
+    [p.descricao, p.categoria, p.fabricante, p.notas, p.localizacaoId, p.uqe && p.uqe !== 'nenhuma' ? `uqe ${p.uqe} uqe${p.uqe}` : '', textoLocalizacao(loc, ctx)].join(' '),
   )
   let total = 0
   for (const t of tokens) {
@@ -87,6 +87,7 @@ export function aplicarFiltros(pecas: Peca[], f: Filtros, locs: Map<string, Loca
     if (f.categoria && (p.categoria ?? SEM_CATEGORIA) !== f.categoria) return false
     if (f.estado && estadoStock(p) !== f.estado) return false
     if (f.tipoRegisto && p.tipoRegisto !== f.tipoRegisto) return false
+    if (f.uqe && (p.uqe ?? 'nenhuma') !== f.uqe) return false
     const loc = p.localizacaoId ? locs.get(p.localizacaoId) : undefined
     if (f.zona && grupoPosicao(p, loc) !== f.zona) return false
     if (f.no3D && (f.no3D === 'sim') !== !!loc) return false
@@ -94,7 +95,7 @@ export function aplicarFiltros(pecas: Peca[], f: Filtros, locs: Map<string, Loca
   })
 }
 
-export const FILTROS_VAZIOS: Filtros = { categoria: '', zona: '', estado: '', tipoRegisto: '', no3D: '' }
+export const FILTROS_VAZIOS: Filtros = { categoria: '', zona: '', estado: '', tipoRegisto: '', no3D: '', uqe: '' }
 
 export function filtrosAtivos(f: Filtros): number {
   return Object.values(f).filter(Boolean).length

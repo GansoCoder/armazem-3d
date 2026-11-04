@@ -7,7 +7,7 @@ import type { Localizacao, Peca } from '../../types'
 import { motivoSem3D, posicaoPeca } from '../../utils/posicao'
 import { FILTROS_VAZIOS } from '../../utils/pesquisa'
 import { estadoStock } from '../../utils/stock'
-import { formatarQuantidade, formatarValor, nomePeca } from '../../utils/texto'
+import { formatarQuantidade, formatarValor, nomePeca, rotuloUqe } from '../../utils/texto'
 import { EstadoBadge, Estimado, Foto, PorConfirmar, TagLocal } from '../common/comum'
 
 type Coluna = 'referencia' | 'nome' | 'localizacao' | 'quantidade' | 'valor'
@@ -111,6 +111,7 @@ export function PartsList() {
                 <CabecalhoOrdenavel col="quantidade" ordem={ordem} aoOrdenar={setOrdem}>Quantidade</CabecalhoOrdenavel>
                 <CabecalhoOrdenavel col="valor" ordem={ordem} aoOrdenar={setOrdem}>Valor</CabecalhoOrdenavel>
                 <th>Categoria</th>
+                <th>UQE</th>
                 <th className="col-acoes">Ações</th>
               </tr>
             </thead>
@@ -153,6 +154,9 @@ export function PartsList() {
                     <td data-rotulo="Valor" className="mono col-valor">{formatarValor(p.valorStock)}</td>
                     <td data-rotulo="Categoria">
                       {p.categoria ? <>{p.categoria} {est('categoria') && <Estimado />}</> : <span className="por-confirmar" title="Por confirmar">—</span>}
+                    </td>
+                    <td data-rotulo="UQE" className="col-uqe">
+                      {p.uqe && p.uqe !== 'nenhuma' ? <>{p.uqe} {est('uqe') && <Estimado />}</> : <span className="texto-sec" title={rotuloUqe(p.uqe)}>—</span>}
                     </td>
                     <td className="col-acoes" onClick={(e) => e.stopPropagation()}>
                       <button className="btn btn-fantasma btn-pequeno" onClick={() => abrirPeca(p.id)} aria-label={`Ver ficha de ${nomePeca(p)}`}>

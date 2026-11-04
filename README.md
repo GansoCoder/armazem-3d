@@ -6,7 +6,7 @@ Aplicação web para consultar visualmente o armazém de peças: modelo 3D naveg
 
 ## Instalar e executar
 
-Requisitos: Node.js 20+.
+Requisitos: Node.js 22.18+ (os scripts importam diretamente `src/utils/planta.ts`).
 
 ```bash
 npm install
@@ -32,7 +32,9 @@ npm run preview    # servir a versão de produção
 - **Pesquisa** (tecla `/`): por referência, nome, descrição, categoria, fabricante, código de localização, estrutura, módulo e nível. Parcial, sem distinção de maiúsculas/acentos, vários termos. Ao escolher uma peça, muda para 3D, enquadra e destaca a localização e abre a ficha. Se a localização estiver por confirmar, avisa em vez de destacar.
 - **Listagem**: ordenação por referência, nome, localização, quantidade e valor; filtros por categoria, área (1B, 1C, ARM, ND…), presença no 3D, estado do stock e tipo de registo; paginação; cartões em telemóvel; "Ver no armazém".
 - **Ficha da peça**: galeria (o tipo de cada fotografia é indicado), modelo 3D (.glb/.gltf) quando existir, dados com marcas "estimado" / "Por confirmar".
-- **Modo de edição local**: criar/editar peças, quantidade, localização, fotografias e notas — ver limitações abaixo.
+- **UQE** de cada peça: Nenhuma, 2300 ou 3500. Aparece na ficha, na listagem, nos filtros e na pesquisa (`uqe 3500`), e pode ser alterada no editor da peça.
+- **Modo de edição local**: criar/editar peças, quantidade, UQE, localização, fotografias e notas — ver limitações abaixo.
+- **Editor da planta** (botão "Editar planta" na vista 3D): criar, mover, rodar e alterar estantes, porta-paletes, armários, estantes de vidros e zonas de chão — ver abaixo.
 
 ## Códigos de posição
 
@@ -67,6 +69,7 @@ node scripts/importar-excel.mjs "materiais armazem.xlsx"
 - Liga cada posição a uma célula do 3D (`1B08F02E` → corredor 08, prateleira F, coluna 02, caixa E). Nos contentores (corredores 13 e 14), a letra final identifica o contentor.
 - As posições que o modelo ainda não tem (outras zonas, `ND`, `M100`, `ESCRITORIO`, armários `ARM…`, corredores 18 e 19) continuam na listagem e na pesquisa, com a marca **sem 3D**.
 - Mantém o que foi acrescentado à mão nos registos (fotografias, notas, categoria, fabricante, stock mínimo, modelo 3D).
+- **UQE**: quando a designação diz explicitamente "UQE2300" ou "UQE3500" (incluindo "UQE2300/2400"), a peça fica com essa UQE, marcada **estimado**. As restantes ficam "Nenhuma". Uma UQE escolhida à mão é mantida nas importações seguintes.
 - Escreve [`docs/relatorio-importacao.md`](docs/relatorio-importacao.md) com os totais, as posições por ligar e as possíveis gralhas no Excel.
 
 Para atualizar os dados, exporte de novo o Excel e volte a correr o comando.
@@ -103,6 +106,7 @@ Os dados estão separados da interface em `src/data/`. `src/data/fonte.ts` é o 
 - `quantidade`: número ≥ 0; pode ter decimais em materiais medidos em kg, m, etc. `stockMinimo`: só ative o alerta laranja quando houver um mínimo real.
 - `tipo` da fotografia: `peca`, `no_local`, `contentor`, `etiqueta` ou `localizacao`.
 - `tipoRegisto`: `referencia` (código visível) ou `observacao` (artigo visto sem código legível).
+- `uqe`: `"nenhuma"`, `"2300"` ou `"3500"` (sem o campo = nenhuma). Com `"uqe"` em `camposEstimados`, foi deduzida da designação.
 - `caixa`: letra da caixa dentro da posição (último elemento do código), ou `null`.
 
 A integridade (ids únicos, quantidades válidas, localizações existentes) é verificada ao arrancar; os avisos aparecem na consola e na janela "Sobre o modelo" (ícone ⓘ).
@@ -127,6 +131,26 @@ node scripts/gerar-localizacoes.mjs
 - `zonas`: rótulos no chão. `elementos`: contexto (portões, porta…), não são localizações. Os empilhadores, extintores e restantes elementos da planta antiga foram retirados, porque o esquema não indica onde estão.
 
 Quando houver medidas reais, basta corrigir estes valores; não é preciso mexer no código.
+
+### Editor da planta (forma mais fácil)
+
+Na vista 3D, carregue em **Editar planta**:
+
+1. **Nova**: escolha o tipo (estante ligeira, porta-paletes, armário, estante de vidros, zona de chão) e carregue em "Nova". Para alterar uma existente, escolha-a na lista ou clique nela no 3D.
+2. Indique o **corredor** (2 dígitos), o número de **colunas** e de **prateleiras**, a primeira coluna (ex.: 4 se continua outra estrutura) e de que lado fica a coluna 01.
+3. Ajuste as **medidas** e a **posição**: setas (passo de 10 cm, 50 cm ou 1 m), coordenadas X/Z, e os botões da frente (para baixo, direita, cima, esquerda).
+4. O resumo mostra os **códigos gerados** (ex.: `1B18A01 … 1B18D04`), quantas peças ficam ligadas e que materiais do Excel desse corredor ainda não cabem (para aumentar colunas ou prateleiras).
+5. **Guardar** (com confirmação): a planta fica neste navegador e toda a aplicação passa a usá-la; as peças do Excel são religadas automaticamente pela posição. Códigos repetidos entre estruturas impedem a gravação.
+6. Para tornar a planta oficial: **Exportar layout.json** (barra amarela), substitua `src/data/layout.json` e corra:
+
+```bash
+node scripts/gerar-localizacoes.mjs
+node scripts/importar-excel.mjs "materiais armazem.xlsx"
+```
+
+"Repor planta original" descarta a planta local. As regras de códigos e ligações estão em `src/utils/planta.ts`, usadas tanto pelo editor como pelos scripts.
+
+### Editar o layout.json à mão
 
 **Adicionar uma estante ou um armário:** acrescente um objeto a `estruturas` (copie o de `EL10` e mude `id`, `nome`, `rotulo`, `posicao`, `rotacaoY`, `corredor`, `modulos` = n.º de colunas e `niveis` = altura de cada prateleira, de baixo para cima). Para um armário use `"tipo": "armario"` (ids `AR01`, `AR02`…). Depois corra `node scripts/gerar-localizacoes.mjs`: as células e os códigos `1B…` são criados automaticamente.
 
@@ -154,13 +178,13 @@ Ver a lista completa em [`docs/ANALISE.md`](docs/ANALISE.md#4-dúvidas-para-conf
 src/
   components/
     Header/  SearchBar/  Filters/  PartsList/  PartDetails/  LocationPanel/
-    LocationNavigator/  Warehouse3D/  WarehouseControls/  Editor/  About/  common/
+    LocationNavigator/  Warehouse3D/  WarehouseControls/  Editor/  EditorPlanta/  About/  common/
   data/        layout.json  locations.json  parts.json  fonte.ts
   hooks/       useInventario (dados + rascunho local)  useApp (estado de interface)  usePecasVisiveis
   types/       tipos do domínio
-  utils/       pesquisa, stock, geometria 3D, validação, texto, imagem
+  utils/       planta (localizações e ligações, partilhado com os scripts), editorPlanta, pesquisa, stock, geometria 3D, validação, texto, imagem
 public/assets/ armazem/  localizacoes/  pecas/  modelos-3d/
-scripts/       gerar-localizacoes.mjs
+scripts/       gerar-localizacoes.mjs  importar-excel.mjs
 docs/          ANALISE.md
 ```
 

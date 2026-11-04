@@ -21,6 +21,9 @@ export interface Fotografia {
 
 export type TipoRegisto = 'referencia' | 'observacao'
 
+/** Unidade (UQE) a que a peça se destina. "nenhuma" = não é específica de uma UQE. */
+export type Uqe = 'nenhuma' | '2300' | '3500'
+
 export interface Peca {
   id: string
   referencia: string | null
@@ -34,6 +37,8 @@ export interface Peca {
   valorStock?: number | null
   /** Posição tal como está no ficheiro de origem (ex.: 1B04C02A, ARM05, M100, ND). */
   posicaoOrigem?: string | null
+  /** UQE a que se destina (por omissão "nenhuma"). */
+  uqe?: Uqe
   /** De onde vem o registo: Excel de materiais, observação nas fotografias, ou criado à mão. */
   fonte?: 'excel' | 'fotografia' | 'manual'
   localizacaoId: string | null
@@ -227,4 +232,5 @@ export interface Filtros {
   tipoRegisto: '' | TipoRegisto
   /** Peças com ("sim") ou sem ("nao") ligação a uma posição do modelo 3D. */
   no3D: '' | 'sim' | 'nao'
+  uqe: '' | Uqe
 }

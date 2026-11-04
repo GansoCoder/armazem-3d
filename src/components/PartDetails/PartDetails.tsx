@@ -5,7 +5,7 @@ import { useInventario } from '../../hooks/useInventario'
 import type { Peca } from '../../types'
 import { estadoStock } from '../../utils/stock'
 import { motivoSem3D } from '../../utils/posicao'
-import { codigoPosicao, formatarQuantidade, formatarValor, nomePeca } from '../../utils/texto'
+import { codigoPosicao, formatarQuantidade, formatarValor, nomePeca, rotuloUqe } from '../../utils/texto'
 import { EstadoBadge, Estimado, Foto, Modal, PorConfirmar, TagLocal } from '../common/comum'
 
 const ModelViewer = lazy(() => import('./ModelViewer'))
@@ -162,6 +162,9 @@ export function PartDetails() {
             <Campo rotulo="Nome">{valor(peca.nome, 'nome')}</Campo>
             <Campo rotulo="Descrição">{valor(peca.descricao, 'descricao')}</Campo>
             <Campo rotulo="Categoria">{valor(peca.categoria, 'categoria')}</Campo>
+            <Campo rotulo="UQE">
+              {rotuloUqe(peca.uqe)} {est('uqe') && <><Estimado /> <span className="texto-sec">deduzido da designação</span></>}
+            </Campo>
             <Campo rotulo="Fabricante / fornecedor">{valor(peca.fabricante, 'fabricante')}</Campo>
             <Campo rotulo="Caixa">{peca.caixa ? <span className="mono">{peca.caixa}</span> : <PorConfirmar />}</Campo>
             <Campo rotulo="Stock mínimo">{peca.stockMinimo ?? <PorConfirmar texto="Não configurado" />}</Campo>

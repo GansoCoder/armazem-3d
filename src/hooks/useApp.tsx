@@ -36,6 +36,9 @@ interface App {
   fecharEditor: () => void
   sobreAberto: boolean
   setSobreAberto: (v: boolean) => void
+  /** Estrutura escolhida no editor da planta (null = editor fechado ou nenhuma escolhida). */
+  estruturaEditada: string | null
+  setEstruturaEditada: (id: string | null) => void
 }
 
 const Ctx = createContext<App | null>(null)
@@ -61,6 +64,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [notificacoes, setNotificacoes] = useState<Notificacao[]>([])
   const [editor, setEditor] = useState<App['editor']>({ aberto: false, pecaId: null, localizacaoInicial: null })
   const [sobreAberto, setSobreAberto] = useState(false)
+  const [estruturaEditada, setEstruturaEditada] = useState<string | null>(null)
   const contador = useRef(0)
 
   const setVista = useCallback((v: Vista) => {
@@ -113,9 +117,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       abrirEditor: (pecaId, localizacaoInicial = null) => setEditor({ aberto: true, pecaId, localizacaoInicial }),
       fecharEditor: () => setEditor({ aberto: false, pecaId: null, localizacaoInicial: null }),
       sobreAberto, setSobreAberto,
+      estruturaEditada, setEstruturaEditada,
     }),
     [vista, setVista, consulta, filtros, localizacaoSelecionada, pecaSelecionada, pedidoFoco,
-      selecionarLocalizacao, localizarPeca, notificacoes, notificar, dispensar, editor, sobreAberto],
+      selecionarLocalizacao, localizarPeca, notificacoes, notificar, dispensar, editor, sobreAberto, estruturaEditada],
   )
 
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>

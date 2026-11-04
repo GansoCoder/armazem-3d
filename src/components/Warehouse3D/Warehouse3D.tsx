@@ -1,10 +1,13 @@
 import { Canvas } from '@react-three/fiber'
-import { Info, PanelLeftOpen } from 'lucide-react'
+import { Edges } from '@react-three/drei'
+import { Info, PanelLeftOpen, PencilRuler } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useApp } from '../../hooks/useApp'
 import { useInventario } from '../../hooks/useInventario'
 import { usePecasVisiveis } from '../../hooks/usePecasVisiveis'
-import { enquadrarLocalizacao, vistaInicial } from '../../utils/geometria'
+import type { Layout } from '../../types'
+import { caixaLocal, enquadrarLocalizacao, graus, vistaInicial } from '../../utils/geometria'
+import { EditorPlanta } from '../EditorPlanta/EditorPlanta'
 import { LocationNavigator } from '../LocationNavigator/LocationNavigator'
 import { LocationPanel } from '../LocationPanel/LocationPanel'
 import { Legenda, WarehouseControls } from '../WarehouseControls/WarehouseControls'
@@ -30,9 +33,32 @@ function gravarPreferencia(chave: string, v: boolean) {
   }
 }
 
+/** Contorno da estrutura escolhida no editor da planta. */
+function ContornoEdicao({ layout, id }: { layout: Layout; id: string }) {
+  const e = layout.estruturas.find((x) => x.id === id)
+  if (!e) return null
+  const c = caixaLocal(e, { modulo: null, nivel: null })
+  const tamanho: [number, number, number] = [c.tamanho[0] + 0.25, Math.max(c.tamanho[1], 0.3) + 0.25, c.tamanho[2] + 0.25]
+  return (
+    <group position={[e.posicao.x, 0, e.posicao.z]} rotation-y={graus(e.rotacaoY)}>
+      <mesh position={[c.centro[0], tamanho[1] / 2, c.centro[2]]} raycast={() => null}>
+        <boxGeometry args={tamanho} />
+        <meshBasicMaterial color="#5ab0ff" transparent opacity={0.07} depthWrite={false} />
+        <Edges color="#5ab0ff" />
+      </mesh>
+      {/* seta no chão a indicar para onde está virada a frente */}
+      <mesh position={[0, 0.03, c.tamanho[2] / 2 + 0.45]} rotation-x={-Math.PI / 2} raycast={() => null}>
+        <circleGeometry args={[0.25, 3, -Math.PI / 2]} />
+        <meshBasicMaterial color="#5ab0ff" />
+      </mesh>
+    </group>
+  )
+}
+
 export default function Warehouse3D({ visivel }: { visivel: boolean }) {
-  const { dados, localizacoes, locs, pecasPorLocalizacao } = useInventario()
-  const { localizacaoSelecionada, selecionarLocalizacao, pedidoFoco, setSobreAberto } = useApp()
+  const { dados, layout, localizacoes, locs, pecasPorLocalizacao, plantaEmEdicao, setPlantaEmEdicao, plantaGuardada } = useInventario()
+  const { localizacaoSelecionada, selecionarLocalizacao, pedidoFoco, setSobreAberto, estruturaEditada, setEstruturaEditada } = useApp()
+  const editando = !!plantaEmEdicao
   const { pecas: visiveis, ativo: filtroAtivo } = usePecasVisiveis()
   const controlo = useRef<ControloCamara>(null)
   const [pronto, setPronto] = useState(false)
@@ -51,8 +77,16 @@ export default function Warehouse3D({ visivel }: { visivel: boolean }) {
   }, [])
   const painelAberto = largo && (!!localizacaoSelecionada || !!pecaSelecionada)
 
-  const layout = dados?.layout
-  const inicial = useMemo(() => (layout ? vistaInicial(layout) : null), [layout])
+  // vista inicial da planta oficial: não muda enquanto se edita (a câmara não salta)
+  const base = dados?.layout
+  const inicial = useMemo(() => (base ? vistaInicial(base) : null), [base])
+  const focarEstrutura = (id: string) => {
+    if (!layout) return
+    const enq = enquadrarLocalizacao(layout, {
+      id, codigo: null, zona: '', estrutura: id, modulo: null, nivel: null, descricao: '', origemCodigo: 'provisorio', estadoValidacao: 'estimado',
+    })
+    if (enq) controlo.current?.focar(enq)
+  }
   const correspondencias = useMemo(
     () => new Set(visiveis.map((p) => p.localizacaoId).filter((id): id is string => !!id)),
     [visiveis],
@@ -81,7 +115,9 @@ export default function Warehouse3D({ visivel }: { visivel: boolean }) {
 
   return (
     <div className="vista3d">
-      {navegador && (
+      {editando ? (
+        <EditorPlanta aoFechar={() => undefined} aoFocar={focarEstrutura} />
+      ) : navegador && (
         <LocationNavigator aoFechar={() => setNavegador(false)} correspondencias={correspondencias} filtroAtivo={filtroAtivo} />
       )}
       <div className="canvas-area">
@@ -99,18 +135,22 @@ export default function Warehouse3D({ visivel }: { visivel: boolean }) {
           <directionalLight position={[10, 18, 12]} intensity={1.3} />
           <directionalLight position={[-12, 10, -8]} intensity={0.4} />
           <Edificio layout={layout} />
-          <Estantes layout={layout} estruturaFoco={localizacaoSelecionada ? (locs.get(localizacaoSelecionada)?.estrutura ?? null) : null} />
+          <Estantes
+            layout={layout}
+            estruturaFoco={editando ? estruturaEditada : localizacaoSelecionada ? (locs.get(localizacaoSelecionada)?.estrutura ?? null) : null}
+          />
           <OutrasEstruturas layout={layout} />
           <Decoracao layout={layout} rotulos={rotulos} />
           <Localizacoes3D
             layout={layout}
             localizacoes={localizacoes}
             pecasPorLocalizacao={pecasPorLocalizacao}
-            selecionada={localizacaoSelecionada}
+            selecionada={editando ? null : localizacaoSelecionada}
             correspondencias={correspondencias}
-            filtroAtivo={filtroAtivo}
-            aoSelecionar={(id) => selecionarLocalizacao(id)}
+            filtroAtivo={filtroAtivo && !editando}
+            aoSelecionar={(id) => (editando ? setEstruturaEditada(locs.get(id)?.estrutura ?? null) : selecionarLocalizacao(id))}
           />
+          {editando && estruturaEditada && <ContornoEdicao layout={layout} id={estruturaEditada} />}
           <Rotulos layout={layout} visiveis={rotulos} />
           <ZonasPiso zonas={layout.zonas} visiveis={rotulos} />
           <CameraRig ref={controlo} inicial={inicial} />
@@ -123,10 +163,25 @@ export default function Warehouse3D({ visivel }: { visivel: boolean }) {
           </div>
         )}
 
-        {!navegador && (
-          <button className="btn btn-secundario abrir-navegador" onClick={() => setNavegador(true)}>
-            <PanelLeftOpen size={16} aria-hidden /> Estruturas
-          </button>
+        {!editando && (
+          <div className="abrir-navegador">
+            {!navegador && (
+              <button className="btn btn-secundario" onClick={() => setNavegador(true)}>
+                <PanelLeftOpen size={16} aria-hidden /> Estruturas
+              </button>
+            )}
+            <button
+              className="btn btn-secundario"
+              onClick={() => {
+                selecionarLocalizacao(null)
+                setEstruturaEditada(null)
+                setPlantaEmEdicao(structuredClone(plantaGuardada))
+              }}
+              title="Criar, mover e alterar estantes e outras estruturas"
+            >
+              <PencilRuler size={16} aria-hidden /> Editar planta
+            </button>
+          </div>
         )}
 
         <WarehouseControls controlo={controlo} rotulos={rotulos} setRotulos={setRotulos} />

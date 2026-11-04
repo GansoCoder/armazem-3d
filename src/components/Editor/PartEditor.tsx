@@ -2,9 +2,9 @@ import { ImagePlus, Link2, Trash2, TriangleAlert } from 'lucide-react'
 import { useMemo, useState, type FormEvent } from 'react'
 import { useApp } from '../../hooks/useApp'
 import { useInventario } from '../../hooks/useInventario'
-import type { Fotografia, Peca, TipoRegisto } from '../../types'
+import type { Fotografia, Peca, TipoRegisto, Uqe } from '../../types'
 import { reduzirImagem } from '../../utils/imagem'
-import { codigoPosicao, normalizar, rotuloLocalizacao } from '../../utils/texto'
+import { codigoPosicao, normalizar, OPCOES_UQE, rotuloLocalizacao, rotuloUqe } from '../../utils/texto'
 import { erroCaixa, erroQuantidade, lerNumero } from '../../utils/validacao'
 import { Foto, Modal } from '../common/comum'
 
@@ -19,6 +19,7 @@ interface Formulario {
   descricao: string
   categoria: string
   fabricante: string
+  uqe: Uqe
   quantidade: string
   quantidadeEstimada: boolean
   stockMinimo: string
@@ -40,6 +41,7 @@ function paraFormulario(p: Peca | undefined, localizacaoInicial: string | null):
     descricao: txt(p?.descricao ?? null),
     categoria: txt(p?.categoria ?? null),
     fabricante: txt(p?.fabricante ?? null),
+    uqe: p?.uqe ?? 'nenhuma',
     quantidade: p?.quantidade === null || p?.quantidade === undefined ? '' : String(p.quantidade),
     quantidadeEstimada: p?.camposEstimados.includes('quantidade') ?? false,
     stockMinimo: p?.stockMinimo === null || p?.stockMinimo === undefined ? '' : String(p.stockMinimo),
@@ -103,6 +105,7 @@ export function PartEditor() {
       descricao: ouNull(f.descricao),
       categoria: ouNull(f.categoria),
       fabricante: ouNull(f.fabricante),
+      uqe: f.uqe,
       quantidade: f.quantidade.trim() === '' ? null : lerNumero(f.quantidade),
       stockMinimo: f.stockMinimo.trim() === '' ? null : lerNumero(f.stockMinimo),
       localizacaoId: f.localizacaoId || null,
@@ -203,7 +206,7 @@ export function PartEditor() {
           <span>Descrição</span>
           <textarea rows={2} value={f.descricao} onChange={(e) => definir('descricao', e.target.value)} />
         </label>
-        <div className="grelha-2">
+        <div className="grelha-cat">
           <label>
             <span>Categoria</span>
             <input list="lista-categorias" value={f.categoria} onChange={(e) => definir('categoria', e.target.value)} />
@@ -212,6 +215,12 @@ export function PartEditor() {
           <label>
             <span>Fabricante / fornecedor</span>
             <input value={f.fabricante} onChange={(e) => definir('fabricante', e.target.value)} />
+          </label>
+          <label>
+            <span>UQE</span>
+            <select value={f.uqe} onChange={(e) => definir('uqe', e.target.value as Uqe)}>
+              {OPCOES_UQE.map((u) => <option key={u} value={u}>{rotuloUqe(u)}</option>)}
+            </select>
           </label>
         </div>
         <div className="grelha-3">

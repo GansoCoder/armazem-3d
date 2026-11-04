@@ -37,6 +37,32 @@ function BannerRascunho() {
   )
 }
 
+function BannerPlanta() {
+  const { plantaLocal, exportarPlanta, reporPlanta } = useInventario()
+  const { notificar, setEstruturaEditada } = useApp()
+  if (!plantaLocal) return null
+  return (
+    <div className="banner-rascunho" role="status">
+      <TriangleAlert size={16} aria-hidden />
+      <span>
+        <strong>Planta alterada localmente</strong> — guardada apenas neste navegador, não é a planta oficial.
+      </span>
+      <button className="btn btn-fantasma btn-pequeno" onClick={exportarPlanta}><Download size={14} aria-hidden /> Exportar layout.json</button>
+      <button
+        className="btn btn-fantasma btn-pequeno"
+        onClick={() => {
+          if (!window.confirm('Descartar a planta alterada e voltar à planta oficial?')) return
+          reporPlanta()
+          setEstruturaEditada(null)
+          notificar('Planta oficial reposta.', 'sucesso')
+        }}
+      >
+        <RotateCcw size={14} aria-hidden /> Repor planta original
+      </button>
+    </div>
+  )
+}
+
 function Notificacoes() {
   const { notificacoes, dispensar } = useApp()
   return (
@@ -88,6 +114,7 @@ export default function App() {
         <div className="app">
           <Header />
           <BannerRascunho />
+          <BannerPlanta />
           <Conteudo />
           <Notificacoes />
         </div>

@@ -10,7 +10,7 @@ export function LocationNavigator({ aoFechar, correspondencias, filtroAtivo }: {
   correspondencias: Set<string>
   filtroAtivo: boolean
 }) {
-  const { dados, localizacoes, pecasPorLocalizacao } = useInventario()
+  const { layout, localizacoes, pecasPorLocalizacao } = useInventario()
   const { localizacaoSelecionada, selecionarLocalizacao } = useApp()
   const [abertas, setAbertas] = useState<Set<string>>(new Set())
 
@@ -20,7 +20,7 @@ export function LocationNavigator({ aoFechar, correspondencias, filtroAtivo }: {
     if (loc) setAbertas((a) => (a.has(loc.estrutura) ? a : new Set(a).add(loc.estrutura)))
   }, [localizacaoSelecionada, localizacoes])
 
-  if (!dados) return null
+  if (!layout) return null
   const alternar = (id: string) =>
     setAbertas((a) => {
       const n = new Set(a)
@@ -38,7 +38,7 @@ export function LocationNavigator({ aoFechar, correspondencias, filtroAtivo }: {
         </button>
       </div>
       <ul className="navegador-lista">
-        {dados.layout.estruturas.map((e) => {
+        {layout.estruturas.map((e) => {
           const locs = localizacoes.filter((l) => l.estrutura === e.id)
           const total = locs.reduce((n, l) => n + (pecasPorLocalizacao.get(l.id)?.length ?? 0), 0)
           const coincidencias = filtroAtivo ? locs.filter((l) => correspondencias.has(l.id)).length : 0

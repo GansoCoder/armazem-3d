@@ -16,6 +16,7 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { basename } from 'node:path'
 import ExcelJS from 'exceljs'
+import { criarLigador } from '../src/utils/planta.ts'
 
 const ficheiro = process.argv[2]
 if (!ficheiro) {
@@ -65,47 +66,17 @@ ws.eachRow((row, n) => {
   grupos.set(chave, g)
 })
 
-// ---------- ligar posições ao modelo 3D ----------
-const porCodigo = new Map(localizacoes.filter((l) => l.codigo).map((l) => [l.codigo, l]))
-const estruturaPorCorredor = new Map(layout.estruturas.filter((e) => e.corredor).map((e) => [e.corredor, e]))
-const zona = layout.codigoZona
+// ---------- ligar posições ao modelo 3D (regras em src/utils/planta.ts) ----------
+const ligar = criarLigador(layout, localizacoes)
 
-/** Devolve { loc, caixa, motivo } — motivo explica porque não ficou ligada ao 3D. */
-function ligar(pos) {
-  if (!pos) return { motivo: 'Sem posição no Excel' }
-  if (pos === 'ND') return { motivo: 'ND (posição não definida)' }
-  if (/^(ESQ-)?ARM\d+/.test(pos)) return { motivo: 'Armários ARM01–ARM06 (ainda sem correspondência no modelo)' }
-  let m = pos.match(/^(\d[A-Z])(\d{2})([A-Z])(\d{2})([A-Z])?$/)
-  if (m) {
-    const [, z, corr, prat, coluna, caixa = null] = m
-    if (z !== zona) return { motivo: `Zona ${z} (não representada no 3D)` }
-    const loc = porCodigo.get(pos) ?? porCodigo.get(`${z}${corr}${prat}${coluna}`)
-    if (loc) return { loc, caixa: loc.codigo === pos ? null : caixa }
-    if (!estruturaPorCorredor.has(corr)) return { motivo: `Corredor ${z}${corr} (ainda não colocado no modelo 3D)` }
-    return { motivo: `Prateleira/coluna fora das dimensões do corredor ${z}${corr} no modelo`, caixa }
-  }
-  m = pos.match(/^(\d[A-Z])(\d{2})([A-Z])?$/)
-  if (m) {
-    const [, z, corr, prat] = m
-    if (z !== zona) return { motivo: `Zona ${z} (não representada no 3D)` }
-    const e = estruturaPorCorredor.get(corr)
-    if (!e) return { motivo: `Corredor ${z}${corr} (ainda não colocado no modelo 3D)` }
-    // zona de chão com número de corredor (ex.: rolos brancos, 1B03A): uma só localização
-    if (e.tipo === 'zona-chao') {
-      const loc = localizacoes.find((l) => l.estrutura === e.id)
-      if (loc) return { loc, caixa: null }
-    }
-    // estrutura com uma só coluna: a coluna 01 está implícita
-    if (prat && e.modulos === 1) {
-      const loc = porCodigo.get(`${z}${corr}${prat}01`)
-      if (loc) return { loc, caixa: null }
-    }
-    return { motivo: `Posição incompleta (sem prateleira/coluna) no corredor ${z}${corr}` }
-  }
-  if (/^\d[A-Z]$/.test(pos)) return { motivo: pos === zona ? `Zona ${pos} sem posição detalhada` : `Zona ${pos} (não representada no 3D)` }
-  if (pos === 'ESCRITORIO') return { motivo: 'ESCRITORIO (ainda sem correspondência no modelo)' }
-  if (pos === 'M100') return { motivo: 'M100 (ainda sem correspondência no modelo)' }
-  return { motivo: 'Formato de posição inválido (possível gralha no Excel)' }
+// ---------- UQE ----------
+// Só quando a designação diz explicitamente "UQE2300" ou "UQE3500"; fica marcada como estimada.
+// "UQE2300/2400" conta como 2300. Outras menções (2400, 2324, "3500 mm"…) ficam "nenhuma".
+function uqeDaDesignacao(texto) {
+  const m = String(texto ?? '').toUpperCase().match(/UQE[\s-]?(2300|3500)(?!\d)/g)
+  if (!m) return null
+  const valores = new Set(m.map((x) => x.slice(-4)))
+  return valores.size === 1 ? [...valores][0] : null
 }
 
 // ---------- construir os registos ----------
@@ -126,6 +97,9 @@ for (const g of grupos.values()) {
   }
   const unico = contagemMaterial.get(g.material) === 1
   const quantidade = arred(g.qtds.reduce((a, b) => a + b, 0), 3)
+  // UQE: manter a escolhida à mão; senão, deduzir da designação
+  const uqeDeduzida = prev?.uqe ? null : uqeDaDesignacao(g.texto)
+  const uqe = prev?.uqe ?? uqeDeduzida ?? 'nenhuma'
   novos.push({
     id: prev?.id ?? (unico ? `m-${g.material}` : `m-${g.material}-${g.posicao || 'sem-posicao'}`),
     referencia: g.material,
@@ -141,13 +115,14 @@ for (const g of grupos.values()) {
     fotografias: prev?.fotografias ?? [],
     modelo3D: prev?.modelo3D ?? null,
     fabricante: prev?.fabricante ?? null,
+    uqe,
     notas: prev?.fonte === 'excel' ? prev.notas : '',
     estadoValidacao: 'confirmado',
     tipoRegisto: 'referencia',
     evidencia:
       `Excel "${basename(ficheiro)}", linha${g.linhas.length > 1 ? 's' : ''} ${g.linhas.join(', ')}` +
       (g.linhas.length > 1 ? ` (${g.qtds.join(' + ')} somadas)` : ''),
-    camposEstimados: (prev?.camposEstimados ?? []).filter((c) => !CAMPOS_EXCEL.includes(c)),
+    camposEstimados: [...(prev?.camposEstimados ?? []).filter((c) => !CAMPOS_EXCEL.includes(c)), ...(uqeDeduzida ? ['uqe'] : [])],
     fonte: 'excel',
   })
 }

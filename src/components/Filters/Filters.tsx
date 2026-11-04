@@ -6,6 +6,7 @@ import type { EstadoStock, Filtros as TFiltros } from '../../types'
 import { grupoPosicao } from '../../utils/posicao'
 import { FILTROS_VAZIOS, filtrosAtivos, SEM_CATEGORIA } from '../../utils/pesquisa'
 import { ROTULO_ESTADO } from '../../utils/stock'
+import { OPCOES_UQE, rotuloUqe } from '../../utils/texto'
 
 export function Filtros() {
   const { categorias, pecas, locs } = useInventario()
@@ -44,6 +45,13 @@ export function Filtros() {
           <option value="">Todas</option>
           <option value="sim">Com posição no 3D</option>
           <option value="nao">Sem posição no 3D</option>
+        </select>
+      </label>
+      <label>
+        <span>UQE</span>
+        <select value={filtros.uqe} onChange={(e) => definir('uqe', e.target.value as TFiltros['uqe'])}>
+          <option value="">Todas</option>
+          {OPCOES_UQE.map((u) => <option key={u} value={u}>{rotuloUqe(u)}</option>)}
         </select>
       </label>
       <label>

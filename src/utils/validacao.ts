@@ -19,6 +19,9 @@ export function validarDados(layout: Layout, locs: Localizacao[], pecas: Peca[])
     if (p.quantidade !== null && (!Number.isFinite(p.quantidade) || p.quantidade < 0)) {
       avisos.push(`Peça ${p.id}: a quantidade deve ser um número ≥ 0 (valor: ${p.quantidade})`)
     }
+    if (p.uqe !== undefined && !['nenhuma', '2300', '3500'].includes(p.uqe)) {
+      avisos.push(`Peça ${p.id}: UQE inválida (${p.uqe}); use "nenhuma", "2300" ou "3500"`)
+    }
     if (p.localizacaoId && !ids.has(p.localizacaoId)) {
       avisos.push(`Peça ${p.id}: localização ${p.localizacaoId} não existe — tratada como "por confirmar"`)
     }
