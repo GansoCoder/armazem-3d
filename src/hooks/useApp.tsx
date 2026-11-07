@@ -39,6 +39,13 @@ interface App {
   /** Estrutura escolhida no editor da planta (null = editor fechado ou nenhuma escolhida). */
   estruturaEditada: string | null
   setEstruturaEditada: (id: string | null) => void
+  /** Nó do organograma em foco (referência da peça ou id do grupo). */
+  focoOrganograma: string | null
+  /** Abre a vista Organograma centrada num nó. */
+  abrirOrganograma: (chave: string | null) => void
+  /** Editor de ligações de um nó; `novoGrupo` cria um equipamento/conjunto novo. */
+  editorLigacoes: { chave: string | null; novoGrupo?: 'equipamento' | 'conjunto'; comPeca?: string } | null
+  abrirEditorLigacoes: (e: App['editorLigacoes']) => void
 }
 
 const Ctx = createContext<App | null>(null)
@@ -47,7 +54,8 @@ const CHAVE_VISTA = 'armazem3d.vista'
 
 function lerVista(): Vista {
   try {
-    return localStorage.getItem(CHAVE_VISTA) === 'lista' ? 'lista' : '3d'
+    const v = localStorage.getItem(CHAVE_VISTA)
+    return v === 'lista' || v === 'organograma' ? v : '3d'
   } catch {
     return '3d'
   }
@@ -65,6 +73,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [editor, setEditor] = useState<App['editor']>({ aberto: false, pecaId: null, localizacaoInicial: null })
   const [sobreAberto, setSobreAberto] = useState(false)
   const [estruturaEditada, setEstruturaEditada] = useState<string | null>(null)
+  const [focoOrganograma, setFocoOrganograma] = useState<string | null>(null)
+  const [editorLigacoes, abrirEditorLigacoes] = useState<App['editorLigacoes']>(null)
   const contador = useRef(0)
 
   const setVista = useCallback((v: Vista) => {
@@ -118,9 +128,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
       fecharEditor: () => setEditor({ aberto: false, pecaId: null, localizacaoInicial: null }),
       sobreAberto, setSobreAberto,
       estruturaEditada, setEstruturaEditada,
+      focoOrganograma,
+      abrirOrganograma: (chave) => {
+        setFocoOrganograma(chave)
+        setVista('organograma')
+      },
+      editorLigacoes, abrirEditorLigacoes,
     }),
     [vista, setVista, consulta, filtros, localizacaoSelecionada, pecaSelecionada, pedidoFoco,
-      selecionarLocalizacao, localizarPeca, notificacoes, notificar, dispensar, editor, sobreAberto, estruturaEditada],
+      selecionarLocalizacao, localizarPeca, notificacoes, notificar, dispensar, editor, sobreAberto, estruturaEditada,
+      focoOrganograma, editorLigacoes],
   )
 
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>

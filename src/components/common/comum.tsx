@@ -87,16 +87,22 @@ export function Modal({
   rodape?: ReactNode
 }) {
   const ref = useRef<HTMLDivElement>(null)
+  // a função pode mudar a cada render; o foco inicial só deve acontecer ao abrir
+  const fechar = useRef(aoFechar)
+  useEffect(() => {
+    fechar.current = aoFechar
+  }, [aoFechar])
   useEffect(() => {
     const anterior = document.activeElement as HTMLElement | null
-    ref.current?.querySelector<HTMLElement>('input, select, textarea, button')?.focus()
-    const tecla = (e: KeyboardEvent) => e.key === 'Escape' && aoFechar()
+    // respeita um campo com autoFocus; senão, foca o primeiro elemento da janela
+    if (!ref.current?.contains(document.activeElement)) ref.current?.querySelector<HTMLElement>('input, select, textarea, button')?.focus()
+    const tecla = (e: KeyboardEvent) => e.key === 'Escape' && fechar.current()
     window.addEventListener('keydown', tecla)
     return () => {
       window.removeEventListener('keydown', tecla)
       anterior?.focus?.()
     }
-  }, [aoFechar])
+  }, [])
   return (
     <div className="modal-fundo" onMouseDown={(e) => e.target === e.currentTarget && aoFechar()}>
       <div className="modal" role="dialog" aria-modal="true" aria-label={titulo} style={{ maxWidth: largura }} ref={ref}>

@@ -1,4 +1,5 @@
 import type { Estrutura, Filtros, Localizacao, Peca } from '../types'
+import { chavePeca } from './composicao'
 import { grupoPosicao } from './posicao'
 import { estadoStock } from './stock'
 import { normalizar } from './texto'
@@ -82,8 +83,10 @@ export function pesquisarLocalizacoes(consulta: string, locs: Localizacao[], ctx
     .map((r) => r.l)
 }
 
-export function aplicarFiltros(pecas: Peca[], f: Filtros, locs: Map<string, Localizacao>): Peca[] {
+/** @param naComposicao chaves das peças da estrutura escolhida em `f.composicao` (ver utils/composicao). */
+export function aplicarFiltros(pecas: Peca[], f: Filtros, locs: Map<string, Localizacao>, naComposicao?: Set<string>): Peca[] {
   return pecas.filter((p) => {
+    if (f.composicao && !naComposicao?.has(chavePeca(p))) return false
     if (f.categoria && (p.categoria ?? SEM_CATEGORIA) !== f.categoria) return false
     if (f.estado && estadoStock(p) !== f.estado) return false
     if (f.tipoRegisto && p.tipoRegisto !== f.tipoRegisto) return false
@@ -95,7 +98,7 @@ export function aplicarFiltros(pecas: Peca[], f: Filtros, locs: Map<string, Loca
   })
 }
 
-export const FILTROS_VAZIOS: Filtros = { categoria: '', zona: '', estado: '', tipoRegisto: '', no3D: '', uqe: '' }
+export const FILTROS_VAZIOS: Filtros = { categoria: '', zona: '', estado: '', tipoRegisto: '', no3D: '', uqe: '', composicao: '' }
 
 export function filtrosAtivos(f: Filtros): number {
   return Object.values(f).filter(Boolean).length

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { carregarDadosBase, type DadosBase } from '../data/fonte'
-import type { Estrutura, Layout, Localizacao, Peca } from '../types'
+import type { Composicao, Estrutura, Layout, Localizacao, Peca } from '../types'
 import { criarLigador, gerarLocalizacoes } from '../utils/planta'
 
 /**
@@ -13,6 +13,18 @@ import { criarLigador, gerarLocalizacoes } from '../utils/planta'
 const CHAVE_RASCUNHO = 'armazem3d.rascunho.v1'
 /** Planta (layout) alterada no editor da planta — também só neste navegador. */
 const CHAVE_PLANTA = 'armazem3d.planta.v1'
+
+/** Organograma (composição das peças) alterado no navegador. */
+const CHAVE_COMPOSICAO = 'armazem3d.composicao.v1'
+
+function lerComposicao(): Composicao | null {
+  try {
+    const bruto = localStorage.getItem(CHAVE_COMPOSICAO)
+    return bruto ? (JSON.parse(bruto) as Composicao) : null
+  } catch {
+    return null
+  }
+}
 
 function lerPlanta(): Layout | null {
   try {
@@ -72,6 +84,12 @@ interface Inventario {
   guardarPlanta: (l: Layout) => string | null
   reporPlanta: () => void
   exportarPlanta: () => void
+  /** Organograma em uso: o rascunho local, senão o oficial (composicao.json). */
+  composicao: Composicao
+  composicaoLocal: boolean
+  guardarComposicao: (c: Composicao) => string | null
+  reporComposicao: () => void
+  exportarComposicao: () => void
   pecas: Peca[]
   localizacoes: Localizacao[]
   locs: Map<string, Localizacao>
@@ -95,6 +113,7 @@ export function InventarioProvider({ children }: { children: ReactNode }) {
   const [rascunho, setRascunho] = useState<Rascunho>(lerRascunho)
   const [plantaLocal, setPlantaLocal] = useState<Layout | null>(lerPlanta)
   const [plantaEmEdicao, setPlantaEmEdicao] = useState<Layout | null>(null)
+  const [composicaoLocal, setComposicaoLocal] = useState<Composicao | null>(lerComposicao)
 
   // Localizações e ligações das peças: com a planta oficial usam-se os ficheiros gerados pelos scripts;
   // com uma planta alterada, são recalculadas aqui com as mesmas regras (src/utils/planta.ts).
@@ -182,6 +201,26 @@ export function InventarioProvider({ children }: { children: ReactNode }) {
       exportarPlanta: () => {
         if (plantaGuardada) descarregar(plantaGuardada, 'layout.json')
       },
+      composicao: composicaoLocal ?? dados?.composicao ?? { grupos: [], ligacoes: [] },
+      composicaoLocal: !!composicaoLocal,
+      guardarComposicao: (c) => {
+        try {
+          localStorage.setItem(CHAVE_COMPOSICAO, JSON.stringify(c))
+          setComposicaoLocal(c)
+          return null
+        } catch {
+          return 'Não foi possível guardar o organograma no armazenamento local deste navegador.'
+        }
+      },
+      reporComposicao: () => {
+        try {
+          localStorage.removeItem(CHAVE_COMPOSICAO)
+        } catch {
+          /* nada a remover */
+        }
+        setComposicaoLocal(null)
+      },
+      exportarComposicao: () => descarregar(composicaoLocal ?? dados?.composicao ?? { grupos: [], ligacoes: [] }, 'composicao.json'),
       pecas,
       localizacoes,
       locs,
@@ -206,7 +245,7 @@ export function InventarioProvider({ children }: { children: ReactNode }) {
       },
       existeNaBase: (id) => idsBase.has(id),
     }
-  }, [dados, rascunho, layout, plantaLocal, plantaEmEdicao, plantaGuardada, localizacoesAtivas, ligacoes])
+  }, [dados, rascunho, layout, plantaLocal, plantaEmEdicao, plantaGuardada, localizacoesAtivas, ligacoes, composicaoLocal])
 
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>
 }

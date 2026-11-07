@@ -227,7 +227,36 @@ export interface Layout {
 
 export type EstadoStock = 'disponivel' | 'baixo' | 'sem_stock' | 'por_confirmar'
 
-export type Vista = '3d' | 'lista'
+export type Vista = '3d' | 'lista' | 'organograma'
+
+/**
+ * Composição das peças (organograma): que peças fazem parte de outras ou formam conjuntos.
+ * Os nós são referências de material (ex.: "GCP12"), "id:<id>" para registos sem referência,
+ * ou ids de grupos ("G-…") para equipamentos/conjuntos que não são artigos de stock.
+ */
+export interface GrupoComposicao {
+  id: string
+  /** "equipamento": equipamento maior que não está em stock; "conjunto": peças que formam um conjunto. */
+  tipo: 'equipamento' | 'conjunto'
+  nome: string
+  uqe?: Uqe
+  notas?: string
+}
+
+export interface LigacaoComposicao {
+  /** Nó de cima (o equipamento, conjunto ou peça maior). */
+  pai: string
+  /** Nó de baixo (a peça que faz parte). */
+  filho: string
+  /** Quantas unidades leva (null = por confirmar). */
+  quantidade?: number | null
+  notas?: string
+}
+
+export interface Composicao {
+  grupos: GrupoComposicao[]
+  ligacoes: LigacaoComposicao[]
+}
 
 export interface Filtros {
   categoria: string
@@ -238,4 +267,6 @@ export interface Filtros {
   /** Peças com ("sim") ou sem ("nao") ligação a uma posição do modelo 3D. */
   no3D: '' | 'sim' | 'nao'
   uqe: '' | Uqe
+  /** Só as peças de uma estrutura do organograma (nó de topo). */
+  composicao: string
 }

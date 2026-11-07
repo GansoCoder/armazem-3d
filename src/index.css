@@ -478,3 +478,79 @@ select:focus, input:focus, textarea:focus { outline: none; border-color: var(--a
 @media (max-width: 900px) {
   .editor-planta { width: min(340px, 92vw); }
 }
+
+/* ---------- Organograma ---------- */
+.organograma { flex: 1; display: flex; min-height: 0; min-width: 0; }
+.org-lista { width: 260px; }
+.org-novos { display: flex; gap: 6px; padding: 8px 8px 0; }
+.org-vazio-lista { padding: 8px; font-size: 13px; }
+.navegador-grupo.ativo { background: #d52b3f26; box-shadow: inset 3px 0 0 var(--vermelho); }
+.org-area { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+.org-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 16px 20px 8px; flex-wrap: wrap; }
+.org-topo h1 { font-size: 20px; margin: 0 0 4px; }
+.org-topo p { margin: 0; font-size: 13px; }
+.org-acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+.org-usada { display: flex; gap: 6px; align-items: center; padding: 0 20px 8px; flex-wrap: wrap; font-size: 13px; }
+.org-tela { flex: 1; overflow: auto; padding: 16px 20px 40px; }
+.org-vazio { margin: auto; max-width: 520px; text-align: center; padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--texto-sec); }
+.org-vazio h2 { color: var(--texto); margin: 8px 0 0; font-size: 18px; }
+.org-vazio-acoes { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+
+/* árvore de cima para baixo com linhas de ligação */
+.org-arvore, .org-arvore ul { display: flex; justify-content: center; margin: 0; padding: 0; list-style: none; }
+.org-arvore { width: max-content; min-width: 100%; }
+.org-arvore ul { padding-top: 22px; position: relative; }
+.org-arvore li { position: relative; padding: 22px 8px 0; display: flex; flex-direction: column; align-items: center; }
+.org-arvore > li { padding-top: 0; }
+.org-arvore li::before, .org-arvore li::after { content: ''; position: absolute; top: 0; right: 50%; width: 50%; height: 22px; border-top: 2px solid #3d5a78; }
+.org-arvore li::after { right: auto; left: 50%; border-left: 2px solid #3d5a78; }
+.org-arvore > li::before, .org-arvore > li::after { display: none; }
+.org-arvore li:only-child::before { display: none; }
+.org-arvore li:only-child::after { border-top: 0; }
+.org-arvore li:first-child::before, .org-arvore li:last-child::after { border-top: 0; }
+.org-arvore li:last-child::before { border-right: 2px solid #3d5a78; border-radius: 0 6px 0 0; }
+.org-arvore li:first-child:not(:only-child)::after { border-radius: 6px 0 0 0; }
+.org-arvore ul::before { content: ''; position: absolute; top: 0; left: 50%; height: 22px; border-left: 2px solid #3d5a78; }
+
+.org-no {
+  position: relative; width: 200px; display: flex; flex-direction: column; gap: 4px; text-align: left;
+  padding: 10px 12px; border-radius: var(--raio); background: var(--elevado); border: 1px solid var(--linha); color: var(--texto); cursor: pointer;
+}
+.org-no:hover { border-color: #3a5673; background: var(--elevado-2); }
+.org-no.foco { border-color: var(--vermelho); box-shadow: 0 0 0 2px #d52b3f55; }
+.org-no.grupo { background: #1d527f33; border-color: #2c6da3; }
+.org-no.grupo-conjunto { border-style: dashed; }
+.org-no.em-falta { cursor: default; opacity: 0.75; }
+.org-ref { font-size: 12px; color: var(--texto-sec); }
+.org-nome { font-weight: 600; font-size: 13px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.org-tipo { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--azul-match); font-weight: 700; }
+.org-rodape { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.org-pos { margin-left: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.org-qtd { position: absolute; top: -10px; right: 8px; background: var(--azul-sec); color: #fff; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; font-family: var(--mono); }
+.org-coluna { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
+
+/* editor de ligações */
+.ligacoes-bloco { border: 1px solid var(--linha); border-radius: var(--raio-sm); padding: 8px 12px 12px; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.ligacoes-bloco legend { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--texto-ter); padding: 0 4px; }
+.ligacoes-bloco p { margin: 0; font-size: 13px; }
+.lista-ligacoes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.lista-ligacoes li { display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: var(--elevado); border-radius: var(--raio-sm); font-size: 13px; }
+.ligacao-nome { flex: 1; min-width: 0; }
+.formulario .ligacao-qtd { display: flex; align-items: center; gap: 4px; }
+.ligacao-qtd input { width: 64px; height: 30px; text-align: right; }
+.seletor-no { position: relative; }
+.input-icone { position: relative; }
+.input-icone svg { position: absolute; left: 10px; top: 11px; color: var(--texto-ter); pointer-events: none; }
+.input-icone input { width: 100%; padding-left: 32px; }
+.seletor-resultados { list-style: none; margin: 4px 0 0; padding: 4px; background: var(--painel); border: 1px solid var(--linha); border-radius: var(--raio-sm); max-height: 260px; overflow: auto; }
+.seletor-resultados button { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 6px 8px; border: 0; border-radius: 4px; background: transparent; text-align: left; cursor: pointer; font-size: 13px; }
+.seletor-resultados button:hover:not(:disabled) { background: var(--elevado); }
+.seletor-resultados button:disabled { opacity: 0.5; cursor: not-allowed; }
+.rodape-esquerda { margin-right: auto; }
+@media (max-width: 900px) {
+  .organograma { flex-direction: column; }
+  .org-lista { position: static; width: auto; max-height: 34vh; box-shadow: none; border-right: 0; border-bottom: 1px solid var(--linha); }
+  .org-topo { padding: 12px; }
+  .org-tela { padding: 12px; }
+}
+.org-no .tag { align-self: flex-start; }

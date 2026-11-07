@@ -34,6 +34,7 @@ npm run preview    # servir a versão de produção
 - **Ficha da peça**: galeria (o tipo de cada fotografia é indicado), modelo 3D (.glb/.gltf) quando existir, dados com marcas "estimado" / "Por confirmar".
 - **UQE** de cada peça: Nenhuma, 2300 ou 3500. Aparece na ficha, na listagem, nos filtros e na pesquisa (`uqe 3500`), e pode ser alterada no editor da peça.
 - **Modo de edição local**: criar/editar peças, quantidade, UQE, localização, fotografias e notas — ver limitações abaixo.
+- **Organograma** (separador "Organograma" ou "Ver organograma" na ficha): mostra as peças que fazem parte de outras (ex.: o GCP12 leva kits de reparação e anéis tóricos) e as que formam conjuntos — ver abaixo.
 - **Editor da planta** (botão "Editar planta" na vista 3D): criar, mover, rodar e alterar estantes, porta-paletes, armários, estantes de vidros e zonas de chão — ver abaixo.
 
 ## Códigos de posição
@@ -122,6 +123,28 @@ Depois de mudar estruturas no layout, regenere as localizações (mantém notas 
 node scripts/gerar-localizacoes.mjs
 ```
 
+### Organograma — `src/data/composicao.json`
+
+Não existe lista técnica, por isso as ligações são feitas à mão na aplicação:
+
+- Na ficha de uma peça, **Editar ligações**: em "Componentes" acrescentam-se as peças que ela leva (com a quantidade, opcional); em "Faz parte de", a peça maior, o equipamento ou o conjunto a que pertence.
+- No separador **Organograma**, **+ Conjunto** cria um grupo de peças que vão juntas (ex.: guarda-lamas esquerdo e direito) e **+ Equipamento** cria um equipamento que não está em stock.
+- A ligação vale para o material (a referência), em todas as posições do armazém. Ligações circulares são recusadas.
+- Cada caixa do organograma mostra o stock e a posição; um clique abre a ficha. **Ver no armazém** e **Ver na listagem** aplicam o filtro "Equipamento / conjunto" e mostram só essas peças (no 3D ficam destacadas as posições).
+- Tal como as outras edições, as ligações ficam **só neste navegador** até "Exportar composicao.json" (barra amarela). Para as tornar oficiais, substitua `src/data/composicao.json` pelo ficheiro exportado.
+
+```json
+{
+  "grupos": [{ "id": "G-001", "tipo": "conjunto", "nome": "Guarda-lamas UQE2300", "uqe": "2300" }],
+  "ligacoes": [
+    { "pai": "GCP12", "filho": "16523021", "quantidade": 2 },
+    { "pai": "G-001", "filho": "53103804", "quantidade": null }
+  ]
+}
+```
+
+`pai`/`filho` são referências de material, ids de grupos (`G-…`) ou `id:<id>` para registos sem referência.
+
 ### Planta 3D — `src/data/layout.json`
 
 - `edificio`: limites do pavilhão (metros estimados) e `contorno`, o polígono das paredes (a planta é em L: a parede com a porta corta o canto de baixo à direita).
@@ -179,11 +202,11 @@ Ver a lista completa em [`docs/ANALISE.md`](docs/ANALISE.md#4-dúvidas-para-conf
 src/
   components/
     Header/  SearchBar/  Filters/  PartsList/  PartDetails/  LocationPanel/
-    LocationNavigator/  Warehouse3D/  WarehouseControls/  Editor/  EditorPlanta/  About/  common/
-  data/        layout.json  locations.json  parts.json  fonte.ts
+    LocationNavigator/  Warehouse3D/  WarehouseControls/  Editor/  EditorPlanta/  Organograma/  About/  common/
+  data/        layout.json  locations.json  parts.json  composicao.json  fonte.ts
   hooks/       useInventario (dados + rascunho local)  useApp (estado de interface)  usePecasVisiveis
   types/       tipos do domínio
-  utils/       planta (localizações e ligações, partilhado com os scripts), editorPlanta, pesquisa, stock, geometria 3D, validação, texto, imagem
+  utils/       planta (localizações e ligações, partilhado com os scripts), editorPlanta, composicao (organograma), pesquisa, stock, geometria 3D, validação, texto, imagem
 public/assets/ armazem/  localizacoes/  pecas/  modelos-3d/
 scripts/       gerar-localizacoes.mjs  importar-excel.mjs
 docs/          ANALISE.md

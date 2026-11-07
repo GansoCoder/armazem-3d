@@ -1,4 +1,4 @@
-import { ArrowLeft, Box, MapPin, Pencil, Undo2, X } from 'lucide-react'
+import { ArrowLeft, Box, MapPin, Network, Pencil, Undo2, X } from 'lucide-react'
 import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
 import { useApp } from '../../hooks/useApp'
 import { useInventario } from '../../hooks/useInventario'
@@ -6,6 +6,7 @@ import type { Peca } from '../../types'
 import { estadoStock } from '../../utils/stock'
 import { motivoSem3D } from '../../utils/posicao'
 import { codigoPosicao, formatarQuantidade, formatarValor, nomePeca, rotuloUqe } from '../../utils/texto'
+import { chavePeca, indexar, nomeNo } from '../../utils/composicao'
 import { EstadoBadge, Estimado, Foto, Modal, PorConfirmar, TagLocal } from '../common/comum'
 
 const ModelViewer = lazy(() => import('./ModelViewer'))
@@ -27,9 +28,39 @@ function Campo({ rotulo, children }: { rotulo: string; children: ReactNode }) {
   )
 }
 
+/** Ligações da peça no organograma (de que faz parte e o que leva). */
+function SecaoEstrutura({ chave, composicao, pecas, aoVer, aoEditar }: {
+  chave: string
+  composicao: Parameters<typeof indexar>[0]
+  pecas: Parameters<typeof indexar>[1]
+  aoVer: () => void
+  aoEditar: () => void
+}) {
+  const pais = composicao.ligacoes.filter((l) => l.filho === chave)
+  const filhos = composicao.ligacoes.filter((l) => l.pai === chave)
+  const idx = pais.length || filhos.length ? indexar(composicao, pecas) : null
+  return (
+    <section className="secao">
+      <h3><Network size={15} aria-hidden /> Estrutura</h3>
+      {idx ? (
+        <dl className="campos compacto">
+          {pais.length > 0 && <Campo rotulo="Faz parte de">{pais.map((l) => nomeNo(l.pai, idx)).join(' · ')}</Campo>}
+          {filhos.length > 0 && <Campo rotulo="Leva">{filhos.length} componente(s)</Campo>}
+        </dl>
+      ) : (
+        <p className="nota">Sem ligações a outras peças. Use “Editar ligações” se fizer parte de um equipamento ou de um conjunto.</p>
+      )}
+      <div className="painel-acoes">
+        {idx && <button className="btn btn-secundario btn-pequeno" onClick={aoVer}><Network size={14} aria-hidden /> Ver organograma</button>}
+        <button className="btn btn-fantasma btn-pequeno" onClick={aoEditar}><Pencil size={14} aria-hidden /> Editar ligações</button>
+      </div>
+    </section>
+  )
+}
+
 export function PartDetails() {
-  const { pecas, locs, estruturas, descartarAlteracao, existeNaBase } = useInventario()
-  const { pecaSelecionada, abrirPeca, localizarPeca, localizacaoSelecionada, vista, abrirEditor, notificar } = useApp()
+  const { pecas, locs, estruturas, descartarAlteracao, existeNaBase, composicao } = useInventario()
+  const { pecaSelecionada, abrirPeca, localizarPeca, localizacaoSelecionada, vista, abrirEditor, notificar, abrirOrganograma, abrirEditorLigacoes } = useApp()
   const peca = pecas.find((p) => p.id === pecaSelecionada)
   const [fotoAtiva, setFotoAtiva] = useState(0)
   const [ampliada, setAmpliada] = useState(false)
@@ -154,6 +185,14 @@ export function PartDetails() {
             </div>
           )}
         </section>
+
+        <SecaoEstrutura
+          chave={chavePeca(peca)}
+          composicao={composicao}
+          pecas={pecas}
+          aoVer={() => abrirOrganograma(chavePeca(peca))}
+          aoEditar={() => abrirEditorLigacoes({ chave: chavePeca(peca) })}
+        />
 
         <section className="secao">
           <h3>Dados</h3>

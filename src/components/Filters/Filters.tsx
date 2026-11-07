@@ -7,9 +7,14 @@ import { grupoPosicao } from '../../utils/posicao'
 import { FILTROS_VAZIOS, filtrosAtivos, SEM_CATEGORIA } from '../../utils/pesquisa'
 import { ROTULO_ESTADO } from '../../utils/stock'
 import { OPCOES_UQE, rotuloUqe } from '../../utils/texto'
+import { indexar, nomeNo, raizes } from '../../utils/composicao'
 
 export function Filtros() {
-  const { categorias, pecas, locs } = useInventario()
+  const { categorias, pecas, locs, composicao } = useInventario()
+  const estruturasOrg = useMemo(() => {
+    const idx = indexar(composicao, pecas)
+    return raizes(idx).map((k) => ({ chave: k, nome: nomeNo(k, idx) }))
+  }, [composicao, pecas])
   // áreas presentes nos dados, com o número de peças de cada uma
   const areas = useMemo(() => {
     const n = new Map<string, number>()
@@ -52,6 +57,14 @@ export function Filtros() {
         <select value={filtros.uqe} onChange={(e) => definir('uqe', e.target.value as TFiltros['uqe'])}>
           <option value="">Todas</option>
           {OPCOES_UQE.map((u) => <option key={u} value={u}>{rotuloUqe(u)}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>Equipamento / conjunto</span>
+        <select value={filtros.composicao} onChange={(e) => definir('composicao', e.target.value)} disabled={estruturasOrg.length === 0 && !filtros.composicao}>
+          <option value="">{estruturasOrg.length ? 'Todos' : 'Sem ligações no organograma'}</option>
+          {estruturasOrg.map((r) => <option key={r.chave} value={r.chave}>{r.nome}</option>)}
+          {filtros.composicao && !estruturasOrg.some((r) => r.chave === filtros.composicao) && <option value={filtros.composicao}>{filtros.composicao}</option>}
         </select>
       </label>
       <label>

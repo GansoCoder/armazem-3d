@@ -1,4 +1,4 @@
-import { Box, Info, List, Plus, SlidersHorizontal } from 'lucide-react'
+import { Box, Info, List, Network, Plus, SlidersHorizontal } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useApp } from '../../hooks/useApp'
 import { useInventario } from '../../hooks/useInventario'
@@ -52,6 +52,9 @@ export function Header() {
           </button>
           <button role="tab" aria-selected={vista === 'lista'} className={vista === 'lista' ? 'ativo' : ''} onClick={() => setVista('lista')}>
             <List size={16} aria-hidden /> <span>Listagem</span>
+          </button>
+          <button role="tab" aria-selected={vista === 'organograma'} className={vista === 'organograma' ? 'ativo' : ''} onClick={() => setVista('organograma')}>
+            <Network size={16} aria-hidden /> <span>Organograma</span>
           </button>
         </div>
 

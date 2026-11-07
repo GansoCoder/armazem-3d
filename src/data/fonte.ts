@@ -4,27 +4,31 @@
  * Hoje os dados vêm dos ficheiros JSON desta pasta. Para ligar a uma API ou base de dados,
  * basta substituir o corpo de `carregarDadosBase` por pedidos `fetch` que devolvam a mesma forma.
  */
-import type { Layout, Localizacao, Peca } from '../types'
+import type { Composicao, Layout, Localizacao, Peca } from '../types'
 import { validarDados } from '../utils/validacao'
 
 export interface DadosBase {
   layout: Layout
   localizacoes: Localizacao[]
   pecas: Peca[]
+  /** Organograma: peças que fazem parte de outras ou formam conjuntos. */
+  composicao: Composicao
   avisos: string[]
 }
 
 export async function carregarDadosBase(): Promise<DadosBase> {
   // importação dinâmica: os dados (≈1 MB com o Excel) ficam num ficheiro à parte do código da interface
-  const [layoutMod, locsMod, pecasMod] = await Promise.all([
+  const [layoutMod, locsMod, pecasMod, compMod] = await Promise.all([
     import('./layout.json'),
     import('./locations.json'),
     import('./parts.json'),
+    import('./composicao.json'),
   ])
   const layout = layoutMod.default as unknown as Layout
   const localizacoes = locsMod.default as unknown as Localizacao[]
   const pecas = pecasMod.default as unknown as Peca[]
+  const composicao = compMod.default as unknown as Composicao
   const avisos = validarDados(layout, localizacoes, pecas)
   if (avisos.length) console.warn('[dados] Avisos de integridade:', avisos)
-  return { layout, localizacoes, pecas, avisos }
+  return { layout, localizacoes, pecas, composicao, avisos }
 }

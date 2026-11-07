@@ -5,6 +5,8 @@ import { PartEditor } from './components/Editor/PartEditor'
 import { Header } from './components/Header/Header'
 import { PartDetails } from './components/PartDetails/PartDetails'
 import { PartsList } from './components/PartsList/PartsList'
+import { EditorLigacoes } from './components/Organograma/EditorLigacoes'
+import { Organograma } from './components/Organograma/Organograma'
 import { AppProvider, useApp } from './hooks/useApp'
 import { InventarioProvider, useInventario } from './hooks/useInventario'
 
@@ -63,6 +65,31 @@ function BannerPlanta() {
   )
 }
 
+function BannerComposicao() {
+  const { composicaoLocal, exportarComposicao, reporComposicao } = useInventario()
+  const { notificar } = useApp()
+  if (!composicaoLocal) return null
+  return (
+    <div className="banner-rascunho" role="status">
+      <TriangleAlert size={16} aria-hidden />
+      <span>
+        <strong>Organograma alterado localmente</strong> — ligações guardadas apenas neste navegador, não são dados oficiais.
+      </span>
+      <button className="btn btn-fantasma btn-pequeno" onClick={exportarComposicao}><Download size={14} aria-hidden /> Exportar composicao.json</button>
+      <button
+        className="btn btn-fantasma btn-pequeno"
+        onClick={() => {
+          if (!window.confirm('Descartar as ligações feitas neste navegador e voltar ao organograma oficial?')) return
+          reporComposicao()
+          notificar('Organograma oficial reposto.', 'sucesso')
+        }}
+      >
+        <RotateCcw size={14} aria-hidden /> Repor organograma
+      </button>
+    </div>
+  )
+}
+
 function Notificacoes() {
   const { notificacoes, dispensar } = useApp()
   return (
@@ -79,7 +106,7 @@ function Notificacoes() {
 
 function Conteudo() {
   const { carregado } = useInventario()
-  const { vista, editor, sobreAberto, pecaSelecionada } = useApp()
+  const { vista, editor, sobreAberto, pecaSelecionada, editorLigacoes } = useApp()
   // A vista 3D fica montada depois da primeira visita, para manter a câmara ao alternar de vista.
   const [visitou3D, setVisitou3D] = useState(vista === '3d')
   if (vista === '3d' && !visitou3D) setVisitou3D(true)
@@ -99,10 +126,12 @@ function Conteudo() {
           </div>
         )}
         {vista === 'lista' && <PartsList />}
+        {vista === 'organograma' && <Organograma />}
         <PartDetails key={pecaSelecionada ?? 'nenhuma'} />
       </main>
       {editor.aberto && <PartEditor key={`${editor.pecaId}-${editor.localizacaoInicial}`} />}
       {sobreAberto && <SobreModelo />}
+      {editorLigacoes && <EditorLigacoes key={`${editorLigacoes.chave}-${editorLigacoes.novoGrupo}`} />}
     </>
   )
 }
@@ -115,6 +144,7 @@ export default function App() {
           <Header />
           <BannerRascunho />
           <BannerPlanta />
+          <BannerComposicao />
           <Conteudo />
           <Notificacoes />
         </div>
