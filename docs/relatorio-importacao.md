@@ -1,6 +1,6 @@
 # Relatório de importação do Excel
 
-Ficheiro: `materiais armazem.xlsx` · gerado por `scripts/importar-excel.mjs` em 2026-11-04.
+Ficheiro: `materiais armazem.xlsx` · gerado por `scripts/importar-excel.mjs` em 2026-11-07.
 
 | | |
 |---|---|

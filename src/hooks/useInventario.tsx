@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { carregarDadosBase, type DadosBase } from '../data/fonte'
 import type { Composicao, Estrutura, Layout, Localizacao, Peca } from '../types'
+import { apagarGrande, gravarGrande, lerGrande } from '../utils/armazenamento'
 import { criarLigador, gerarLocalizacoes } from '../utils/planta'
 
 /**
@@ -13,6 +14,10 @@ import { criarLigador, gerarLocalizacoes } from '../utils/planta'
 const CHAVE_RASCUNHO = 'armazem3d.rascunho.v1'
 /** Planta (layout) alterada no editor da planta — também só neste navegador. */
 const CHAVE_PLANTA = 'armazem3d.planta.v1'
+
+/** Lista de materiais importada na aplicação (IndexedDB — é grande demais para o localStorage). */
+const CHAVE_IMPORTACAO = 'importacao.v1'
+export interface Importacao { ficheiro: string; data: string; pecas: Peca[] }
 
 /** Organograma (composição das peças) alterado no navegador. */
 const CHAVE_COMPOSICAO = 'armazem3d.composicao.v1'
@@ -84,6 +89,13 @@ interface Inventario {
   guardarPlanta: (l: Layout) => string | null
   reporPlanta: () => void
   exportarPlanta: () => void
+  /** Lista de materiais importada neste navegador (substitui parts.json até ser reposta). */
+  importacao: Omit<Importacao, 'pecas'> | null
+  /** Materiais de base em uso (importação local ou parts.json), antes das edições locais. */
+  pecasBase: Peca[]
+  aplicarImportacao: (i: Importacao) => Promise<string | null>
+  reporImportacao: () => Promise<void>
+  exportarPecasBase: () => void
   /** Organograma em uso: o rascunho local, senão o oficial (composicao.json). */
   composicao: Composicao
   composicaoLocal: boolean
@@ -114,6 +126,11 @@ export function InventarioProvider({ children }: { children: ReactNode }) {
   const [plantaLocal, setPlantaLocal] = useState<Layout | null>(lerPlanta)
   const [plantaEmEdicao, setPlantaEmEdicao] = useState<Layout | null>(null)
   const [composicaoLocal, setComposicaoLocal] = useState<Composicao | null>(lerComposicao)
+  const [importacao, setImportacao] = useState<Importacao | null>(null)
+  useEffect(() => {
+    lerGrande<Importacao>(CHAVE_IMPORTACAO).then((i) => { if (i) setImportacao(i) })
+  }, [])
+  const pecasBase = useMemo(() => importacao?.pecas ?? dados?.pecas ?? [], [importacao, dados])
 
   // Localizações e ligações das peças: com a planta oficial usam-se os ficheiros gerados pelos scripts;
   // com uma planta alterada, são recalculadas aqui com as mesmas regras (src/utils/planta.ts).
@@ -129,20 +146,20 @@ export function InventarioProvider({ children }: { children: ReactNode }) {
     // materiais do Excel: a posição do Excel é a referência; voltam a ser ligados à nova planta
     const ligar = criarLigador(layout, localizacoesAtivas)
     const m = new Map<string, { localizacaoId: string | null; caixa: string | null }>()
-    for (const p of dados.pecas) {
+    for (const p of pecasBase) {
       if (p.fonte !== 'excel' || !p.posicaoOrigem) continue
       const r = ligar(p.posicaoOrigem)
       m.set(p.id, { localizacaoId: r.loc?.id ?? null, caixa: r.loc ? (r.caixa ?? null) : p.caixa })
     }
     return m
-  }, [dados, layout, alterada, localizacoesAtivas])
+  }, [dados, layout, alterada, localizacoesAtivas, pecasBase])
 
   useEffect(() => {
     carregarDadosBase().then(setDados)
   }, [])
 
   const valor = useMemo<Inventario>(() => {
-    const base = dados?.pecas ?? []
+    const base = pecasBase
     const idsBase = new Set(base.map((p) => p.id))
     const religar = (p: Peca): Peca => {
       const l = ligacoes?.get(p.id)
@@ -201,6 +218,22 @@ export function InventarioProvider({ children }: { children: ReactNode }) {
       exportarPlanta: () => {
         if (plantaGuardada) descarregar(plantaGuardada, 'layout.json')
       },
+      importacao: importacao ? { ficheiro: importacao.ficheiro, data: importacao.data } : null,
+      pecasBase,
+      aplicarImportacao: async (i) => {
+        try {
+          await gravarGrande(CHAVE_IMPORTACAO, i)
+          setImportacao(i)
+          return null
+        } catch {
+          return 'Não foi possível guardar a importação no armazenamento deste navegador.'
+        }
+      },
+      reporImportacao: async () => {
+        await apagarGrande(CHAVE_IMPORTACAO).catch(() => undefined)
+        setImportacao(null)
+      },
+      exportarPecasBase: () => descarregar(pecasBase, 'parts.json'),
       composicao: composicaoLocal ?? dados?.composicao ?? { grupos: [], ligacoes: [] },
       composicaoLocal: !!composicaoLocal,
       guardarComposicao: (c) => {
@@ -245,7 +278,7 @@ export function InventarioProvider({ children }: { children: ReactNode }) {
       },
       existeNaBase: (id) => idsBase.has(id),
     }
-  }, [dados, rascunho, layout, plantaLocal, plantaEmEdicao, plantaGuardada, localizacoesAtivas, ligacoes, composicaoLocal])
+  }, [dados, rascunho, layout, plantaLocal, plantaEmEdicao, plantaGuardada, localizacoesAtivas, ligacoes, composicaoLocal, importacao, pecasBase])
 
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>
 }

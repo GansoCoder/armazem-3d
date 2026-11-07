@@ -1,14 +1,15 @@
-import { Boxes, Cog, List, MapPin, Network, Pencil, Plus } from 'lucide-react'
+import { Boxes, CircleAlert, CircleCheck, CircleHelp, ClipboardPlus, Cog, FileSpreadsheet, List, MapPin, Network, Pencil, Plus } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useApp } from '../../hooks/useApp'
 import { useInventario } from '../../hooks/useInventario'
 import type { LigacaoComposicao } from '../../types'
-import { descendentes, ehGrupo, indexar, nomeNo, raizes, raizesDe, type IndiceComposicao } from '../../utils/composicao'
+import { descendentes, disponibilidade, ehGrupo, indexar, nomeNo, raizes, raizesDe, type Disponibilidade, type IndiceComposicao } from '../../utils/composicao'
 import { posicaoPeca } from '../../utils/posicao'
 import { FILTROS_VAZIOS } from '../../utils/pesquisa'
 import { estadoAgregado } from '../../utils/stock'
 import { formatarQuantidade, rotuloUqe } from '../../utils/texto'
 import { EstadoBadge } from '../common/comum'
+import { ImportarFolha } from './ImportarFolha'
 
 /**
  * Vista Organograma: mostra que peças fazem parte de outras (ex.: GCP12 → kits de reparação, anéis tóricos)
@@ -16,13 +17,13 @@ import { EstadoBadge } from '../common/comum'
  */
 
 /** Caixa de um nó (peça ou grupo). */
-function No({ chave, idx, ligacao, foco }: { chave: string; idx: IndiceComposicao; ligacao?: LigacaoComposicao; foco: string | null }) {
+function No({ chave, idx, ligacao, foco, disp }: { chave: string; idx: IndiceComposicao; ligacao?: LigacaoComposicao; foco: string | null; disp?: Disponibilidade }) {
   const { abrirPeca, abrirOrganograma } = useApp()
   const { locs } = useInventario()
   const grupo = idx.grupos.get(chave)
   const pecas = idx.pecasPorChave.get(chave) ?? []
   const qtdLigacao = ligacao && (ligacao.quantidade ?? null) !== null ? `×${formatarQuantidade(ligacao.quantidade ?? null)}` : null
-  const classe = `org-no ${foco === chave ? 'foco' : ''} ${grupo ? `grupo grupo-${grupo.tipo}` : ''}`
+  const classe = `org-no ${foco === chave ? 'foco' : ''} ${grupo ? `grupo grupo-${grupo.tipo}` : ''} ${disp?.estado === 'falta' ? 'falta' : ''}`
 
   if (grupo) {
     const Icone = grupo.tipo === 'conjunto' ? Boxes : Cog
@@ -60,17 +61,24 @@ function No({ chave, idx, ligacao, foco }: { chave: string; idx: IndiceComposica
         <EstadoBadge estado={estadoAgregado(pecas) ?? 'por_confirmar'} compacto />
         {posicoes.length > 0 && <span className="mono texto-sec org-pos">{posicoes[0]}{posicoes.length > 1 && ` +${posicoes.length - 1}`}</span>}
       </span>
+      {disp && (
+        <span className={`org-disp ${disp.estado}`}>
+          Precisa {formatarQuantidade(disp.necessario)}{disp.incerto && '?'}
+          {disp.estado === 'falta' && ` · faltam ${formatarQuantidade(disp.necessario - (disp.stock ?? 0))}`}
+        </span>
+      )}
     </button>
   )
 }
 
 /** Ramo do organograma; as folhas de um mesmo nó ficam em coluna quando são muitas (poupa largura). */
-function Ramo({ chave, idx, ligacao, foco, caminho }: {
+function Ramo({ chave, idx, ligacao, foco, caminho, disp }: {
   chave: string
   idx: IndiceComposicao
   ligacao?: LigacaoComposicao
   foco: string | null
   caminho: Set<string>
+  disp: Map<string, Disponibilidade>
 }) {
   const filhos = caminho.has(chave) ? [] : (idx.filhos.get(chave) ?? [])
   const novoCaminho = new Set(caminho).add(chave)
@@ -80,14 +88,14 @@ function Ramo({ chave, idx, ligacao, foco, caminho }: {
   const itens = emColuna ? ramos : filhos
   return (
     <li>
-      <No chave={chave} idx={idx} ligacao={ligacao} foco={foco} />
+      <No chave={chave} idx={idx} ligacao={ligacao} foco={foco} disp={disp.get(chave)} />
       {(itens.length > 0 || emColuna) && (
         <ul>
-          {itens.map((l) => <Ramo key={`${l.pai}>${l.filho}`} chave={l.filho} idx={idx} ligacao={l} foco={foco} caminho={novoCaminho} />)}
+          {itens.map((l) => <Ramo key={`${l.pai}>${l.filho}`} chave={l.filho} idx={idx} ligacao={l} foco={foco} caminho={novoCaminho} disp={disp} />)}
           {emColuna && (
             <li>
               <div className="org-coluna">
-                {folhas.map((l) => <No key={`${l.pai}>${l.filho}`} chave={l.filho} idx={idx} ligacao={l} foco={foco} />)}
+                {folhas.map((l) => <No key={`${l.pai}>${l.filho}`} chave={l.filho} idx={idx} ligacao={l} foco={foco} disp={disp.get(l.filho)} />)}
               </div>
             </li>
           )}
@@ -99,7 +107,9 @@ function Ramo({ chave, idx, ligacao, foco, caminho }: {
 
 export function Organograma() {
   const { pecas, composicao } = useInventario()
-  const { focoOrganograma, abrirOrganograma, abrirEditorLigacoes, setFiltros, setConsulta, setVista } = useApp()
+  const { focoOrganograma, abrirOrganograma, abrirEditorLigacoes, setFiltros, setConsulta, setVista, adicionarRecolha, notificar } = useApp()
+  const [unidades, setUnidades] = useState(1)
+  const [folhaAberta, setFolhaAberta] = useState(false)
   const idx = useMemo(() => indexar(composicao, pecas), [composicao, pecas])
   const todas = useMemo(() => raizes(idx), [idx])
 
@@ -109,6 +119,20 @@ export function Organograma() {
   const [topoEscolhido, setTopoEscolhido] = useState<string | null>(null)
   const topo = (topoEscolhido && topos.includes(topoEscolhido) ? topoEscolhido : topos[0]) ?? null
   const temLigacoes = !!topo && (idx.filhos.has(topo) || idx.grupos.has(topo))
+  const disp = topo ? disponibilidade(topo, idx, unidades) : new Map<string, Disponibilidade>()
+  const lista = [...disp.entries()]
+  const emFalta = lista.filter(([, d]) => d.estado === 'falta')
+  const semDados = lista.filter(([, d]) => d.estado === 'sem-dados')
+
+  function adicionarTudoRecolha() {
+    // um registo por material (o primeiro com posição no 3D, se houver)
+    const ids = lista.map(([k]) => {
+      const ps = idx.pecasPorChave.get(k) ?? []
+      return (ps.find((p) => p.localizacaoId) ?? ps[0])?.id
+    }).filter((x): x is string => !!x)
+    adicionarRecolha(ids)
+    notificar(`${ids.length} peça(s) adicionadas à lista de recolha.`, 'sucesso')
+  }
 
   function mostrarPecas(vista: '3d' | 'lista') {
     if (!topo) return
@@ -127,6 +151,9 @@ export function Organograma() {
           </button>
           <button className="btn btn-secundario btn-pequeno" onClick={() => abrirEditorLigacoes({ chave: null, novoGrupo: 'equipamento' })}>
             <Plus size={14} aria-hidden /> Equipamento
+          </button>
+          <button className="btn btn-fantasma btn-pequeno" onClick={() => setFolhaAberta(true)} title="Preencher a partir de uma folha Excel/CSV">
+            <FileSpreadsheet size={14} aria-hidden /> Folha
           </button>
         </div>
         <ul className="navegador-lista">
@@ -179,6 +206,20 @@ export function Organograma() {
                 <button className="btn btn-primario" onClick={() => mostrarPecas('3d')}><MapPin size={15} aria-hidden /> Ver no armazém</button>
               </div>
             </div>
+            {lista.length > 0 && (
+              <div className="org-disponibilidade" role="status">
+                <label>
+                  <span>Para</span>
+                  <input type="number" min={1} max={999} value={unidades} onChange={(e) => setUnidades(Math.max(1, Math.round(Number(e.target.value)) || 1))} aria-label="Unidades a montar ou reparar" />
+                  <span>unidade(s):</span>
+                </label>
+                <span className="disp-ok"><CircleCheck size={14} aria-hidden /> {lista.length - emFalta.length - semDados.length} com stock</span>
+                <span className={emFalta.length ? 'disp-falta' : 'texto-sec'}><CircleAlert size={14} aria-hidden /> {emFalta.length} em falta</span>
+                {semDados.length > 0 && <span className="texto-sec"><CircleHelp size={14} aria-hidden /> {semDados.length} sem quantidade</span>}
+                {lista.some(([, d]) => d.incerto) && <span className="texto-sec" title="Ligações sem quantidade contam como 1">? = quantidade por confirmar</span>}
+                <button className="btn btn-fantasma btn-pequeno" onClick={adicionarTudoRecolha}><ClipboardPlus size={14} aria-hidden /> Tudo para a recolha</button>
+              </div>
+            )}
             {topos.length > 1 && (
               <div className="org-usada" role="group" aria-label="Estruturas onde esta peça é usada">
                 <span className="texto-sec">Usada em:</span>
@@ -189,12 +230,13 @@ export function Organograma() {
             )}
             <div className="org-tela">
               <ul className="org-arvore">
-                <Ramo chave={topo} idx={idx} foco={foco} caminho={new Set()} />
+                <Ramo chave={topo} idx={idx} foco={foco} caminho={new Set()} disp={disp} />
               </ul>
             </div>
           </>
         )}
       </div>
+      {folhaAberta && <ImportarFolha aoFechar={() => setFolhaAberta(false)} />}
     </section>
   )
 }

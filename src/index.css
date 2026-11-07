@@ -482,7 +482,7 @@ select:focus, input:focus, textarea:focus { outline: none; border-color: var(--a
 /* ---------- Organograma ---------- */
 .organograma { flex: 1; display: flex; min-height: 0; min-width: 0; }
 .org-lista { width: 260px; }
-.org-novos { display: flex; gap: 6px; padding: 8px 8px 0; }
+.org-novos { display: flex; gap: 6px; padding: 8px 8px 0; flex-wrap: wrap; }
 .org-vazio-lista { padding: 8px; font-size: 13px; }
 .navegador-grupo.ativo { background: #d52b3f26; box-shadow: inset 3px 0 0 var(--vermelho); }
 .org-area { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
@@ -554,3 +554,101 @@ select:focus, input:focus, textarea:focus { outline: none; border-color: var(--a
   .org-tela { padding: 12px; }
 }
 .org-no .tag { align-self: flex-start; }
+
+/* ---------- Menu de ferramentas ---------- */
+.popover.menu { padding: 6px; min-width: 220px; display: flex; flex-direction: column; gap: 2px; }
+.popover.menu button { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 0; border-radius: var(--raio-sm); background: transparent; text-align: left; cursor: pointer; }
+.popover.menu button:hover { background: var(--elevado-2); }
+
+/* ---------- Etiquetas QR ---------- */
+.etiquetas-config { gap: 12px; }
+.etiquetas-config .alerta { margin: 0; }
+.etiquetas-estruturas { border: 1px solid var(--linha); border-radius: var(--raio-sm); padding: 8px 12px 12px; margin: 0; }
+.etiquetas-estruturas legend { font-size: 12px; font-weight: 700; color: var(--texto-ter); text-transform: uppercase; letter-spacing: 0.06em; padding: 0 4px; }
+.etiquetas-atalhos { display: flex; gap: 6px; margin-bottom: 8px; }
+.etiquetas-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 2px 12px; max-height: 190px; overflow: auto; }
+.formulario .etiquetas-lista label.check { padding-top: 0; }
+.etiquetas-titulo { font-size: 13px; margin: 0 0 8px; color: var(--texto-sec); }
+.etiquetas-previa { display: flex; flex-wrap: wrap; gap: 10px; }
+.etiqueta { width: 70mm; height: 37mm; box-sizing: border-box; padding: 3mm; display: flex; gap: 3mm; align-items: center; background: #fff; color: #000; border-radius: 4px; overflow: hidden; }
+.etiquetas-previa .etiqueta { outline: 1px dashed #8aa; }
+.etiqueta svg { flex: none; }
+.etiqueta-texto { display: flex; flex-direction: column; gap: 1mm; min-width: 0; font-family: var(--fonte); }
+.etiqueta-codigo { font-family: var(--mono); font-size: 15pt; line-height: 1.05; word-break: break-all; }
+.etiqueta-l1 { font-size: 8pt; font-weight: 600; line-height: 1.2; }
+.etiqueta-l2 { font-size: 7pt; line-height: 1.2; color: #333; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.area-impressao { display: none; }
+@media print {
+  @page { size: A4; margin: 0; }
+  body { background: #fff !important; }
+  #root { display: none !important; }
+  .area-impressao { display: grid !important; grid-template-columns: repeat(3, 70mm); grid-auto-rows: 37mm; width: 210mm; }
+  .area-impressao .etiqueta { border-radius: 0; break-inside: avoid; }
+}
+
+/* ---------- Leitor de códigos ---------- */
+.leitor { display: flex; flex-direction: column; gap: 12px; }
+.leitor-video { position: relative; border-radius: var(--raio); overflow: hidden; background: #000; aspect-ratio: 4 / 3; }
+.leitor-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.leitor-mira { position: absolute; inset: 18% 22%; border: 3px solid #ffffffcc; border-radius: 12px; box-shadow: 0 0 0 999px #0006; }
+.leitor-estado { position: absolute; left: 0; right: 0; bottom: 8px; margin: 0; text-align: center; font-size: 13px; color: #fff; text-shadow: 0 1px 3px #000; }
+.leitor .alerta { margin: 0; }
+.input-com-botao input { flex: 1; min-width: 0; }
+
+/* ---------- Lista de recolha ---------- */
+.recolha { display: flex; flex-direction: column; gap: 10px; }
+.recolha .nota { margin: 0; }
+.recolha-paragens { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.recolha-paragem { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+.recolha-n { display: inline-grid; place-items: center; min-width: 24px; height: 24px; border-radius: 999px; background: var(--vermelho); color: #fff; font-weight: 700; font-size: 12px; }
+.recolha-pecas { list-style: none; margin: 6px 0 0; padding: 0 0 0 32px; display: flex; flex-direction: column; gap: 4px; }
+.recolha-pecas li { display: flex; align-items: center; gap: 8px; padding: 4px 8px; background: var(--elevado); border-radius: var(--raio-sm); }
+.recolha-pecas li.feita { opacity: 0.55; }
+.recolha-pecas li.feita .recolha-peca span:first-child { text-decoration: line-through; }
+.recolha-pecas label.check { padding: 0; }
+.recolha-peca { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; border: 0; background: transparent; text-align: left; cursor: pointer; font-size: 13px; padding: 2px 0; }
+.recolha-qtd { font-size: 12px; }
+.recolha-sem { font-size: 13px; margin: 8px 0 0; color: var(--texto-sec); }
+.cartao-loc-acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+.paragem-3d { min-width: 26px; height: 26px; border-radius: 999px; border: 2px solid #fff; background: var(--vermelho); color: #fff; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 2px 6px #0008; }
+.paragem-3d.feita { background: var(--verde); }
+.barra-recolha { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 20; display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 12px; background: var(--painel); border: 1px solid var(--vermelho); border-radius: 999px; font-size: 13px; box-shadow: var(--sombra); }
+@media print {
+  .area-impressao.impressao-lista { display: block !important; width: auto; padding: 12mm; font-family: var(--fonte); color: #000; }
+  .impressao-lista h1 { font-size: 14pt; margin: 0 0 6mm; }
+  .impressao-lista table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  .impressao-lista th, .impressao-lista td { border-bottom: 0.3mm solid #999; padding: 1.5mm 2mm; text-align: left; }
+}
+.org-disponibilidade { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 0 20px 8px; font-size: 13px; }
+.org-disponibilidade label { display: flex; align-items: center; gap: 6px; }
+.org-disponibilidade input { width: 64px; height: 30px; }
+.org-disponibilidade span { display: inline-flex; align-items: center; gap: 4px; }
+.disp-ok { color: var(--verde); }
+.disp-falta { color: #ff7a8a; font-weight: 600; }
+.org-no.falta { border-color: var(--vermelho); }
+.org-disp { font-size: 11px; font-weight: 600; color: var(--texto-sec); }
+.org-disp.ok { color: var(--verde); }
+.org-disp.falta { color: #ff7a8a; }
+
+/* ---------- Importar Excel ---------- */
+.importar { display: flex; flex-direction: column; gap: 12px; }
+.importar p { margin: 0; }
+.zona-ficheiro { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 32px 16px; border: 2px dashed var(--linha); border-radius: var(--raio); text-align: center; cursor: pointer; }
+.zona-ficheiro:hover, .zona-ficheiro.ativa { border-color: var(--azul-match); background: #5ab0ff12; }
+.resumo-mudancas h3 { font-size: 13px; margin: 0 0 6px; color: var(--texto-sec); }
+.mudancas { background: var(--elevado); border-radius: var(--raio-sm); padding: 8px 12px; font-size: 13px; margin-bottom: 6px; }
+.mudancas summary { cursor: pointer; }
+.mudancas ul { margin: 8px 0 0; padding-left: 18px; max-height: 220px; overflow: auto; }
+.mudancas li { margin: 2px 0; }
+
+/* ---------- Qualidade dos dados ---------- */
+.qualidade { display: flex; flex-direction: column; gap: 14px; }
+.qualidade h3 { font-size: 13px; color: var(--texto-sec); margin: 0 0 6px; }
+.qualidade-numeros { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+.qualidade-numeros div { background: var(--elevado); border-radius: var(--raio-sm); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.qualidade-numeros strong { font-size: 20px; }
+.qualidade-numeros span { font-size: 12px; color: var(--texto-sec); }
+.qualidade-numeros .aviso strong { color: var(--laranja); }
+.qualidade-explicacao { margin: 6px 0 0; font-size: 12px; }
+.qualidade-lista button { border: 0; background: transparent; text-align: left; cursor: pointer; padding: 2px 0; font-size: 13px; }
+.qualidade-lista button:hover { color: var(--azul-match); }

@@ -1,4 +1,4 @@
-import { ArrowLeft, Box, MapPin, Network, Pencil, Undo2, X } from 'lucide-react'
+import { ArrowLeft, Box, ClipboardCheck, ClipboardPlus, Link2, MapPin, Network, Pencil, Undo2, X } from 'lucide-react'
 import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
 import { useApp } from '../../hooks/useApp'
 import { useInventario } from '../../hooks/useInventario'
@@ -7,6 +7,7 @@ import { estadoStock } from '../../utils/stock'
 import { motivoSem3D } from '../../utils/posicao'
 import { codigoPosicao, formatarQuantidade, formatarValor, nomePeca, rotuloUqe } from '../../utils/texto'
 import { chavePeca, indexar, nomeNo } from '../../utils/composicao'
+import { copiarTexto, urlPeca } from '../../utils/ligacoes'
 import { EstadoBadge, Estimado, Foto, Modal, PorConfirmar, TagLocal } from '../common/comum'
 
 const ModelViewer = lazy(() => import('./ModelViewer'))
@@ -25,6 +26,14 @@ function Campo({ rotulo, children }: { rotulo: string; children: ReactNode }) {
       <dt>{rotulo}</dt>
       <dd>{children}</dd>
     </div>
+  )
+}
+
+function BotaoRecolha({ naLista, aoAlternar }: { naLista: boolean; aoAlternar: () => void }) {
+  return (
+    <button className={`btn ${naLista ? 'btn-secundario' : 'btn-fantasma'}`} onClick={aoAlternar} aria-pressed={naLista} title={naLista ? 'Retirar da lista de recolha' : 'Adicionar à lista de recolha'}>
+      {naLista ? <ClipboardCheck size={15} aria-hidden /> : <ClipboardPlus size={15} aria-hidden />} {naLista ? 'Na recolha' : 'Adicionar à recolha'}
+    </button>
   )
 }
 
@@ -60,7 +69,7 @@ function SecaoEstrutura({ chave, composicao, pecas, aoVer, aoEditar }: {
 
 export function PartDetails() {
   const { pecas, locs, estruturas, descartarAlteracao, existeNaBase, composicao } = useInventario()
-  const { pecaSelecionada, abrirPeca, localizarPeca, localizacaoSelecionada, vista, abrirEditor, notificar, abrirOrganograma, abrirEditorLigacoes } = useApp()
+  const { pecaSelecionada, abrirPeca, localizarPeca, localizacaoSelecionada, vista, abrirEditor, notificar, abrirOrganograma, abrirEditorLigacoes, recolha, alternarRecolha } = useApp()
   const peca = pecas.find((p) => p.id === pecaSelecionada)
   const [fotoAtiva, setFotoAtiva] = useState(0)
   const [ampliada, setAmpliada] = useState(false)
@@ -168,9 +177,12 @@ export function PartDetails() {
                   {loc.origemCodigo !== 'etiqueta_visivel' && ` · código ${loc.origemCodigo === 'parcial' ? 'parcialmente ' : ''}provisório`}
                 </p>
               </div>
-              <button className="btn btn-primario" onClick={() => localizarPeca(peca.id)}>
-                <MapPin size={15} aria-hidden /> Ver no armazém
-              </button>
+              <div className="cartao-loc-acoes">
+                <button className="btn btn-primario" onClick={() => localizarPeca(peca.id)}>
+                  <MapPin size={15} aria-hidden /> Ver no armazém
+                </button>
+                <BotaoRecolha naLista={recolha.includes(peca.id)} aoAlternar={() => alternarRecolha(peca.id)} />
+              </div>
             </div>
           ) : peca.posicaoOrigem ? (
             <div className="cartao-loc">
@@ -178,6 +190,7 @@ export function PartDetails() {
                 <span className="mono loc-codigo">{peca.posicaoOrigem}</span> <span className="tag">sem 3D</span>
                 <p className="texto-sec">{motivoSem3D(peca)}.</p>
               </div>
+              <BotaoRecolha naLista={recolha.includes(peca.id)} aoAlternar={() => alternarRecolha(peca.id)} />
             </div>
           ) : (
             <div className="alerta">
@@ -224,6 +237,13 @@ export function PartDetails() {
         <div className="painel-acoes">
           <button className="btn btn-secundario" onClick={() => abrirEditor(peca.id)}>
             <Pencil size={15} aria-hidden /> Editar (rascunho local)
+          </button>
+          <button
+            className="btn btn-fantasma"
+            onClick={async () => { if (await copiarTexto(urlPeca(peca))) notificar('Ligação para esta peça copiada.', 'sucesso') }}
+            title="Copiar uma ligação que abre esta ficha"
+          >
+            <Link2 size={15} aria-hidden /> Copiar ligação
           </button>
           {peca.origemLocal && (
             <button

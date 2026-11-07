@@ -1,4 +1,4 @@
-import { ImagePlus, Link2, Trash2, TriangleAlert } from 'lucide-react'
+import { Camera, ImagePlus, Link2, Trash2, TriangleAlert } from 'lucide-react'
 import { useMemo, useState, type FormEvent } from 'react'
 import { useApp } from '../../hooks/useApp'
 import { useInventario } from '../../hooks/useInventario'
@@ -288,6 +288,11 @@ export function PartEditor() {
             ))}
           </ul>
           <div className="fotos-adicionar">
+            <label className="btn btn-secundario">
+              <Camera size={15} aria-hidden /> Tirar fotografia
+              {/* no telemóvel abre logo a câmara traseira */}
+              <input type="file" accept="image/*" capture="environment" hidden onChange={(e) => carregarFicheiros(e.target.files)} />
+            </label>
             <label className="btn btn-secundario">
               <ImagePlus size={15} aria-hidden /> {aCarregar ? 'A processar…' : 'Carregar imagem'}
               <input type="file" accept="image/*" multiple hidden onChange={(e) => carregarFicheiros(e.target.files)} />

@@ -1,8 +1,9 @@
-import { Crosshair, MapPin, Plus, X } from 'lucide-react'
+import { Crosshair, Link2, MapPin, Plus, QrCode, X } from 'lucide-react'
 import { useState } from 'react'
 import { useApp } from '../../hooks/useApp'
 import { useInventario } from '../../hooks/useInventario'
 import type { Fotografia, Peca } from '../../types'
+import { copiarTexto, urlLocalizacao } from '../../utils/ligacoes'
 import { estadoStock } from '../../utils/stock'
 import { ehColuna, formatarQuantidade, nomePeca, rotuloLocalizacao } from '../../utils/texto'
 import { EstadoBadge, Estimado, Foto, Modal, TagLocal } from '../common/comum'
@@ -38,7 +39,7 @@ function ListaPecas({ pecas, aoAbrir }: { pecas: Peca[]; aoAbrir: (id: string) =
 
 export function LocationPanel() {
   const { locs, estruturas, pecasPorLocalizacao } = useInventario()
-  const { localizacaoSelecionada, selecionarLocalizacao, abrirPeca, abrirEditor } = useApp()
+  const { localizacaoSelecionada, selecionarLocalizacao, abrirPeca, abrirEditor, notificar, setFerramenta } = useApp()
   const [foto, setFoto] = useState<Fotografia | null>(null)
   const loc = localizacaoSelecionada ? locs.get(localizacaoSelecionada) : undefined
   if (!loc) return null
@@ -66,6 +67,22 @@ export function LocationPanel() {
           <span className="sobretitulo">{loc.zona}</span>
           <h2 className="mono">{rotuloLocalizacao(loc)}</h2>
         </div>
+        <button
+          className="btn-icone"
+          onClick={async () => { if (await copiarTexto(urlLocalizacao(loc))) notificar('Ligação para esta posição copiada.', 'sucesso') }}
+          aria-label="Copiar ligação para esta posição"
+          title="Copiar ligação"
+        >
+          <Link2 size={18} />
+        </button>
+        <button
+          className="btn-icone"
+          onClick={() => setFerramenta({ tipo: 'etiquetas', estrutura: loc.estrutura })}
+          aria-label="Imprimir etiquetas QR desta estrutura"
+          title="Etiquetas QR"
+        >
+          <QrCode size={18} />
+        </button>
         <button className="btn-icone" onClick={() => selecionarLocalizacao(loc.id, { focar: true })} aria-label="Centrar câmara nesta localização" title="Centrar câmara">
           <Crosshair size={18} />
         </button>

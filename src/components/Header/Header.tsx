@@ -1,4 +1,4 @@
-import { Box, Info, List, Network, Plus, SlidersHorizontal } from 'lucide-react'
+import { Box, ClipboardList, FileSpreadsheet, Info, List, Network, Plus, QrCode, ScanLine, ShieldCheck, SlidersHorizontal, Wrench } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useApp } from '../../hooks/useApp'
 import { useInventario } from '../../hooks/useInventario'
@@ -8,9 +8,24 @@ import { SearchBar } from '../SearchBar/SearchBar'
 
 export function Header() {
   const { pecas } = useInventario()
-  const { vista, setVista, filtros, abrirEditor, setSobreAberto } = useApp()
+  const { vista, setVista, filtros, abrirEditor, setSobreAberto, setFerramenta, recolha } = useApp()
   const [filtrosAbertos, setFiltrosAbertos] = useState(false)
+  const [menuAberto, setMenuAberto] = useState(false)
   const caixaFiltros = useRef<HTMLDivElement>(null)
+  const caixaMenu = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!menuAberto) return
+    const fora = (e: MouseEvent) => { if (!caixaMenu.current?.contains(e.target as Node)) setMenuAberto(false) }
+    const esc = (e: KeyboardEvent) => e.key === 'Escape' && setMenuAberto(false)
+    document.addEventListener('mousedown', fora)
+    window.addEventListener('keydown', esc)
+    return () => {
+      document.removeEventListener('mousedown', fora)
+      window.removeEventListener('keydown', esc)
+    }
+  }, [menuAberto])
+  const abrir = (tipo: Parameters<typeof setFerramenta>[0]) => { setFerramenta(tipo); setMenuAberto(false) }
   const nFiltros = filtrosAtivos(filtros)
   const comReferencia = pecas.filter((p) => p.referencia).length
 
@@ -71,6 +86,30 @@ export function Header() {
           {filtrosAbertos && (
             <div className="popover">
               <Filtros />
+            </div>
+          )}
+        </div>
+
+        {recolha.length > 0 && (
+          <button className="btn btn-secundario" onClick={() => setFerramenta({ tipo: 'recolha' })} title="Lista de recolha">
+            <ClipboardList size={16} aria-hidden /> <span className="ocultar-movel">Recolha</span>
+            <span className="contador-pill">{recolha.length}</span>
+          </button>
+        )}
+        <button className="btn btn-secundario" onClick={() => setFerramenta({ tipo: 'leitor' })} title="Ler um código QR ou de barras">
+          <ScanLine size={16} aria-hidden /> <span className="ocultar-movel">Ler código</span>
+        </button>
+
+        <div className="popover-ancora" ref={caixaMenu}>
+          <button className="btn btn-secundario" aria-expanded={menuAberto} aria-haspopup="menu" onClick={() => setMenuAberto((v) => !v)} title="Ferramentas">
+            <Wrench size={16} aria-hidden /> <span className="ocultar-movel">Ferramentas</span>
+          </button>
+          {menuAberto && (
+            <div className="popover menu" role="menu">
+              <button role="menuitem" onClick={() => abrir({ tipo: 'recolha' })}><ClipboardList size={16} aria-hidden /> Lista de recolha</button>
+              <button role="menuitem" onClick={() => abrir({ tipo: 'etiquetas' })}><QrCode size={16} aria-hidden /> Etiquetas QR</button>
+              <button role="menuitem" onClick={() => abrir({ tipo: 'importar' })}><FileSpreadsheet size={16} aria-hidden /> Importar Excel</button>
+              <button role="menuitem" onClick={() => abrir({ tipo: 'qualidade' })}><ShieldCheck size={16} aria-hidden /> Qualidade dos dados</button>
             </div>
           )}
         </div>

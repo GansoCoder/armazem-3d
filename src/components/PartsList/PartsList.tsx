@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, FileText, MapPin, PackageOpen, Plus } from 'lucide-react'
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, ClipboardCheck, ClipboardPlus, FileText, MapPin, PackageOpen, Plus } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useApp } from '../../hooks/useApp'
 import { useInventario } from '../../hooks/useInventario'
@@ -40,7 +40,7 @@ function valorOrdenacao(p: Peca, c: Coluna, loc: Localizacao | undefined): strin
 export function PartsList() {
   const { pecas: todas, locs } = useInventario()
   const { pecas, ativo } = usePecasVisiveis()
-  const { abrirPeca, localizarPeca, pecaSelecionada, setConsulta, setFiltros, abrirEditor } = useApp()
+  const { abrirPeca, localizarPeca, pecaSelecionada, setConsulta, setFiltros, abrirEditor, recolha, alternarRecolha } = useApp()
   const [ordem, setOrdemEstado] = useState<Ordem>({ col: 'referencia', asc: true })
   const [paginaPedida, setPagina] = useState(0)
 
@@ -169,6 +169,15 @@ export function PartsList() {
                         title={loc ? 'Ver no armazém (vista 3D)' : motivoSem3D(p)}
                       >
                         <MapPin size={14} aria-hidden /> Ver no armazém
+                      </button>
+                      <button
+                        className={`btn-icone ${recolha.includes(p.id) ? 'ativo' : ''}`}
+                        onClick={() => alternarRecolha(p.id)}
+                        aria-pressed={recolha.includes(p.id)}
+                        aria-label={recolha.includes(p.id) ? `Retirar ${nomePeca(p)} da recolha` : `Adicionar ${nomePeca(p)} à recolha`}
+                        title={recolha.includes(p.id) ? 'Na lista de recolha' : 'Adicionar à recolha'}
+                      >
+                        {recolha.includes(p.id) ? <ClipboardCheck size={16} /> : <ClipboardPlus size={16} />}
                       </button>
                     </td>
                   </tr>

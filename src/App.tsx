@@ -1,14 +1,20 @@
 import { Download, RotateCcw, TriangleAlert, X } from 'lucide-react'
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { SobreModelo } from './components/About/SobreModelo'
 import { PartEditor } from './components/Editor/PartEditor'
 import { Header } from './components/Header/Header'
 import { PartDetails } from './components/PartDetails/PartDetails'
 import { PartsList } from './components/PartsList/PartsList'
 import { EditorLigacoes } from './components/Organograma/EditorLigacoes'
+import { Etiquetas } from './components/Etiquetas/Etiquetas'
+import { LeitorCodigos } from './components/Leitor/LeitorCodigos'
+import { ListaRecolha } from './components/Recolha/ListaRecolha'
+import { ImportarExcel } from './components/Importar/ImportarExcel'
+import { QualidadeDados } from './components/Qualidade/QualidadeDados'
 import { Organograma } from './components/Organograma/Organograma'
 import { AppProvider, useApp } from './hooks/useApp'
 import { InventarioProvider, useInventario } from './hooks/useInventario'
+import { interpretarCodigo } from './utils/ligacoes'
 
 // A vista 3D (three.js) é carregada à parte para a listagem abrir mais depressa.
 const Warehouse3D = lazy(() => import('./components/Warehouse3D/Warehouse3D'))
@@ -65,6 +71,31 @@ function BannerPlanta() {
   )
 }
 
+function BannerImportacao() {
+  const { importacao, exportarPecasBase, reporImportacao } = useInventario()
+  const { notificar } = useApp()
+  if (!importacao) return null
+  return (
+    <div className="banner-rascunho" role="status">
+      <TriangleAlert size={16} aria-hidden />
+      <span>
+        <strong>Lista de materiais importada localmente</strong> ({importacao.ficheiro}, {new Date(importacao.data).toLocaleString('pt-PT')}) — só neste navegador.
+      </span>
+      <button className="btn btn-fantasma btn-pequeno" onClick={exportarPecasBase}><Download size={14} aria-hidden /> Exportar parts.json</button>
+      <button
+        className="btn btn-fantasma btn-pequeno"
+        onClick={async () => {
+          if (!window.confirm('Descartar a lista importada e voltar aos dados oficiais (parts.json)?')) return
+          await reporImportacao()
+          notificar('Dados oficiais repostos.', 'sucesso')
+        }}
+      >
+        <RotateCcw size={14} aria-hidden /> Repor dados oficiais
+      </button>
+    </div>
+  )
+}
+
 function BannerComposicao() {
   const { composicaoLocal, exportarComposicao, reporComposicao } = useInventario()
   const { notificar } = useApp()
@@ -104,9 +135,26 @@ function Notificacoes() {
   )
 }
 
+/** Abre a posição/peça de uma ligação direta (ex.: QR de uma etiqueta: ?loc=1B09A02 ou ?peca=42173490). */
+function useLigacaoDireta() {
+  const { carregado, pecas, localizacoes } = useInventario()
+  const { abrirDestino } = useApp()
+  const feito = useRef(false)
+  useEffect(() => {
+    if (!carregado || feito.current) return
+    feito.current = true
+    const q = new URLSearchParams(window.location.search)
+    if (!q.get('loc') && !q.get('peca') && !q.get('pecaId')) return
+    abrirDestino(interpretarCodigo(window.location.href, pecas, localizacoes))
+    // limpa o endereço para um recarregamento não repetir a navegação
+    window.history.replaceState(null, '', window.location.pathname)
+  }, [carregado, pecas, localizacoes, abrirDestino])
+}
+
 function Conteudo() {
+  useLigacaoDireta()
   const { carregado } = useInventario()
-  const { vista, editor, sobreAberto, pecaSelecionada, editorLigacoes } = useApp()
+  const { vista, editor, sobreAberto, pecaSelecionada, editorLigacoes, ferramenta } = useApp()
   // A vista 3D fica montada depois da primeira visita, para manter a câmara ao alternar de vista.
   const [visitou3D, setVisitou3D] = useState(vista === '3d')
   if (vista === '3d' && !visitou3D) setVisitou3D(true)
@@ -131,6 +179,11 @@ function Conteudo() {
       </main>
       {editor.aberto && <PartEditor key={`${editor.pecaId}-${editor.localizacaoInicial}`} />}
       {sobreAberto && <SobreModelo />}
+      {ferramenta?.tipo === 'etiquetas' && <Etiquetas />}
+      {ferramenta?.tipo === 'leitor' && <LeitorCodigos />}
+      {ferramenta?.tipo === 'recolha' && <ListaRecolha />}
+      {ferramenta?.tipo === 'importar' && <ImportarExcel />}
+      {ferramenta?.tipo === 'qualidade' && <QualidadeDados />}
       {editorLigacoes && <EditorLigacoes key={`${editorLigacoes.chave}-${editorLigacoes.novoGrupo}`} />}
     </>
   )
@@ -144,6 +197,7 @@ export default function App() {
           <Header />
           <BannerRascunho />
           <BannerPlanta />
+          <BannerImportacao />
           <BannerComposicao />
           <Conteudo />
           <Notificacoes />

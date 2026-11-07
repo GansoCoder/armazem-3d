@@ -303,11 +303,11 @@ function FormEstrutura({ e, trabalho, aplicar, aoFocar }: {
         )}
         <p>Peças ligadas a esta estrutura: <strong>{ligadas}</strong></p>
         {porLigar.length > 0 && (
-          <p className="alerta alerta-aviso">
+          <p className="alerta alerta-aviso"><span>
             {porLigar.length} material(ais) do Excel no corredor {e.corredor} ainda sem posição no 3D
             (ex.: <span className="mono">{porLigar.slice(0, 3).map((p) => p.posicaoOrigem).join(', ')}</span>).
             Aumente as colunas ou prateleiras, ou verifique se pertencem a outra estrutura do mesmo corredor.
-          </p>
+          </span></p>
         )}
       </section>
     </div>

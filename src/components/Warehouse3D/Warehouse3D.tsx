@@ -1,6 +1,7 @@
 import { Canvas } from '@react-three/fiber'
-import { Edges } from '@react-three/drei'
-import { Info, PanelLeftOpen, PencilRuler } from 'lucide-react'
+import { Edges, Html } from '@react-three/drei'
+import { ClipboardList, Info, PanelLeftOpen, PencilRuler, X } from 'lucide-react'
+import { useRotaRecolha } from '../Recolha/ListaRecolha'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useApp } from '../../hooks/useApp'
 import { useInventario } from '../../hooks/useInventario'
@@ -57,8 +58,10 @@ function ContornoEdicao({ layout, id }: { layout: Layout; id: string }) {
 
 export default function Warehouse3D({ visivel }: { visivel: boolean }) {
   const { dados, layout, localizacoes, locs, pecasPorLocalizacao, plantaEmEdicao, setPlantaEmEdicao, plantaGuardada } = useInventario()
-  const { localizacaoSelecionada, selecionarLocalizacao, pedidoFoco, setSobreAberto, estruturaEditada, setEstruturaEditada } = useApp()
+  const { localizacaoSelecionada, selecionarLocalizacao, pedidoFoco, setSobreAberto, estruturaEditada, setEstruturaEditada, recolhaNo3D, setRecolhaNo3D, setFerramenta, recolhidas } = useApp()
   const editando = !!plantaEmEdicao
+  const rota = useRotaRecolha()
+  const mostrarRota = recolhaNo3D && !editando && rota.paragens.length > 0
   const { pecas: visiveis, ativo: filtroAtivo } = usePecasVisiveis()
   const controlo = useRef<ControloCamara>(null)
   const [pronto, setPronto] = useState(false)
@@ -87,9 +90,14 @@ export default function Warehouse3D({ visivel }: { visivel: boolean }) {
     })
     if (enq) controlo.current?.focar(enq)
   }
-  const correspondencias = useMemo(
+  const correspondenciasFiltro = useMemo(
     () => new Set(visiveis.map((p) => p.localizacaoId).filter((id): id is string => !!id)),
     [visiveis],
+  )
+  // com o percurso de recolha ligado, destacam-se as paragens em vez do resultado da pesquisa
+  const correspondencias = useMemo(
+    () => (mostrarRota ? new Set(rota.paragens.map((g) => g.localizacao.id)) : correspondenciasFiltro),
+    [mostrarRota, rota, correspondenciasFiltro],
   )
 
   // Enquadrar a câmara quando há um pedido de foco (pesquisa, listagem, navegador...).
@@ -147,10 +155,20 @@ export default function Warehouse3D({ visivel }: { visivel: boolean }) {
             pecasPorLocalizacao={pecasPorLocalizacao}
             selecionada={editando ? null : localizacaoSelecionada}
             correspondencias={correspondencias}
-            filtroAtivo={filtroAtivo && !editando}
+            filtroAtivo={(filtroAtivo || mostrarRota) && !editando}
             aoSelecionar={(id) => (editando ? setEstruturaEditada(locs.get(id)?.estrutura ?? null) : selecionarLocalizacao(id))}
           />
           {editando && estruturaEditada && <ContornoEdicao layout={layout} id={estruturaEditada} />}
+          {mostrarRota && rota.paragens.map((g) => {
+            const feita = g.pecas.every((p) => recolhidas.includes(p.id))
+            return (
+              <Html key={g.localizacao.id} position={[g.ponto[0], g.ponto[1] + 0.6, g.ponto[2]]} center zIndexRange={[14, 0]}>
+                <button className={`paragem-3d ${feita ? 'feita' : ''}`} onClick={() => selecionarLocalizacao(g.localizacao.id, { focar: true })} title={g.localizacao.descricao}>
+                  {g.n}
+                </button>
+              </Html>
+            )
+          })}
           <Rotulos layout={layout} visiveis={rotulos} />
           <ZonasPiso zonas={layout.zonas} visiveis={rotulos} />
           <CameraRig ref={controlo} inicial={inicial} />
@@ -193,7 +211,16 @@ export default function Warehouse3D({ visivel }: { visivel: boolean }) {
           <span className="sublinhado">Saber mais</span>
         </button>
 
-        {filtroAtivo && (
+        {mostrarRota && (
+          <div className="barra-recolha" role="status">
+            <ClipboardList size={15} aria-hidden />
+            <span>Percurso de recolha: <strong>{rota.paragens.length}</strong> paragem(ns){rota.semPosicao.length > 0 && ` · ${rota.semPosicao.length} sem posição`}</span>
+            <button className="btn btn-fantasma btn-pequeno" onClick={() => setFerramenta({ tipo: 'recolha' })}>Ver lista</button>
+            <button className="btn-icone" onClick={() => setRecolhaNo3D(false)} aria-label="Esconder o percurso de recolha"><X size={15} /></button>
+          </div>
+        )}
+
+        {filtroAtivo && !mostrarRota && (
           <div className="resumo-filtro" role="status">
             {correspondencias.size === 0
               ? 'Nenhuma peça corresponde à pesquisa/filtros.'

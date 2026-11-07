@@ -11,6 +11,8 @@ Requisitos: Node.js 22.18+ (os scripts importam diretamente `src/utils/planta.ts
 ```bash
 npm install
 npm run dev        # http://localhost:5173
+npm run dev:rede   # também acessível pelos telemóveis na mesma rede (ver "Etiquetas QR")
+npm test           # testes automáticos das regras (códigos, ligações, importação, organograma)
 npm run build      # versão de produção em dist/
 npm run preview    # servir a versão de produção
 ```
@@ -35,6 +37,9 @@ npm run preview    # servir a versão de produção
 - **UQE** de cada peça: Nenhuma, 2300 ou 3500. Aparece na ficha, na listagem, nos filtros e na pesquisa (`uqe 3500`), e pode ser alterada no editor da peça.
 - **Modo de edição local**: criar/editar peças, quantidade, UQE, localização, fotografias e notas — ver limitações abaixo.
 - **Organograma** (separador "Organograma" ou "Ver organograma" na ficha): mostra as peças que fazem parte de outras (ex.: o GCP12 leva kits de reparação e anéis tóricos) e as que formam conjuntos — ver abaixo.
+- **No terreno**: etiquetas QR para imprimir, leitor de códigos (QR e códigos de barras), ligações diretas para posições e peças, fotografias tiradas com a câmara do telemóvel — ver abaixo.
+- **Lista de recolha** com ordem de passagem sugerida e paragens numeradas no 3D.
+- **Ferramentas → Importar Excel** (com resumo do que muda) e **Qualidade dos dados**.
 - **Editor da planta** (botão "Editar planta" na vista 3D): criar, mover, rodar e alterar estantes, porta-paletes, armários, estantes de vidros e zonas de chão — ver abaixo.
 
 ## Códigos de posição
@@ -123,6 +128,26 @@ Depois de mudar estruturas no layout, regenere as localizações (mantém notas 
 node scripts/gerar-localizacoes.mjs
 ```
 
+### No terreno: etiquetas QR, leitor e ligações diretas
+
+- **Ligações diretas**: `…/?loc=1B09A02` abre essa posição no 3D; `…/?peca=42173490` abre a peça. Os botões "Copiar ligação" (ficha e painel da posição) dão estas ligações.
+- **Etiquetas QR** (Ferramentas → Etiquetas QR, ou o ícone QR no painel da posição): escolha as estruturas e o tipo — **posições** (prateleira + coluna, para colar na estante) ou **caixas** (uma por material, com a referência). Imprime em folhas A4 de 3 × 8 etiquetas de 70 × 37 mm.
+- Para os telemóveis abrirem os QR, a aplicação tem de estar acessível na rede: arranque com `npm run dev:rede` e escreva em "Endereço da aplicação" o endereço "Network" que aparece (ex.: `http://192.168.1.20:5173/`). Basta apontar a câmara do telemóvel ao QR.
+- **Ler código** (cabeçalho): lê QR e códigos de barras com a câmara no Chrome/Edge (exige `https` ou o próprio computador); em qualquer navegador pode escrever ou colar um código de posição (com ou sem caixa), uma referência ou uma ligação.
+- **Tirar fotografia** no editor da peça abre logo a câmara traseira no telemóvel.
+
+### Lista de recolha
+
+- "Adicionar à recolha" na ficha, na listagem ou "Tudo para a recolha" no organograma.
+- A lista ordena as paragens a partir da porta, sempre para a posição mais próxima (aproximação, sem contar com as estantes pelo meio). Marque cada peça ao recolher; "Ver percurso no armazém" mostra as paragens numeradas no 3D; "Imprimir" dá uma folha para levar.
+- Fica guardada neste navegador.
+
+### Importar o Excel na aplicação e qualidade dos dados
+
+- **Ferramentas → Importar Excel**: arraste o ficheiro. Antes de aplicar mostra os materiais novos, os que deixam de existir e as quantidades, posições e designações alteradas. Usa as mesmas regras do script (`src/utils/importacao.ts`).
+- A importação fica neste navegador (IndexedDB) até "Repor dados oficiais"; "Exportar parts.json" dá o ficheiro para substituir `src/data/parts.json`.
+- **Ferramentas → Qualidade dos dados**: posições a corrigir no Excel, posições que não cabem nas estantes desenhadas, materiais sem posição no 3D por motivo, e percentagem com fotografia e categoria. Um clique abre a ficha.
+
 ### Organograma — `src/data/composicao.json`
 
 Não existe lista técnica, por isso as ligações são feitas à mão na aplicação:
@@ -131,6 +156,8 @@ Não existe lista técnica, por isso as ligações são feitas à mão na aplica
 - No separador **Organograma**, **+ Conjunto** cria um grupo de peças que vão juntas (ex.: guarda-lamas esquerdo e direito) e **+ Equipamento** cria um equipamento que não está em stock.
 - A ligação vale para o material (a referência), em todas as posições do armazém. Ligações circulares são recusadas.
 - Cada caixa do organograma mostra o stock e a posição; um clique abre a ficha. **Ver no armazém** e **Ver na listagem** aplicam o filtro "Equipamento / conjunto" e mostram só essas peças (no 3D ficam destacadas as posições).
+- **Conjunto completo**: no organograma, indique quantas unidades vai montar/reparar; cada peça mostra quantas são precisas e quantas faltam (ligações sem quantidade contam como 1, marcadas com "?").
+- **Folha** (no organograma): preenche muitas ligações de uma vez a partir de um Excel ou CSV com as colunas `Pai`, `Filho`, `Quantidade` e `Tipo do pai` ("equipamento"/"conjunto"). "Modelo (CSV)" descarrega um exemplo. Pais que não sejam referências nem grupos existentes são criados como grupos; linhas inválidas ou circulares são indicadas e ignoradas.
 - Tal como as outras edições, as ligações ficam **só neste navegador** até "Exportar composicao.json" (barra amarela). Para as tornar oficiais, substitua `src/data/composicao.json` pelo ficheiro exportado.
 
 ```json
@@ -202,11 +229,14 @@ Ver a lista completa em [`docs/ANALISE.md`](docs/ANALISE.md#4-dúvidas-para-conf
 src/
   components/
     Header/  SearchBar/  Filters/  PartsList/  PartDetails/  LocationPanel/
-    LocationNavigator/  Warehouse3D/  WarehouseControls/  Editor/  EditorPlanta/  Organograma/  About/  common/
+    LocationNavigator/  Warehouse3D/  WarehouseControls/  Editor/  EditorPlanta/  Organograma/  Etiquetas/  Leitor/
+    Recolha/  Importar/  Qualidade/  About/  common/
+  utils/__tests__/   testes (npm test)
   data/        layout.json  locations.json  parts.json  composicao.json  fonte.ts
   hooks/       useInventario (dados + rascunho local)  useApp (estado de interface)  usePecasVisiveis
   types/       tipos do domínio
-  utils/       planta (localizações e ligações, partilhado com os scripts), editorPlanta, composicao (organograma), pesquisa, stock, geometria 3D, validação, texto, imagem
+  utils/       planta e importacao (partilhados com os scripts), editorPlanta, composicao (organograma), ligacoes (QR e
+               ligações diretas), recolha, armazenamento (IndexedDB), pesquisa, stock, geometria 3D, validação, texto, imagem
 public/assets/ armazem/  localizacoes/  pecas/  modelos-3d/
 scripts/       gerar-localizacoes.mjs  importar-excel.mjs
 docs/          ANALISE.md

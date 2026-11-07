@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Filtros, Vista } from '../types'
+import type { Destino } from '../utils/ligacoes'
 import { FILTROS_VAZIOS } from '../utils/pesquisa'
 import { motivoSem3D } from '../utils/posicao'
 import { useInventario } from './useInventario'
@@ -46,11 +47,38 @@ interface App {
   /** Editor de ligações de um nó; `novoGrupo` cria um equipamento/conjunto novo. */
   editorLigacoes: { chave: string | null; novoGrupo?: 'equipamento' | 'conjunto'; comPeca?: string } | null
   abrirEditorLigacoes: (e: App['editorLigacoes']) => void
+  /** Abre o resultado de um código lido ou de uma ligação direta (localização, peça ou pesquisa). */
+  abrirDestino: (d: Destino) => void
+  /** Janela de ferramenta aberta (etiquetas QR, leitor de códigos, importação, qualidade dos dados, recolha). */
+  ferramenta: { tipo: Ferramenta; estrutura?: string } | null
+  setFerramenta: (f: App['ferramenta']) => void
+  /** Lista de recolha (ids das peças) e as já recolhidas; guardadas neste navegador. */
+  recolha: string[]
+  recolhidas: string[]
+  alternarRecolha: (id: string) => void
+  adicionarRecolha: (ids: string[]) => void
+  alternarRecolhida: (id: string) => void
+  limparRecolha: () => void
+  /** Mostra as paragens da lista de recolha na vista 3D. */
+  recolhaNo3D: boolean
+  setRecolhaNo3D: (v: boolean) => void
 }
+
+export type Ferramenta = 'etiquetas' | 'leitor' | 'importar' | 'qualidade' | 'recolha'
 
 const Ctx = createContext<App | null>(null)
 
 const CHAVE_VISTA = 'armazem3d.vista'
+const CHAVE_RECOLHA = 'armazem3d.recolha.v1'
+
+function lerRecolha(): { ids: string[]; feitas: string[] } {
+  try {
+    const v = JSON.parse(localStorage.getItem(CHAVE_RECOLHA) ?? 'null')
+    return v && Array.isArray(v.ids) ? { ids: v.ids, feitas: v.feitas ?? [] } : { ids: [], feitas: [] }
+  } catch {
+    return { ids: [], feitas: [] }
+  }
+}
 
 function lerVista(): Vista {
   try {
@@ -75,6 +103,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [estruturaEditada, setEstruturaEditada] = useState<string | null>(null)
   const [focoOrganograma, setFocoOrganograma] = useState<string | null>(null)
   const [editorLigacoes, abrirEditorLigacoes] = useState<App['editorLigacoes']>(null)
+  const [ferramenta, setFerramenta] = useState<App['ferramenta']>(null)
+  const [recolhaEstado, setRecolhaEstado] = useState(lerRecolha)
+  const [recolhaNo3D, setRecolhaNo3D] = useState(false)
+  const gravarRecolha = useCallback((ids: string[], feitas: string[]) => {
+    const v = { ids, feitas: feitas.filter((f) => ids.includes(f)) }
+    setRecolhaEstado(v)
+    try {
+      localStorage.setItem(CHAVE_RECOLHA, JSON.stringify(v))
+    } catch {
+      /* opcional */
+    }
+  }, [])
   const contador = useRef(0)
 
   const setVista = useCallback((v: Vista) => {
@@ -117,6 +157,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [pecas, locs, notificar, selecionarLocalizacao, setVista],
   )
 
+  const abrirDestino = useCallback(
+    (d: Destino) => {
+      if (d.tipo === 'localizacao') {
+        setPeca(null)
+        setVista('3d')
+        selecionarLocalizacao(d.id, { focar: true })
+      } else if (d.tipo === 'peca') {
+        const p = pecas.find((x) => x.id === d.id)
+        if (p?.localizacaoId && locs.has(p.localizacaoId)) localizarPeca(d.id)
+        else setPeca(d.id)
+      } else {
+        setConsulta(d.texto)
+        setVista('lista')
+        notificar(`Sem correspondência exata para "${d.texto}" — a mostrar os resultados da pesquisa.`, 'info')
+      }
+    },
+    [pecas, locs, localizarPeca, notificar, selecionarLocalizacao, setVista],
+  )
+
   const valor = useMemo<App>(
     () => ({
       vista, setVista, consulta, setConsulta, filtros, setFiltros,
@@ -134,10 +193,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setVista('organograma')
       },
       editorLigacoes, abrirEditorLigacoes,
+      abrirDestino,
+      ferramenta, setFerramenta,
+      recolha: recolhaEstado.ids,
+      recolhidas: recolhaEstado.feitas,
+      alternarRecolha: (id) => gravarRecolha(
+        recolhaEstado.ids.includes(id) ? recolhaEstado.ids.filter((x) => x !== id) : [...recolhaEstado.ids, id],
+        recolhaEstado.feitas,
+      ),
+      adicionarRecolha: (ids) => gravarRecolha([...new Set([...recolhaEstado.ids, ...ids])], recolhaEstado.feitas),
+      alternarRecolhida: (id) => gravarRecolha(
+        recolhaEstado.ids,
+        recolhaEstado.feitas.includes(id) ? recolhaEstado.feitas.filter((x) => x !== id) : [...recolhaEstado.feitas, id],
+      ),
+      limparRecolha: () => { gravarRecolha([], []); setRecolhaNo3D(false) },
+      recolhaNo3D, setRecolhaNo3D,
     }),
     [vista, setVista, consulta, filtros, localizacaoSelecionada, pecaSelecionada, pedidoFoco,
       selecionarLocalizacao, localizarPeca, notificacoes, notificar, dispensar, editor, sobreAberto, estruturaEditada,
-      focoOrganograma, editorLigacoes],
+      focoOrganograma, editorLigacoes, abrirDestino, ferramenta, recolhaEstado, gravarRecolha, recolhaNo3D],
   )
 
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>
