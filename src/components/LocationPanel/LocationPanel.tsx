@@ -20,10 +20,10 @@ function ListaPecas({ pecas, aoAbrir }: { pecas: Peca[]; aoAbrir: (id: string) =
       {pecas.map((p) => (
         <li key={p.id}>
           <button onClick={() => aoAbrir(p.id)} className="peca-loc">
-            <Foto foto={p.fotografias[0]} miniatura className="miniatura" />
+            {p.fotografias[0] && <Foto foto={p.fotografias[0]} miniatura className="miniatura" />}
             <div className="peca-loc-texto">
               <span className="peca-loc-nome">{nomePeca(p)}</span>
-              <span className="mono texto-sec">{p.caixa && <strong className="caixa-loc">{p.caixa}</strong>}{p.referencia ?? 'Sem referência'}</span>
+              <span className="mono ref-loc">{p.caixa && <strong className="caixa-loc">{p.caixa}</strong>}{p.referencia ?? 'Sem referência'}</span>
               {p.origemLocal && <TagLocal origem={p.origemLocal} />}
             </div>
             <div className="peca-loc-qtd">
@@ -64,7 +64,6 @@ export function LocationPanel() {
       <header className="painel-cabecalho">
         <div className="painel-icone"><MapPin size={18} aria-hidden /></div>
         <div className="painel-titulo">
-          <span className="sobretitulo">{loc.zona}</span>
           <h2 className="mono">{rotuloLocalizacao(loc)}</h2>
         </div>
         <button
@@ -92,9 +91,7 @@ export function LocationPanel() {
       </header>
 
       <div className="painel-corpo">
-        <p>{loc.descricao}</p>
         <dl className="campos compacto">
-          <div className="campo"><dt>Estrutura</dt><dd>{estrutura?.nome ?? loc.estrutura}</dd></div>
           {formatoOficial && (
             <div className="campo">
               <dt>Corredor</dt>
@@ -120,11 +117,8 @@ export function LocationPanel() {
             </div>
           )}
           {!formatoOficial && !numerada && loc.nivel !== null && <div className="campo"><dt>Nível</dt><dd>{nomeNivel ?? loc.nivel}</dd></div>}
-          {loc.codigo && <div className="campo"><dt>ID interno</dt><dd className="mono texto-sec">{loc.id}</dd></div>}
           <div className="campo"><dt>Código</dt><dd>{ORIGEM_CODIGO[loc.origemCodigo]}</dd></div>
-          <div className="campo"><dt>Posição 3D</dt><dd>{loc.estadoValidacao === 'confirmado' ? 'Confirmada' : <>Aproximada <Estimado /></>}</dd></div>
           {loc.notas && <div className="campo"><dt>Notas</dt><dd>{loc.notas}</dd></div>}
-          {estrutura?.notas && <div className="campo"><dt>Sobre a estrutura</dt><dd className="texto-sec">{estrutura.notas}</dd></div>}
         </dl>
 
         <section className="secao">

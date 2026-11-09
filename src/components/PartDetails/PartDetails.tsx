@@ -68,10 +68,11 @@ function SecaoEstrutura({ chave, composicao, pecas, aoVer, aoEditar }: {
 }
 
 export function PartDetails() {
-  const { pecas, locs, estruturas, descartarAlteracao, existeNaBase, composicao } = useInventario()
+  const { pecas, locs, descartarAlteracao, existeNaBase, composicao } = useInventario()
   const { pecaSelecionada, abrirPeca, localizarPeca, localizacaoSelecionada, vista, abrirEditor, notificar, abrirOrganograma, abrirEditorLigacoes, recolha, alternarRecolha } = useApp()
   const peca = pecas.find((p) => p.id === pecaSelecionada)
-  const [fotoAtiva, setFotoAtiva] = useState(0)
+  // a fotografia escolhida vale só para a peça em que foi escolhida (ao mudar de peça volta à primeira)
+  const [escolha, setEscolha] = useState<{ peca: string | null; i: number }>({ peca: null, i: 0 })
   const [ampliada, setAmpliada] = useState(false)
 
   useEffect(() => {
@@ -86,8 +87,9 @@ export function PartDetails() {
   if (!peca) return null
 
   const loc = peca.localizacaoId ? locs.get(peca.localizacaoId) : undefined
-  const estrutura = loc ? estruturas.get(loc.estrutura) : undefined
   const est = (c: keyof Peca) => peca.camposEstimados.includes(c)
+  const fotoAtiva = escolha.peca === peca.id && escolha.i < peca.fotografias.length ? escolha.i : 0
+  const setFotoAtiva = (i: number) => setEscolha({ peca: peca.id, i })
   const foto = peca.fotografias[fotoAtiva]
   const vindoDaLocalizacao = vista === '3d' && localizacaoSelecionada && localizacaoSelecionada === peca.localizacaoId
   const valor = (v: string | null, campo: keyof Peca) =>
@@ -102,7 +104,7 @@ export function PartDetails() {
           </button>
         ) : null}
         <div className="painel-titulo">
-          <span className="sobretitulo mono">{peca.referencia ?? 'Sem referência'}</span>
+          <span className={`ref-destaque mono${peca.referencia ? '' : ' sem-ref'}`}>{peca.referencia ?? 'Sem referência'}</span>
           <h2>{nomePeca(peca)}</h2>
         </div>
         <button className="btn-icone" onClick={() => abrirPeca(null)} aria-label="Fechar ficha">
@@ -117,15 +119,13 @@ export function PartDetails() {
           </div>
         )}
 
-        <div className="galeria">
-          <button className="galeria-principal" onClick={() => foto && setAmpliada(true)} disabled={!foto} aria-label={foto ? 'Ampliar fotografia' : 'Sem fotografia'}>
+        {foto && <div className="galeria">
+          <button className="galeria-principal" onClick={() => setAmpliada(true)} aria-label="Ampliar fotografia">
             <Foto foto={foto} />
           </button>
-          {foto && (
-            <p className="legenda-foto">
-              <span className="tag">{ROTULO_TIPO_FOTO[foto.tipo] ?? foto.tipo}</span> {foto.legenda}
-            </p>
-          )}
+          <p className="legenda-foto">
+            <span className="tag">{ROTULO_TIPO_FOTO[foto.tipo] ?? foto.tipo}</span> {foto.legenda}
+          </p>
           {peca.fotografias.length > 1 && (
             <div className="galeria-miniaturas">
               {peca.fotografias.map((f, i) => (
@@ -135,7 +135,7 @@ export function PartDetails() {
               ))}
             </div>
           )}
-        </div>
+        </div>}
 
         {peca.modelo3D ? (
           <section className="secao">
@@ -158,9 +158,6 @@ export function PartDetails() {
           {peca.valorStock !== undefined && peca.valorStock !== null && (
             <p className="nota">Valor do stock: <strong className="mono">{formatarValor(peca.valorStock)}</strong></p>
           )}
-          {peca.stockMinimo === null && (
-            <p className="nota">Sem stock mínimo configurado — o alerta de stock baixo não se aplica.</p>
-          )}
         </section>
 
         <section className="secao">
@@ -169,13 +166,6 @@ export function PartDetails() {
             <div className="cartao-loc">
               <div>
                 <span className="mono loc-codigo">{codigoPosicao(loc, peca.caixa)}</span> {est('localizacaoId') && <Estimado />}
-                {loc.codigo && <span className="texto-sec"> · ID interno {loc.id}</span>}
-                <p>{loc.descricao}</p>
-                <p className="texto-sec">
-                  Zona: {loc.zona}
-                  {estrutura && estrutura.estadoGeometria !== 'confirmado' && ' · posição no modelo 3D aproximada'}
-                  {loc.origemCodigo !== 'etiqueta_visivel' && ` · código ${loc.origemCodigo === 'parcial' ? 'parcialmente ' : ''}provisório`}
-                </p>
               </div>
               <div className="cartao-loc-acoes">
                 <button className="btn btn-primario" onClick={() => localizarPeca(peca.id)}>
@@ -210,28 +200,16 @@ export function PartDetails() {
         <section className="secao">
           <h3>Dados</h3>
           <dl className="campos">
-            <Campo rotulo="Referência">{peca.referencia ? <span className="mono">{peca.referencia}</span> : <PorConfirmar texto="Sem referência" />}</Campo>
-            <Campo rotulo="Nome">{valor(peca.nome, 'nome')}</Campo>
             <Campo rotulo="Descrição">{valor(peca.descricao, 'descricao')}</Campo>
             <Campo rotulo="Categoria">{valor(peca.categoria, 'categoria')}</Campo>
             <Campo rotulo="UQE">
               {rotuloUqe(peca.uqe)} {est('uqe') && <><Estimado /> <span className="texto-sec">deduzido da designação</span></>}
             </Campo>
             <Campo rotulo="Fabricante / fornecedor">{valor(peca.fabricante, 'fabricante')}</Campo>
-            <Campo rotulo="Caixa">{peca.caixa ? <span className="mono">{peca.caixa}</span> : <PorConfirmar />}</Campo>
             <Campo rotulo="Stock mínimo">{peca.stockMinimo ?? <PorConfirmar texto="Não configurado" />}</Campo>
-            <Campo rotulo="Tipo de registo">{peca.tipoRegisto === 'referencia' ? 'Artigo com referência visível' : 'Observação (sem referência legível)'}</Campo>
-            <Campo rotulo="Origem do registo">
-              {peca.fonte === 'excel' ? 'Lista de materiais (Excel)' : peca.fonte === 'manual' ? 'Criado manualmente' : 'Observação nas fotografias/vídeos'}
-            </Campo>
-            <Campo rotulo="Evidência">{peca.evidencia ?? <PorConfirmar />}</Campo>
-            <Campo rotulo="Validação">
-              {peca.estadoValidacao === 'confirmado' ? (peca.fonte === 'excel' ? 'Dados da lista de materiais' : 'Confirmado') : peca.estadoValidacao === 'estimado' ? 'Estimado' : 'Por confirmar (sem validação humana)'}
-            </Campo>
-            <Campo rotulo="Notas">{peca.notas || <span className="texto-sec">—</span>}</Campo>
+            {peca.notas && <Campo rotulo="Notas">{peca.notas}</Campo>}
             {peca.atualizadoEm && <Campo rotulo="Alterado localmente em">{new Date(peca.atualizadoEm).toLocaleString('pt-PT')}</Campo>}
           </dl>
-          {!peca.modelo3D && <p className="nota">Sem modelo 3D associado a esta peça.</p>}
         </section>
 
         <div className="painel-acoes">
