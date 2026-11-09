@@ -9,6 +9,7 @@ import { EditorLigacoes } from './components/Organograma/EditorLigacoes'
 import { Etiquetas } from './components/Etiquetas/Etiquetas'
 import { LeitorCodigos } from './components/Leitor/LeitorCodigos'
 import { ListaRecolha } from './components/Recolha/ListaRecolha'
+import { PedirQuantidade } from './components/Recolha/PedirQuantidade'
 import { ImportarExcel } from './components/Importar/ImportarExcel'
 import { QualidadeDados } from './components/Qualidade/QualidadeDados'
 import { Organograma } from './components/Organograma/Organograma'
@@ -154,7 +155,7 @@ function useLigacaoDireta() {
 function Conteudo() {
   useLigacaoDireta()
   const { carregado } = useInventario()
-  const { vista, editor, sobreAberto, pecaSelecionada, editorLigacoes, ferramenta } = useApp()
+  const { vista, editor, sobreAberto, pecaSelecionada, editorLigacoes, ferramenta, pedidoRecolha } = useApp()
   // A vista 3D fica montada depois da primeira visita, para manter a câmara ao alternar de vista.
   const [visitou3D, setVisitou3D] = useState(vista === '3d')
   if (vista === '3d' && !visitou3D) setVisitou3D(true)
@@ -182,6 +183,7 @@ function Conteudo() {
       {ferramenta?.tipo === 'etiquetas' && <Etiquetas />}
       {ferramenta?.tipo === 'leitor' && <LeitorCodigos />}
       {ferramenta?.tipo === 'recolha' && <ListaRecolha />}
+      {pedidoRecolha && <PedirQuantidade key={pedidoRecolha} />}
       {ferramenta?.tipo === 'importar' && <ImportarExcel />}
       {ferramenta?.tipo === 'qualidade' && <QualidadeDados />}
       {editorLigacoes && <EditorLigacoes key={`${editorLigacoes.chave}-${editorLigacoes.novoGrupo}`} />}

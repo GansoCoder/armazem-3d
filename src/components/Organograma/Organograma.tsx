@@ -125,12 +125,15 @@ export function Organograma() {
   const semDados = lista.filter(([, d]) => d.estado === 'sem-dados')
 
   function adicionarTudoRecolha() {
-    // um registo por material (o primeiro com posição no 3D, se houver)
-    const ids = lista.map(([k]) => {
+    // um registo por material (o primeiro com posição no 3D, se houver), com a quantidade necessária para as unidades escolhidas
+    const qtds: Record<string, number> = {}
+    for (const [k, d] of lista) {
       const ps = idx.pecasPorChave.get(k) ?? []
-      return (ps.find((p) => p.localizacaoId) ?? ps[0])?.id
-    }).filter((x): x is string => !!x)
-    adicionarRecolha(ids)
+      const id = (ps.find((p) => p.localizacaoId) ?? ps[0])?.id
+      if (id) qtds[id] = d.necessario
+    }
+    const ids = Object.keys(qtds)
+    adicionarRecolha(ids, qtds)
     notificar(`${ids.length} peça(s) adicionadas à lista de recolha.`, 'sucesso')
   }
 

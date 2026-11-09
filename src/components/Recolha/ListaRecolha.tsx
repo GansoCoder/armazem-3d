@@ -18,15 +18,17 @@ export function useRotaRecolha() {
   }, [recolha, pecas, locs, layout])
 }
 
-function LinhaRecolha({ nome, ref, pos, qtd, feita, aoMarcar, aoAbrir, aoRetirar }: {
+function LinhaRecolha({ nome, ref, pos, qtd, recolher, feita, aoMarcar, aoAbrir, aoRetirar, aoMudarQtd }: {
   nome: string
   ref: string | null
   pos: string | null
   qtd: string
+  recolher: number | undefined
   feita: boolean
   aoMarcar: () => void
   aoAbrir: () => void
   aoRetirar: () => void
+  aoMudarQtd: (n: number) => void
 }) {
   return (
     <li className={feita ? 'feita' : ''}>
@@ -37,7 +39,21 @@ function LinhaRecolha({ nome, ref, pos, qtd, feita, aoMarcar, aoAbrir, aoRetirar
         <span>{nome}</span>
         <span className="mono texto-sec">{ref ?? 'Sem referência'}{pos ? ` · ${pos}` : ''}</span>
       </button>
-      <span className="mono texto-sec recolha-qtd" title="Em stock">{qtd}</span>
+      <label className="recolha-recolher" title="Quantidade a recolher">
+        <span className="texto-sec">Recolher</span>
+        <input
+          type="number"
+          inputMode="numeric"
+          min={1}
+          step={1}
+          className="mono"
+          value={recolher ?? ''}
+          placeholder="?"
+          onChange={(e) => { const n = Number(e.target.value); if (Number.isInteger(n) && n > 0) aoMudarQtd(n) }}
+          aria-label={`Quantidade a recolher de ${nome}`}
+        />
+      </label>
+      <span className="mono texto-sec recolha-qtd" title="Em stock">de {qtd}</span>
       <button className="btn-icone" onClick={aoRetirar} aria-label={`Retirar ${nome} da lista`}><X size={15} /></button>
     </li>
   )
@@ -45,7 +61,7 @@ function LinhaRecolha({ nome, ref, pos, qtd, feita, aoMarcar, aoAbrir, aoRetirar
 
 export function ListaRecolha() {
   const { locs } = useInventario()
-  const { setFerramenta, recolha, recolhidas, alternarRecolha, alternarRecolhida, limparRecolha, setRecolhaNo3D, setVista, abrirPeca, notificar } = useApp()
+  const { setFerramenta, recolha, recolhidas, qtdRecolha, confirmarRecolha, alternarRecolha, alternarRecolhida, limparRecolha, setRecolhaNo3D, setVista, abrirPeca, notificar } = useApp()
   const { paragens, semPosicao } = useRotaRecolha()
   const fechar = () => setFerramenta(null)
   const feitas = new Set(recolhidas)
@@ -55,6 +71,8 @@ export function ListaRecolha() {
     <LinhaRecolha
       key={p.id}
       {...p}
+      recolher={qtdRecolha[p.id]}
+      aoMudarQtd={(n) => confirmarRecolha(p.id, n)}
       feita={feitas.has(p.id)}
       aoMarcar={() => alternarRecolhida(p.id)}
       aoAbrir={() => { abrirPeca(p.id); fechar() }}
@@ -124,13 +142,13 @@ export function ListaRecolha() {
         <div className="area-impressao impressao-lista" aria-hidden>
           <h1>Lista de recolha — {hoje}</h1>
           <table>
-            <thead><tr><th>#</th><th>Posição</th><th>Referência</th><th>Designação</th><th>Stock</th><th><Check size={12} /></th></tr></thead>
+            <thead><tr><th>#</th><th>Posição</th><th>Referência</th><th>Designação</th><th>Recolher</th><th>Stock</th><th><Check size={12} /></th></tr></thead>
             <tbody>
               {paragens.flatMap((g) => g.pecas.map((p) => (
-                <tr key={p.id}><td>{g.n}</td><td>{codigoPosicao(g.localizacao, p.caixa)}</td><td>{p.referencia}</td><td>{nomePeca(p)}</td><td>{formatarQuantidade(p.quantidade)}</td><td>☐</td></tr>
+                <tr key={p.id}><td>{g.n}</td><td>{codigoPosicao(g.localizacao, p.caixa)}</td><td>{p.referencia}</td><td>{nomePeca(p)}</td><td>{qtdRecolha[p.id] ?? ''}</td><td>{formatarQuantidade(p.quantidade)}</td><td>☐</td></tr>
               )))}
               {semPosicao.map((p) => (
-                <tr key={p.id}><td>—</td><td>{p.posicaoOrigem ?? 'Por confirmar'}</td><td>{p.referencia}</td><td>{nomePeca(p)}</td><td>{formatarQuantidade(p.quantidade)}</td><td>☐</td></tr>
+                <tr key={p.id}><td>—</td><td>{p.posicaoOrigem ?? 'Por confirmar'}</td><td>{p.referencia}</td><td>{nomePeca(p)}</td><td>{qtdRecolha[p.id] ?? ''}</td><td>{formatarQuantidade(p.quantidade)}</td><td>☐</td></tr>
               ))}
             </tbody>
           </table>

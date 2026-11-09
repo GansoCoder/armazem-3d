@@ -52,11 +52,18 @@ interface App {
   /** Janela de ferramenta aberta (etiquetas QR, leitor de códigos, importação, qualidade dos dados, recolha). */
   ferramenta: { tipo: Ferramenta; estrutura?: string } | null
   setFerramenta: (f: App['ferramenta']) => void
-  /** Lista de recolha (ids das peças) e as já recolhidas; guardadas neste navegador. */
+  /** Lista de recolha (ids das peças), quantidade a recolher de cada uma e as já recolhidas; guardadas neste navegador. */
   recolha: string[]
   recolhidas: string[]
+  qtdRecolha: Record<string, number>
+  /** Se a peça já está na lista retira-a; senão pede a quantidade a recolher. */
   alternarRecolha: (id: string) => void
-  adicionarRecolha: (ids: string[]) => void
+  /** Peça à espera da quantidade a recolher (janela aberta). */
+  pedidoRecolha: string | null
+  cancelarPedidoRecolha: () => void
+  /** Acrescenta (ou atualiza) a peça na lista com a quantidade indicada. */
+  confirmarRecolha: (id: string, qtd: number) => void
+  adicionarRecolha: (ids: string[], qtds?: Record<string, number>) => void
   alternarRecolhida: (id: string) => void
   limparRecolha: () => void
   /** Mostra as paragens da lista de recolha na vista 3D. */
@@ -71,12 +78,14 @@ const Ctx = createContext<App | null>(null)
 const CHAVE_VISTA = 'armazem3d.vista'
 const CHAVE_RECOLHA = 'armazem3d.recolha.v1'
 
-function lerRecolha(): { ids: string[]; feitas: string[] } {
+interface EstadoRecolha { ids: string[]; feitas: string[]; qtds: Record<string, number> }
+
+function lerRecolha(): EstadoRecolha {
   try {
     const v = JSON.parse(localStorage.getItem(CHAVE_RECOLHA) ?? 'null')
-    return v && Array.isArray(v.ids) ? { ids: v.ids, feitas: v.feitas ?? [] } : { ids: [], feitas: [] }
+    return v && Array.isArray(v.ids) ? { ids: v.ids, feitas: v.feitas ?? [], qtds: v.qtds ?? {} } : { ids: [], feitas: [], qtds: {} }
   } catch {
-    return { ids: [], feitas: [] }
+    return { ids: [], feitas: [], qtds: {} }
   }
 }
 
@@ -106,8 +115,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [ferramenta, setFerramenta] = useState<App['ferramenta']>(null)
   const [recolhaEstado, setRecolhaEstado] = useState(lerRecolha)
   const [recolhaNo3D, setRecolhaNo3D] = useState(false)
-  const gravarRecolha = useCallback((ids: string[], feitas: string[]) => {
-    const v = { ids, feitas: feitas.filter((f) => ids.includes(f)) }
+  const [pedidoRecolha, setPedidoRecolha] = useState<string | null>(null)
+  const gravarRecolha = useCallback((ids: string[], feitas: string[], qtds: Record<string, number>) => {
+    const v: EstadoRecolha = { ids, feitas: feitas.filter((f) => ids.includes(f)), qtds: Object.fromEntries(Object.entries(qtds).filter(([k]) => ids.includes(k))) }
     setRecolhaEstado(v)
     try {
       localStorage.setItem(CHAVE_RECOLHA, JSON.stringify(v))
@@ -197,21 +207,30 @@ export function AppProvider({ children }: { children: ReactNode }) {
       ferramenta, setFerramenta,
       recolha: recolhaEstado.ids,
       recolhidas: recolhaEstado.feitas,
-      alternarRecolha: (id) => gravarRecolha(
-        recolhaEstado.ids.includes(id) ? recolhaEstado.ids.filter((x) => x !== id) : [...recolhaEstado.ids, id],
-        recolhaEstado.feitas,
-      ),
-      adicionarRecolha: (ids) => gravarRecolha([...new Set([...recolhaEstado.ids, ...ids])], recolhaEstado.feitas),
+      qtdRecolha: recolhaEstado.qtds,
+      alternarRecolha: (id) => {
+        if (recolhaEstado.ids.includes(id)) gravarRecolha(recolhaEstado.ids.filter((x) => x !== id), recolhaEstado.feitas, recolhaEstado.qtds)
+        else setPedidoRecolha(id)
+      },
+      pedidoRecolha,
+      cancelarPedidoRecolha: () => setPedidoRecolha(null),
+      confirmarRecolha: (id, qtd) => {
+        const ids = recolhaEstado.ids.includes(id) ? recolhaEstado.ids : [...recolhaEstado.ids, id]
+        gravarRecolha(ids, recolhaEstado.feitas, { ...recolhaEstado.qtds, [id]: qtd })
+        setPedidoRecolha(null)
+      },
+      adicionarRecolha: (ids, qtds = {}) => gravarRecolha([...new Set([...recolhaEstado.ids, ...ids])], recolhaEstado.feitas, { ...recolhaEstado.qtds, ...qtds }),
       alternarRecolhida: (id) => gravarRecolha(
         recolhaEstado.ids,
         recolhaEstado.feitas.includes(id) ? recolhaEstado.feitas.filter((x) => x !== id) : [...recolhaEstado.feitas, id],
+        recolhaEstado.qtds,
       ),
-      limparRecolha: () => { gravarRecolha([], []); setRecolhaNo3D(false) },
+      limparRecolha: () => { gravarRecolha([], [], {}); setRecolhaNo3D(false) },
       recolhaNo3D, setRecolhaNo3D,
     }),
     [vista, setVista, consulta, filtros, localizacaoSelecionada, pecaSelecionada, pedidoFoco,
       selecionarLocalizacao, localizarPeca, notificacoes, notificar, dispensar, editor, sobreAberto, estruturaEditada,
-      focoOrganograma, editorLigacoes, abrirDestino, ferramenta, recolhaEstado, gravarRecolha, recolhaNo3D],
+      focoOrganograma, editorLigacoes, abrirDestino, ferramenta, recolhaEstado, gravarRecolha, recolhaNo3D, pedidoRecolha],
   )
 
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>
