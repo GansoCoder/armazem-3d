@@ -111,6 +111,8 @@ interface EstruturaBase {
   posicao: Vec2
   /** Rotação em graus em torno do eixo vertical. A frente da estrutura fica virada para +z local. */
   rotacaoY: number
+  /** Código da zona do armazém (primeiro elemento do código, ex.: "1C"). Por omissão, o do layout (1B). */
+  codigoZona?: string
   /** Número oficial do corredor (ex.: "10"). Null = por confirmar. */
   corredor?: string | null
   /** true quando o número do corredor foi deduzido (ex.: pela sequência) e não lido numa etiqueta. */
@@ -191,6 +193,7 @@ export type TipoElemento =
   | 'caixotes'
   | 'caixas'
   | 'compartimento'
+  | 'mesa'
 
 export interface ElementoDecorativo {
   id: string
@@ -198,7 +201,7 @@ export interface ElementoDecorativo {
   posicao: Vec2
   rotacaoY?: number
   rotulo?: string
-  /** Largura (para portões e compartimentos) ou número de unidades (para pilhas). */
+  /** Largura (para portões, compartimentos e mesas) ou número de unidades (para pilhas). */
   largura?: number
   /** Altura do vão (portões e portas). */
   altura?: number
@@ -209,7 +212,7 @@ export interface ElementoDecorativo {
 export interface Layout {
   versao: number
   aviso: string
-  /** Código da zona do armazém representada (primeiro elemento do código de posição). */
+  /** Código da zona por omissão (primeiro elemento do código de posição); cada estrutura pode indicar outra em `codigoZona`. */
   codigoZona: string
   edificio: {
     xMin: number
@@ -219,6 +222,8 @@ export interface Layout {
     altura: number
     /** Contorno das paredes (polígono), quando a planta não é um retângulo. */
     contorno?: Vec2[]
+    /** Paredes interiores (ex.: entre zonas ou salas), cada uma de um ponto a outro. */
+    paredes?: { de: Vec2; ate: Vec2 }[]
   }
   estruturas: Estrutura[]
   zonas: ZonaPiso[]

@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { carregarDadosBase, type DadosBase } from '../data/fonte'
 import type { Composicao, Estrutura, Layout, Localizacao, Peca } from '../types'
 import { apagarGrande, gravarGrande, lerGrande } from '../utils/armazenamento'
-import { criarLigador, gerarLocalizacoes } from '../utils/planta'
+import { criarLigador, gerarLocalizacoes, zonasDoModelo } from '../utils/planta'
 
 /**
  * Estado do inventário: dados base (JSON) + rascunho local do modo de edição.
@@ -79,6 +79,8 @@ interface Inventario {
   dados: DadosBase | null
   /** Planta em uso: a que está a ser editada, senão o rascunho local, senão a oficial (layout.json). */
   layout: Layout | null
+  /** Zonas do armazém com estruturas no modelo 3D (ex.: 1B, 1C). */
+  zonasModelo: ReadonlySet<string>
   /** true quando há uma planta guardada localmente (diferente de layout.json). */
   plantaLocal: boolean
   /** Cópia de trabalho do editor da planta (null = editor fechado). */
@@ -193,6 +195,7 @@ export function InventarioProvider({ children }: { children: ReactNode }) {
       carregado: !!dados,
       dados,
       layout,
+      zonasModelo: layout ? zonasDoModelo(layout) : new Set<string>(),
       plantaLocal: !!plantaLocal,
       plantaEmEdicao,
       setPlantaEmEdicao,

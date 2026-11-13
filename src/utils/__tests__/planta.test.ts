@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import layoutJson from '../../data/layout.json'
 import type { Layout } from '../../types'
-import { criarLigador, gerarLocalizacoes, niveisPadrao } from '../planta'
+import { criarLigador, gerarLocalizacoes, niveisPadrao, zonasDoModelo } from '../planta'
 
 const layout = layoutJson as unknown as Layout
 const locs = gerarLocalizacoes(layout)
@@ -37,6 +37,13 @@ describe('gerarLocalizacoes', () => {
     expect(porCodigo('1B14A01D')?.estrutura).toBe('CG14')
   })
 
+  it('a zona 1C tem os seus próprios códigos (1C01A01…), sem repetir os da 1B', () => {
+    expect(porCodigo('1C01H04')?.estrutura).toBe('1C01')
+    expect(porCodigo('1C04I03')?.estrutura).toBe('1C04')
+    expect(porCodigo('1B04A01')?.estrutura).toBe('EL04')
+    expect([...zonasDoModelo(layout)].sort()).toEqual(['1B', '1C'])
+  })
+
   it('mantém os campos editados à mão', () => {
     const [primeira] = locs
     const comNota = gerarLocalizacoes(layout, [{ ...primeira, notas: 'nota manual' }])
@@ -65,9 +72,16 @@ describe('ligarPosicao', () => {
     expect(r.caixa).toBe('C')
   })
 
+  it('liga posições da zona 1C', () => {
+    const r = ligar('1C05B02A')
+    expect(r.loc?.codigo).toBe('1C05B02')
+    expect(r.caixa).toBe('A')
+    expect(ligar('1C08A01A').motivo).toMatch(/Corredor 1C08/)
+  })
+
   it('explica porque não liga', () => {
     expect(ligar('M100').motivo).toMatch(/M100/)
-    expect(ligar('1C05B02A').motivo).toMatch(/Zona 1C/)
+    expect(ligar('1D05B02A').motivo).toMatch(/Zona 1D/)
     expect(ligar('IB07D03J').motivo).toMatch(/gralha/)
     expect(ligar('').motivo).toBe('Sem posição no Excel')
     expect(ligar('1B09Z02').motivo).toMatch(/fora das dimensões/)

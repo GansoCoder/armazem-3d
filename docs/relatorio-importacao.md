@@ -1,14 +1,14 @@
 # Relatório de importação do Excel
 
-Ficheiro: `materiais armazem.xlsx` · gerado por `scripts/importar-excel.mjs` em 2026-11-07.
+Ficheiro: `materiais armazem.xlsx` · gerado por `scripts/importar-excel.mjs` em 2026-11-13.
 
 | | |
 |---|---|
 | Linhas lidas | 1996 |
 | Materiais importados | 1906 |
 | Linhas repetidas (mesmo material e posição) somadas | 87 |
-| Ligados a uma posição do modelo 3D | 1280 |
-| Sem ligação ao 3D (ver abaixo) | 626 |
+| Ligados a uma posição do modelo 3D | 1588 |
+| Sem ligação ao 3D (ver abaixo) | 318 |
 | Observações das fotografias mantidas | 6 |
 | Observações substituídas por materiais do Excel | 0 (—) |
 
@@ -16,7 +16,6 @@ Ficheiro: `materiais armazem.xlsx` · gerado por `scripts/importar-excel.mjs` em
 
 | Motivo | Materiais |
 |---|---|
-| Zona 1C (não representada no 3D) | 308 |
 | ND (posição não definida) | 179 |
 | M100 (ainda sem correspondência no modelo) | 61 |
 | ESCRITORIO (ainda sem correspondência no modelo) | 38 |

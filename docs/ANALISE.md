@@ -78,6 +78,15 @@ O que se aprendeu com ele:
   - `M100` (61), `ESCRITORIO` (38) e `ND` (179) são outros códigos de posição.
 - **Possíveis gralhas:** `IB07D03J`, `1B0BE03N`, `1C07402G` e uma posição vazia. A lista está no relatório.
 
+## 3c. Zona 1C (esquema e vídeo, 13/11/2026)
+
+- **Onde fica:** na reentrância da planta, atrás da porta da zona 1B (x −1,5 a 3,9; z 3,9 a 9). A porta de cima do esquema é a porta já existente; as estruturas da 1B não mudaram.
+- **Escala:** o esquema não tem medidas. Na horizontal, a porta do esquema foi alinhada com a porta existente e a parede esquerda com a parede da 1B; na vertical, a sala ocupa a reentrância até z = 9. Todas as medidas são **estimadas**.
+- **Salas:** uma parede interior com porta separa a sala de cima (1C01, 1C02|1C03 costas com costas, 1C07 e uma estante em L sem número) da sala de baixo (1C04, 1C05, 1C06 e duas mesas). A sala de baixo tem outra porta na parede direita, para zonas a acrescentar mais tarde.
+- **Estantes:** estantes ligeiras metálicas como as da 1B (vídeo: etiquetas verdes 01–05, mangueiras no 05). Colunas e prateleiras pelo Excel: 01 → 4 × 8 (A–H); 02 e 03 → 3 × 6; 04 → 3 × 9 (A–I); 05 → 2 × 7; 06 → 2 × 6; 07 → 2 × 5.
+- **Resultado:** 308 dos 309 materiais da 1C ficaram ligados ao 3D (só `1C07402G`, gralha, não liga).
+- **Por confirmar:** o lado da frente de 1C05 e 1C06; o extremo da coluna 01 de cada estante; se a peça em L junto a 1C07 é estante (e de que corredor) ou bancada; as medidas reais.
+
 ## 4. Dúvidas para confirmação humana
 
 **Respondido (3/11/2026):** o código oficial é zona + corredor + prateleira (A = a mais baixa) + coluna + caixa, ex.: `1B09A02C`. A zona fotografada é a **1B**; o corredor **10** é a fila EL-02. Quantidades: ignorar por agora. Faltam estantes e armários no modelo.
@@ -86,7 +95,7 @@ O que se aprendeu com ele:
 1b. Os contentores da fila de baixo são o **1B14A01D** e o **1B13A01D**?
 2. ~~Onde ficam os armários ARM01–ARM06?~~ No armário "ARM" junto ao portão 2 (indicação do armazém, 4/11/2026); assumido ARM01 = prateleira de baixo. Falta: **ESQ-ARM1**, a posição **M100** e o **ESCRITORIO**? O compartimento fechado com o postigo é o escritório?
 3. Em que extremo de cada corredor começa a coluna 01? O modelo assume o extremo de cima do esquema (lado dos portões). E quantas colunas e prateleiras tem cada estante? Os valores atuais vêm do Excel.
-4. As zonas **1C**, **1A**, **1D** e **1E** devem ser desenhadas? Se sim, é preciso um vídeo ou uma planta de cada uma.
+4. ~~A zona 1C deve ser desenhada?~~ Desenhada a partir do esquema e do vídeo (13/11/2026, ver 3c). Faltam **1A**, **1D** e **1E**: é preciso um esquema ou vídeo de cada uma.
 5. Planta real e dimensões do pavilhão; posição do portão.
 6. Designação de R76467100 e qual o artigo da prateleira a que corresponde.
 7. Referências dos vidros, das caixas Wärtsilä/ALSTOM, dos cilindros, motores, equipamento com isoladores e peças tipo reservatório.

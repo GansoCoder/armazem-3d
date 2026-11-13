@@ -268,7 +268,7 @@ export function Rotulos({ layout, visiveis }: { layout: Layout; visiveis: boolea
           <Html key={`${e.id}-corredor`} position={p} center zIndexRange={[10, 0]}>
             <div
               className={`etiqueta-verde ${e.corredorInferido ? 'inferida' : ''}`}
-              title={e.corredorInferido ? `Corredor ${e.corredor} (deduzido, etiqueta não vista)` : `Corredor ${e.corredor}`}
+              title={e.corredorInferido ? `Corredor ${e.codigoZona ?? ''}${e.corredor} (deduzido, etiqueta não vista)` : `Corredor ${e.codigoZona ?? ''}${e.corredor}`}
             >
               {e.corredor}{e.corredorInferido && '?'}
             </div>

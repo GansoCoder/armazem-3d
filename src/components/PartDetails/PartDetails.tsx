@@ -68,7 +68,7 @@ function SecaoEstrutura({ chave, composicao, pecas, aoVer, aoEditar }: {
 }
 
 export function PartDetails() {
-  const { pecas, locs, descartarAlteracao, existeNaBase, composicao } = useInventario()
+  const { pecas, locs, descartarAlteracao, existeNaBase, composicao, zonasModelo } = useInventario()
   const { pecaSelecionada, abrirPeca, localizarPeca, localizacaoSelecionada, vista, abrirEditor, notificar, abrirOrganograma, abrirEditorLigacoes, recolha, alternarRecolha } = useApp()
   const peca = pecas.find((p) => p.id === pecaSelecionada)
   // a fotografia escolhida vale só para a peça em que foi escolhida (ao mudar de peça volta à primeira)
@@ -178,7 +178,7 @@ export function PartDetails() {
             <div className="cartao-loc">
               <div>
                 <span className="mono loc-codigo">{peca.posicaoOrigem}</span> <span className="tag">sem 3D</span>
-                <p className="texto-sec">{motivoSem3D(peca)}.</p>
+                <p className="texto-sec">{motivoSem3D(peca, zonasModelo)}.</p>
               </div>
               <BotaoRecolha naLista={recolha.includes(peca.id)} aoAlternar={() => alternarRecolha(peca.id)} />
             </div>

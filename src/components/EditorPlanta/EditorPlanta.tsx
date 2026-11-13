@@ -79,7 +79,9 @@ function FormEstrutura({ e, trabalho, aplicar, aoFocar }: {
   const locs = localizacoes.filter((l) => l.estrutura === e.id)
   const intervalo = intervaloCodigos(locs)
   const ligadas = locs.reduce((n, l) => n + (pecasPorLocalizacao.get(l.id)?.length ?? 0), 0)
-  const prefixoCorredor = e.corredor ? `${trabalho.codigoZona}${e.corredor}` : null
+  const codZona = e.codigoZona ?? trabalho.codigoZona
+  const [zonaTexto, setZonaTexto] = useState(codZona)
+  const prefixoCorredor = e.corredor ? `${codZona}${e.corredor}` : null
   const porLigar = prefixoCorredor
     ? pecas.filter((p) => p.posicaoOrigem?.startsWith(prefixoCorredor) && !p.localizacaoId)
     : []
@@ -91,7 +93,7 @@ function FormEstrutura({ e, trabalho, aplicar, aoFocar }: {
     const corredor = v || null
     const nomeAuto = e.nome === nomeAutomatico(e.tipo, e.corredor ?? null)
     const nome = nomeAuto ? nomeAutomatico(e.tipo, corredor) : e.nome
-    alterar({ corredor, nome, rotulo: corredor ? `Corredor ${corredor}` : nome, corredorInferido: undefined })
+    alterar({ corredor, nome, rotulo: corredor ? `Corredor ${e.codigoZona ? codZona : ""}${corredor}` : nome, corredorInferido: undefined })
   }
 
   function mudarEstante(patch: Partial<EstruturaEstante>, recalcularNiveis = false) {
@@ -147,7 +149,22 @@ function FormEstrutura({ e, trabalho, aplicar, aoFocar }: {
         <span>Nome</span>
         <input value={e.nome} onChange={(ev) => alterar({ nome: ev.target.value, rotulo: e.corredor ? e.rotulo : ev.target.value })} />
       </label>
-      <div className="grelha-2">
+      <div className="grelha-zona">
+        <label title="Primeiro elemento do código, ex.: 1B, 1C">
+          <span>Zona</span>
+          <input
+            className="mono"
+            value={zonaTexto}
+            maxLength={2}
+            onChange={(ev) => {
+              const v = ev.target.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 2)
+              setZonaTexto(v)
+              // só aplica um código completo (algarismo + letra)
+              if (/^\d[A-Z]$/.test(v)) alterar({ codigoZona: v === trabalho.codigoZona ? undefined : v })
+            }}
+            onBlur={() => setZonaTexto(codZona)}
+          />
+        </label>
         <label>
           <span>Corredor <span className="texto-sec">(2 dígitos)</span></span>
           <input
@@ -379,7 +396,7 @@ export function EditorPlanta({ aoFechar, aoFocar }: { aoFechar: () => void; aoFo
           >
             <option value="">Escolha uma estrutura…</option>
             {ordenadas.map((x) => (
-              <option key={x.id} value={x.id}>{x.corredor ? `${x.corredor} · ` : ''}{x.nome}</option>
+              <option key={x.id} value={x.id}>{x.corredor ? `${x.codigoZona ?? ''}${x.corredor} · ` : ''}{x.nome}</option>
             ))}
           </select>
         </label>

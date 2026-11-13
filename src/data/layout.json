@@ -1,5 +1,5 @@
 {
-  "versao": 5,
+  "versao": 6,
   "codigoZona": "1B",
   "aviso": "Representação aproximada e não à escala. Disposição segundo o esquema desenhado pelo armazém; dimensões, número de colunas e prateleiras estimados a partir das fotografias, vídeos e posições do Excel.",
   "edificio": {
@@ -22,16 +22,48 @@
         "z": 3.9
       },
       {
-        "x": -1.5,
+        "x": 3.9,
         "z": 3.9
       },
       {
-        "x": -1.5,
+        "x": 3.9,
         "z": 9
       },
       {
         "x": -10,
         "z": 9
+      }
+    ],
+    "paredes": [
+      {
+        "de": {
+          "x": -1.5,
+          "z": 3.9
+        },
+        "ate": {
+          "x": 3.9,
+          "z": 3.9
+        }
+      },
+      {
+        "de": {
+          "x": -1.5,
+          "z": 3.9
+        },
+        "ate": {
+          "x": -1.5,
+          "z": 9
+        }
+      },
+      {
+        "de": {
+          "x": -1.5,
+          "z": 6.81
+        },
+        "ate": {
+          "x": 3.9,
+          "z": 6.81
+        }
       }
     ]
   },
@@ -764,6 +796,285 @@
       "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "As duas últimas \"estantes\" do corredor 04 são armários (esquema do armazém). Assumidas como colunas 04 e 05: no Excel são as únicas colunas do corredor 04 com prateleiras E–G (as colunas 01–03 só vão até à D)."
+    },
+    {
+      "id": "1C01",
+      "codigoZona": "1C",
+      "nome": "Estante ligeira — corredor 1C01",
+      "rotulo": "Corredor 1C01",
+      "tipo": "estante-ligeira",
+      "zona": "Zona 1C",
+      "posicao": {
+        "x": 0.19,
+        "z": 4.18
+      },
+      "rotacaoY": 0,
+      "corredor": "01",
+      "modulos": 4,
+      "larguraModulo": 0.84,
+      "profundidade": 0.5,
+      "niveis": [
+        0.1,
+        0.41,
+        0.73,
+        1.04,
+        1.36,
+        1.67,
+        1.99,
+        2.3
+      ],
+      "altura": 2.5,
+      "cores": {
+        "montantes": "#c3cad2",
+        "vigas": "#c3cad2",
+        "prateleiras": "#b48a5a"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "4 colunas e 8 prateleiras (A–H), segundo as posições do Excel (mínimo; pode haver colunas/prateleiras vazias). Posição e medidas estimadas a partir do esboço da zona 1C e do vídeo. Encostada à parede da porta para a zona 1B."
+    },
+    {
+      "id": "1C02",
+      "codigoZona": "1C",
+      "nome": "Estante ligeira — corredor 1C02",
+      "rotulo": "Corredor 1C02",
+      "tipo": "estante-ligeira",
+      "zona": "Zona 1C",
+      "posicao": {
+        "x": 0.18,
+        "z": 5.21
+      },
+      "rotacaoY": 180,
+      "corredor": "02",
+      "modulos": 3,
+      "larguraModulo": 1.11,
+      "profundidade": 0.5,
+      "niveis": [
+        0.1,
+        0.54,
+        0.98,
+        1.42,
+        1.86,
+        2.3
+      ],
+      "altura": 2.5,
+      "cores": {
+        "montantes": "#c3cad2",
+        "vigas": "#c3cad2",
+        "prateleiras": "#b48a5a"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "3 colunas e 6 prateleiras (A–F), segundo as posições do Excel (mínimo; pode haver colunas/prateleiras vazias). Posição e medidas estimadas a partir do esboço da zona 1C e do vídeo. Costas com costas com 1C03; frente virada para 1C01.",
+      "colunasInvertidas": true
+    },
+    {
+      "id": "1C03",
+      "codigoZona": "1C",
+      "nome": "Estante ligeira — corredor 1C03",
+      "rotulo": "Corredor 1C03",
+      "tipo": "estante-ligeira",
+      "zona": "Zona 1C",
+      "posicao": {
+        "x": -0.09,
+        "z": 5.71
+      },
+      "rotacaoY": 0,
+      "corredor": "03",
+      "modulos": 3,
+      "larguraModulo": 0.93,
+      "profundidade": 0.5,
+      "niveis": [
+        0.1,
+        0.54,
+        0.98,
+        1.42,
+        1.86,
+        2.3
+      ],
+      "altura": 2.5,
+      "cores": {
+        "montantes": "#c3cad2",
+        "vigas": "#c3cad2",
+        "prateleiras": "#b48a5a"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "3 colunas e 6 prateleiras (A–F), segundo as posições do Excel (mínimo; pode haver colunas/prateleiras vazias). Posição e medidas estimadas a partir do esboço da zona 1C e do vídeo. Costas com costas com 1C02."
+    },
+    {
+      "id": "1C07",
+      "codigoZona": "1C",
+      "nome": "Estante ligeira — corredor 1C07",
+      "rotulo": "Corredor 1C07",
+      "tipo": "estante-ligeira",
+      "zona": "Zona 1C",
+      "posicao": {
+        "x": 3.64,
+        "z": 5.22
+      },
+      "rotacaoY": -90,
+      "corredor": "07",
+      "modulos": 2,
+      "larguraModulo": 0.97,
+      "profundidade": 0.5,
+      "niveis": [
+        0.1,
+        0.65,
+        1.2,
+        1.75,
+        2.3
+      ],
+      "altura": 2.5,
+      "cores": {
+        "montantes": "#c3cad2",
+        "vigas": "#c3cad2",
+        "prateleiras": "#b48a5a"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "2 colunas e 5 prateleiras (A–E), segundo as posições do Excel (mínimo; pode haver colunas/prateleiras vazias). Posição e medidas estimadas a partir do esboço da zona 1C e do vídeo. Encostada à parede direita."
+    },
+    {
+      "id": "1C-X1",
+      "codigoZona": "1C",
+      "nome": "Estante ligeira sem identificação (zona 1C)",
+      "rotulo": "Sem nº",
+      "tipo": "estante-ligeira",
+      "zona": "Zona 1C",
+      "posicao": {
+        "x": 3.05,
+        "z": 6.54
+      },
+      "rotacaoY": 180,
+      "corredor": null,
+      "modulos": 2,
+      "larguraModulo": 0.84,
+      "profundidade": 0.5,
+      "niveis": [
+        0.1,
+        0.65,
+        1.2,
+        1.75,
+        2.3
+      ],
+      "altura": 2.5,
+      "cores": {
+        "montantes": "#c3cad2",
+        "vigas": "#c3cad2",
+        "prateleiras": "#b48a5a"
+      },
+      "fotografias": [],
+      "estadoGeometria": "por_confirmar",
+      "notas": "Estante em L junto a 1C07, sem número no esboço — por confirmar se faz parte do corredor 1C07 ou se é uma bancada. Medidas estimadas."
+    },
+    {
+      "id": "1C04",
+      "codigoZona": "1C",
+      "nome": "Estante ligeira — corredor 1C04",
+      "rotulo": "Corredor 1C04",
+      "tipo": "estante-ligeira",
+      "zona": "Zona 1C",
+      "posicao": {
+        "x": -1.22,
+        "z": 7.95
+      },
+      "rotacaoY": 90,
+      "corredor": "04",
+      "modulos": 3,
+      "larguraModulo": 0.69,
+      "profundidade": 0.5,
+      "niveis": [
+        0.1,
+        0.38,
+        0.65,
+        0.92,
+        1.2,
+        1.47,
+        1.75,
+        2.02,
+        2.3
+      ],
+      "altura": 2.5,
+      "cores": {
+        "montantes": "#c3cad2",
+        "vigas": "#c3cad2",
+        "prateleiras": "#b48a5a"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "3 colunas e 9 prateleiras (A–I), segundo as posições do Excel (mínimo; pode haver colunas/prateleiras vazias). Posição e medidas estimadas a partir do esboço da zona 1C e do vídeo. Encostada à parede da zona 1B.",
+      "colunasInvertidas": true
+    },
+    {
+      "id": "1C05",
+      "codigoZona": "1C",
+      "nome": "Estante ligeira — corredor 1C05",
+      "rotulo": "Corredor 1C05",
+      "tipo": "estante-ligeira",
+      "zona": "Zona 1C",
+      "posicao": {
+        "x": 0.4,
+        "z": 7.54
+      },
+      "rotacaoY": -90,
+      "corredor": "05",
+      "modulos": 2,
+      "larguraModulo": 0.63,
+      "profundidade": 0.5,
+      "niveis": [
+        0.1,
+        0.47,
+        0.83,
+        1.2,
+        1.57,
+        1.93,
+        2.3
+      ],
+      "altura": 2.5,
+      "cores": {
+        "montantes": "#c3cad2",
+        "vigas": "#c3cad2",
+        "prateleiras": "#b48a5a"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "2 colunas e 7 prateleiras (A–G), segundo as posições do Excel (mínimo; pode haver colunas/prateleiras vazias). Posição e medidas estimadas a partir do esboço da zona 1C e do vídeo. Lado da frente por confirmar."
+    },
+    {
+      "id": "1C06",
+      "codigoZona": "1C",
+      "nome": "Estante ligeira — corredor 1C06",
+      "rotulo": "Corredor 1C06",
+      "tipo": "estante-ligeira",
+      "zona": "Zona 1C",
+      "posicao": {
+        "x": 2.42,
+        "z": 7.54
+      },
+      "rotacaoY": 90,
+      "corredor": "06",
+      "modulos": 2,
+      "larguraModulo": 0.69,
+      "profundidade": 0.5,
+      "niveis": [
+        0.1,
+        0.54,
+        0.98,
+        1.42,
+        1.86,
+        2.3
+      ],
+      "altura": 2.5,
+      "cores": {
+        "montantes": "#c3cad2",
+        "vigas": "#c3cad2",
+        "prateleiras": "#b48a5a"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "2 colunas e 6 prateleiras (A–F), segundo as posições do Excel (mínimo; pode haver colunas/prateleiras vazias). Posição e medidas estimadas a partir do esboço da zona 1C e do vídeo. Lado da frente por confirmar.",
+      "colunasInvertidas": true
     }
   ],
   "zonas": [
@@ -772,6 +1083,14 @@
       "nome": "Contentores de ferro",
       "x": -0.9,
       "z": -0.45,
+      "largura": 1,
+      "profundidade": 1
+    },
+    {
+      "id": "z-1c",
+      "nome": "Zona 1C",
+      "x": 2.6,
+      "z": 4.75,
       "largura": 1,
       "profundidade": 1
     }
@@ -807,6 +1126,50 @@
       "largura": 1,
       "altura": 2.1,
       "rotulo": "Porta"
+    },
+    {
+      "id": "e-porta-1c-meio",
+      "tipo": "portao",
+      "posicao": {
+        "x": 1.8,
+        "z": 6.81
+      },
+      "largura": 0.8,
+      "altura": 2.1,
+      "rotulo": "Porta"
+    },
+    {
+      "id": "e-porta-1c-este",
+      "tipo": "portao",
+      "posicao": {
+        "x": 3.9,
+        "z": 8.51
+      },
+      "rotacaoY": 90,
+      "largura": 0.8,
+      "altura": 2.1,
+      "rotulo": "Porta"
+    },
+    {
+      "id": "e-mesa-1c-1",
+      "tipo": "mesa",
+      "posicao": {
+        "x": 0.4,
+        "z": 8.73
+      },
+      "largura": 0.9,
+      "profundidade": 0.55
+    },
+    {
+      "id": "e-mesa-1c-2",
+      "tipo": "mesa",
+      "posicao": {
+        "x": 3.6,
+        "z": 7.67
+      },
+      "rotacaoY": 90,
+      "largura": 0.85,
+      "profundidade": 0.5
     }
   ]
 }

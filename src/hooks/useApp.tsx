@@ -99,7 +99,7 @@ function lerVista(): Vista {
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const { pecas, locs } = useInventario()
+  const { pecas, locs, zonasModelo } = useInventario()
   const [vista, setVistaEstado] = useState<Vista>(lerVista)
   const [consulta, setConsulta] = useState('')
   const [filtros, setFiltros] = useState<Filtros>(FILTROS_VAZIOS)
@@ -158,13 +158,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (!p) return
       setPeca(id)
       if (!p.localizacaoId || !locs.has(p.localizacaoId)) {
-        notificar(`${motivoSem3D(p)} — não é possível destacá-la no armazém.`, 'aviso')
+        notificar(`${motivoSem3D(p, zonasModelo)} — não é possível destacá-la no armazém.`, 'aviso')
         return
       }
       setVista('3d')
       selecionarLocalizacao(p.localizacaoId, { focar: true })
     },
-    [pecas, locs, notificar, selecionarLocalizacao, setVista],
+    [pecas, locs, zonasModelo, notificar, selecionarLocalizacao, setVista],
   )
 
   const abrirDestino = useCallback(

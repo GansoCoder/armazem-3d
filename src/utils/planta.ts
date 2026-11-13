@@ -22,6 +22,16 @@ export function prefixoLocalizacao(e: Estrutura): string {
   return PRATELEIRAS.has(e.tipo) ? e.id.replace(/^EL/, 'EL-').replace(/^AR/, 'AR-') : e.id
 }
 
+/** Código da zona de uma estrutura (ex.: 1C), ou o do layout por omissão. */
+export function zonaDe(e: Estrutura, layout: Pick<Layout, 'codigoZona'>): string {
+  return e.codigoZona ?? layout.codigoZona
+}
+
+/** Zonas do armazém com estruturas no modelo 3D (ex.: 1B, 1C). */
+export function zonasDoModelo(layout: Pick<Layout, 'codigoZona' | 'estruturas'>): Set<string> {
+  return new Set([layout.codigoZona, ...layout.estruturas.map((e) => zonaDe(e, layout))])
+}
+
 export function gerarLocalizacoes(layout: Layout, existentes: Localizacao[] = []): Localizacao[] {
   const porId = new Map(existentes.map((l) => [l.id, l]))
   const geradas: Localizacao[] = []
@@ -36,15 +46,16 @@ export function gerarLocalizacoes(layout: Layout, existentes: Localizacao[] = []
   for (const e of layout.estruturas) {
     const base = { zona: e.zona, estrutura: e.id }
     const corredor = e.corredor ?? null
+    const zona = zonaDe(e, layout)
     const col = (m: number) => (e.colunaInicial ?? 1) + m - 1
-    const codigo = (m: number, n: number) => (corredor ? `${layout.codigoZona}${corredor}${letra(n)}${pad(col(m))}` : null)
+    const codigo = (m: number, n: number) => (corredor ? `${zona}${corredor}${letra(n)}${pad(col(m))}` : null)
     // corredor lido numa etiqueta → código parcialmente confirmado; deduzido → provisório
     const origemCodigo = corredor && !e.corredorInferido ? 'parcial' : 'provisorio'
 
     if (e.tipo === 'zona-chao') {
       // zona com número de corredor (ex.: rolos brancos = corredor 03): código parcial sem prateleira/coluna
       add({
-        id: `${e.id}-01`, codigo: null, codigoParcial: corredor ? `${layout.codigoZona}${corredor}` : null, ...base,
+        id: `${e.id}-01`, codigo: null, codigoParcial: corredor ? `${zona}${corredor}` : null, ...base,
         modulo: null, nivel: null, descricao: e.nome, origemCodigo: corredor ? origemCodigo : 'provisorio',
       })
     } else if (e.tipo === 'contentores') {
@@ -55,7 +66,7 @@ export function gerarLocalizacoes(layout: Layout, existentes: Localizacao[] = []
         // com corredor, cada contentor é uma caixa da posição <zona><corredor>A01 (ex.: 1B13A01A)
         const caixa = letra(i - 1)
         add({
-          id: `${e.id}-${pad(i)}`, codigo: corredor ? `${layout.codigoZona}${corredor}A01${caixa}` : null, ...base, modulo: i, nivel: null,
+          id: `${e.id}-${pad(i)}`, codigo: corredor ? `${zona}${corredor}A01${caixa}` : null, ...base, modulo: i, nivel: null,
           descricao: corredor ? `${e.nome} · contentor ${caixa}` : `${e.nome} · fila ${fila === 1 ? 'da frente' : 'de trás'}, posição ${c}`,
           origemCodigo: corredor ? origemCodigo : 'provisorio',
         })
@@ -80,7 +91,7 @@ export function gerarLocalizacoes(layout: Layout, existentes: Localizacao[] = []
         // coluna inteira: usada quando a prateleira de uma peça ainda não é conhecida
         add({
           id: `${pref}-M${m}`, codigo: null, ...base, modulo: m, coluna: col(m), nivel: null,
-          codigoParcial: corredor ? `${layout.codigoZona}${corredor}?${pad(col(m))}` : null,
+          codigoParcial: corredor ? `${zona}${corredor}?${pad(col(m))}` : null,
           descricao: `${e.nome} · Coluna ${pad(col(m))} · prateleira por confirmar`,
           origemCodigo,
         })
@@ -122,17 +133,17 @@ export function ligarPosicao(pos: string | null | undefined, layout: Layout, loc
 
 /** Versão para muitas posições seguidas: os índices são criados uma só vez. */
 export function criarLigador(layout: Layout, localizacoes: Localizacao[]): (pos: string | null | undefined) => Ligacao {
-  const zona = layout.codigoZona
+  const zonas = zonasDoModelo(layout)
   const porCodigo = new Map(localizacoes.filter((l) => l.codigo).map((l) => [l.codigo as string, l]))
-  const estruturasDoCorredor = (corr: string) => layout.estruturas.filter((e) => e.corredor === corr)
-  return (pos) => ligarCom(pos, zona, porCodigo, estruturasDoCorredor, localizacoes)
+  const estruturasDoCorredor = (z: string, corr: string) => layout.estruturas.filter((e) => zonaDe(e, layout) === z && e.corredor === corr)
+  return (pos) => ligarCom(pos, zonas, porCodigo, estruturasDoCorredor, localizacoes)
 }
 
 function ligarCom(
   pos: string | null | undefined,
-  zona: string,
+  zonas: Set<string>,
   porCodigo: Map<string, Localizacao>,
-  estruturasDoCorredor: (corr: string) => Estrutura[],
+  estruturasDoCorredor: (z: string, corr: string) => Estrutura[],
   localizacoes: Localizacao[],
 ): Ligacao {
   if (!pos) return { motivo: 'Sem posição no Excel' }
@@ -150,17 +161,17 @@ function ligarCom(
   let m = pos.match(/^(\d[A-Z])(\d{2})([A-Z])(\d{2})([A-Z])?$/)
   if (m) {
     const [, z, corr, prat, coluna, caixa = null] = m
-    if (z !== zona) return { motivo: `Zona ${z} (não representada no 3D)` }
+    if (!zonas.has(z)) return { motivo: `Zona ${z} (não representada no 3D)` }
     const loc = porCodigo.get(pos) ?? porCodigo.get(`${z}${corr}${prat}${coluna}`)
     if (loc) return { loc, caixa: loc.codigo === pos ? null : caixa }
-    if (estruturasDoCorredor(corr).length === 0) return { motivo: `Corredor ${z}${corr} (ainda não colocado no modelo 3D)` }
+    if (estruturasDoCorredor(z, corr).length === 0) return { motivo: `Corredor ${z}${corr} (ainda não colocado no modelo 3D)` }
     return { motivo: `Prateleira/coluna fora das dimensões do corredor ${z}${corr} no modelo`, caixa }
   }
   m = pos.match(/^(\d[A-Z])(\d{2})([A-Z])?$/)
   if (m) {
     const [, z, corr, prat] = m
-    if (z !== zona) return { motivo: `Zona ${z} (não representada no 3D)` }
-    const estruturas = estruturasDoCorredor(corr)
+    if (!zonas.has(z)) return { motivo: `Zona ${z} (não representada no 3D)` }
+    const estruturas = estruturasDoCorredor(z, corr)
     if (estruturas.length === 0) return { motivo: `Corredor ${z}${corr} (ainda não colocado no modelo 3D)` }
     for (const e of estruturas) {
       // zona de chão com número de corredor (ex.: rolos brancos, 1B03A): uma só localização
@@ -176,7 +187,7 @@ function ligarCom(
     }
     return { motivo: `Posição incompleta (sem prateleira/coluna) no corredor ${z}${corr}` }
   }
-  if (/^\d[A-Z]$/.test(pos)) return { motivo: pos === zona ? `Zona ${pos} sem posição detalhada` : `Zona ${pos} (não representada no 3D)` }
+  if (/^\d[A-Z]$/.test(pos)) return { motivo: zonas.has(pos) ? `Zona ${pos} sem posição detalhada` : `Zona ${pos} (não representada no 3D)` }
   if (pos === 'ESCRITORIO') return { motivo: 'ESCRITORIO (ainda sem correspondência no modelo)' }
   if (pos === 'M100') return { motivo: 'M100 (ainda sem correspondência no modelo)' }
   return { motivo: 'Formato de posição inválido (possível gralha no Excel)' }

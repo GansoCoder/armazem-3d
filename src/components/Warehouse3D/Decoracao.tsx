@@ -19,6 +19,15 @@ export function Edificio({ layout }: { layout: Layout }) {
     [layout.edificio.contorno, xMin, xMax, zMin, zMax],
   )
 
+  // segmentos de parede: o contorno e as paredes interiores (entre zonas/salas)
+  const segmentos = useMemo(
+    () => [
+      ...contorno.map((a, i) => ({ a, b: contorno[(i + 1) % contorno.length] })),
+      ...(layout.edificio.paredes ?? []).map((p) => ({ a: p.de, b: p.ate })),
+    ],
+    [contorno, layout.edificio.paredes],
+  )
+
   const { chao, fora, arestas } = useMemo(() => {
     // o plano do chão é desenhado em xy e rodado −90° em x: y do desenho = −z do mundo
     const forma = new THREE.Shape(contorno.map((p) => new THREE.Vector2(p.x, -p.z)))
@@ -28,18 +37,16 @@ export function Edificio({ layout }: { layout: Layout }) {
     ])
     exterior.holes.push(new THREE.Path(contorno.map((p) => new THREE.Vector2(p.x, -p.z))))
     const pts: number[] = []
-    contorno.forEach((a, i) => {
-      const b = contorno[(i + 1) % contorno.length]
+    for (const { a, b } of segmentos) {
       for (const y of [0, altura]) pts.push(a.x, y, a.z, b.x, y, b.z)
-      pts.push(a.x, 0, a.z, a.x, altura, a.z)
-    })
+      pts.push(a.x, 0, a.z, a.x, altura, a.z, b.x, 0, b.z, b.x, altura, b.z)
+    }
     const linhas = new THREE.BufferGeometry()
     linhas.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3))
     return { chao: new THREE.ShapeGeometry(forma), fora: new THREE.ShapeGeometry(exterior), arestas: linhas }
-  }, [contorno, altura, xMin, xMax, zMin, zMax])
+  }, [contorno, segmentos, altura, xMin, xMax, zMin, zMax])
 
-  const paredes = contorno.map((a, i) => {
-    const b = contorno[(i + 1) % contorno.length]
+  const paredes = segmentos.map(({ a, b }) => {
     return { p: [(a.x + b.x) / 2, altura / 2, (a.z + b.z) / 2] as [number, number, number], r: -Math.atan2(b.z - a.z, b.x - a.x), w: Math.hypot(b.x - a.x, b.z - a.z) }
   })
 
@@ -207,6 +214,20 @@ function Elemento({ el }: { el: ElementoDecorativo }) {
         </group>
       )
       break
+    case 'mesa': {
+      // mesa de trabalho (tampo de madeira, pés metálicos); largura ao longo de x local
+      const w = el.largura ?? 1.2
+      const d = el.profundidade ?? 0.6
+      conteudo = (
+        <group>
+          <mesh position={[0, 0.74, 0]}><boxGeometry args={[w, 0.04, d]} /><meshStandardMaterial color="#c8a06a" roughness={0.8} /></mesh>
+          {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([sx, sz], i) => (
+            <mesh key={i} position={[sx * (w / 2 - 0.05), 0.36, sz * (d / 2 - 0.05)]}><boxGeometry args={[0.04, 0.72, 0.04]} /><meshStandardMaterial color="#4a5560" /></mesh>
+          ))}
+        </group>
+      )
+      break
+    }
     case 'porta-paletes-manual':
       conteudo = (
         <group>

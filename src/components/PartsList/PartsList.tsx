@@ -38,7 +38,7 @@ function valorOrdenacao(p: Peca, c: Coluna, loc: Localizacao | undefined): strin
 }
 
 export function PartsList() {
-  const { pecas: todas, locs } = useInventario()
+  const { pecas: todas, locs, zonasModelo } = useInventario()
   const { pecas, ativo } = usePecasVisiveis()
   const { abrirPeca, localizarPeca, pecaSelecionada, setConsulta, setFiltros, abrirEditor, recolha, alternarRecolha } = useApp()
   const [ordem, setOrdemEstado] = useState<Ordem>({ col: 'referencia', asc: true })
@@ -140,7 +140,7 @@ export function PartsList() {
                     <td data-rotulo="Localização" className="mono">
                       {posicaoPeca(p, loc) ?? <PorConfirmar texto="Localização por confirmar" />}
                       {loc && est('localizacaoId') && <> <Estimado /></>}
-                      {!loc && posicaoPeca(p, loc) && <> <span className="tag" title={motivoSem3D(p)}>sem 3D</span></>}
+                      {!loc && posicaoPeca(p, loc) && <> <span className="tag" title={motivoSem3D(p, zonasModelo)}>sem 3D</span></>}
                     </td>
                     <td data-rotulo="Quantidade">
                       {p.quantidade !== null && (
@@ -166,7 +166,7 @@ export function PartsList() {
                         className="btn btn-secundario btn-pequeno"
                         onClick={() => localizarPeca(p.id)}
                         disabled={!loc}
-                        title={loc ? 'Ver no armazém (vista 3D)' : motivoSem3D(p)}
+                        title={loc ? 'Ver no armazém (vista 3D)' : motivoSem3D(p, zonasModelo)}
                       >
                         <MapPin size={14} aria-hidden /> Ver no armazém
                       </button>
