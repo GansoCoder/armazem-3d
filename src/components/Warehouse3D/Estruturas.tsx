@@ -168,7 +168,55 @@ export function Estantes({ layout, estruturaFoco }: { layout: Layout; estruturaF
   )
 }
 
-function Contentores({ e }: { e: EstruturaContentores }) {
+/** Paletes no chão: base de madeira, carga (uma faixa por posição) e as letras das posições. */
+function Paletes({ e, rotulos }: { e: EstruturaContentores; rotulos: boolean }) {
+  const H = e.alturaContentor
+  return (
+    <group position={[e.posicao.x, 0, e.posicao.z]} rotation-y={graus(e.rotacaoY)}>
+      {contentoresLocais(e).map((c, i) => {
+        const d = e.disposicao?.[i]
+        const letras = d?.letras ?? []
+        const n = Math.max(1, letras.length)
+        const w = c.w / n
+        return (
+          <group key={i} position={[c.x, 0, c.z]}>
+            {d?.conteudo === 'garrafas' ? (
+              // garrafas de gás de pé
+              [[-0.3, -0.3], [0, -0.3], [0.3, -0.3], [-0.3, 0.05], [0, 0.05], [0.3, 0.05]].map(([x, z], k) => (
+                <mesh key={k} position={[x, 0.7, z]} raycast={naoClicavel}>
+                  <cylinderGeometry args={[0.11, 0.11, 1.4, 14]} />
+                  <meshStandardMaterial color={k % 2 ? '#3d7bd1' : '#8a9aab'} roughness={0.5} />
+                </mesh>
+              ))
+            ) : (
+              <>
+                <mesh position={[0, 0.07, 0]} raycast={naoClicavel}>
+                  <boxGeometry args={[c.w - 0.06, 0.14, c.d - 0.06]} />
+                  <meshStandardMaterial color="#a07a4e" roughness={0.9} />
+                </mesh>
+                {Array.from({ length: n }, (_, k) => (
+                  <mesh key={k} position={[-c.w / 2 + (k + 0.5) * w, 0.14 + (H - 0.14) / 2, 0]} raycast={naoClicavel}>
+                    <boxGeometry args={[w - 0.1, H - 0.18, c.d - 0.16]} />
+                    <meshStandardMaterial color="#c9a46e" transparent opacity={0.45} roughness={0.9} depthWrite={false} />
+                    <Edges color="#e2c08c" />
+                  </mesh>
+                ))}
+              </>
+            )}
+            {rotulos && letras.length > 0 && (
+              <Html position={[0, H + 0.25, 0]} center zIndexRange={[9, 0]}>
+                <div className="rotulo-palete">{letras.length > 2 ? `${letras[0]}–${letras[letras.length - 1]}` : letras.join(' ')}</div>
+              </Html>
+            )}
+          </group>
+        )
+      })}
+    </group>
+  )
+}
+
+function Contentores({ e, rotulos }: { e: EstruturaContentores; rotulos: boolean }) {
+  if (e.aspeto === 'palete') return <Paletes e={e} rotulos={rotulos} />
   const caixas = contentoresLocais(e).flatMap((c) =>
     Array.from({ length: e.empilhamento }, (_, k) => ({ p: [c.x, e.alturaContentor * (k + 0.5), c.z] as [number, number, number], w: c.w, d: c.d })),
   )
@@ -218,11 +266,11 @@ function ZonaChao({ e }: { e: Extract<Estrutura, { tipo: 'zona-chao' }> }) {
   )
 }
 
-export function OutrasEstruturas({ layout }: { layout: Layout }) {
+export function OutrasEstruturas({ layout, rotulos = true }: { layout: Layout; rotulos?: boolean }) {
   return (
     <>
       {layout.estruturas.map((e) =>
-        e.tipo === 'contentores' ? <Contentores key={e.id} e={e} /> : e.tipo === 'zona-chao' ? <ZonaChao key={e.id} e={e} /> : null,
+        e.tipo === 'contentores' ? <Contentores key={e.id} e={e} rotulos={rotulos} /> : e.tipo === 'zona-chao' ? <ZonaChao key={e.id} e={e} /> : null,
       )}
     </>
   )
@@ -231,6 +279,8 @@ export function OutrasEstruturas({ layout }: { layout: Layout }) {
 /** Onde fica a etiqueta verde do corredor (coordenadas do mundo), ou null se a estrutura não tiver etiqueta própria. */
 function posicaoEtiqueta(e: Estrutura): [number, number, number] | null {
   if (e.tipo === 'contentores') {
+    // paletes: cada palete já mostra as suas letras
+    if (e.aspeto === 'palete') return null
     // por cima do contentor A
     const a = contentoresLocais(e)[0]
     return a ? paraMundo(e, [a.x, e.alturaContentor * e.empilhamento + 0.35, a.z]) : null

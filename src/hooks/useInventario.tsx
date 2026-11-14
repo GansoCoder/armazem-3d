@@ -150,7 +150,7 @@ export function InventarioProvider({ children }: { children: ReactNode }) {
     const m = new Map<string, { localizacaoId: string | null; caixa: string | null }>()
     for (const p of pecasBase) {
       if (p.fonte !== 'excel' || !p.posicaoOrigem) continue
-      const r = ligar(p.posicaoOrigem)
+      const r = ligar(p.posicaoOrigem, p.referencia)
       m.set(p.id, { localizacaoId: r.loc?.id ?? null, caixa: r.loc ? (r.caixa ?? null) : p.caixa })
     }
     return m

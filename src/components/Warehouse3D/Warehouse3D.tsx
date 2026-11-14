@@ -147,7 +147,7 @@ export default function Warehouse3D({ visivel }: { visivel: boolean }) {
             layout={layout}
             estruturaFoco={editando ? estruturaEditada : localizacaoSelecionada ? (locs.get(localizacaoSelecionada)?.estrutura ?? null) : null}
           />
-          <OutrasEstruturas layout={layout} />
+          <OutrasEstruturas layout={layout} rotulos={rotulos} />
           <Decoracao layout={layout} rotulos={rotulos} />
           <Localizacoes3D
             layout={layout}

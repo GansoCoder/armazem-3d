@@ -78,6 +78,12 @@ export function caixaLocal(e: Estrutura, loc: Pick<Localizacao, 'modulo' | 'nive
       const { x0, x1, z0, z1 } = limitesContentores(e)
       return { centro: [(x0 + x1) / 2, H / 2, (z0 + z1) / 2], tamanho: [x1 - x0, H, z1 - z0] }
     }
+    // palete com várias posições: faixa `nivel` de n (ao longo de x local)
+    const n = e.disposicao?.[loc.modulo! - 1]?.letras?.length ?? 1
+    if (n > 1 && loc.nivel !== null) {
+      const w = c.w / n
+      return { centro: [c.x - c.w / 2 + (loc.nivel + 0.5) * w, H / 2, c.z], tamanho: [w - 0.04, H + 0.04, c.d - 0.04] }
+    }
     return { centro: [c.x, H / 2, c.z], tamanho: [c.w - 0.04, H + 0.04, c.d - 0.04] }
   }
   if (e.tipo === 'zona-chao') {

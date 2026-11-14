@@ -282,6 +282,7 @@ select:focus, input:focus, textarea:focus { outline: none; border-color: var(--a
   font-size: 12px; font-weight: 650; white-space: nowrap; color: #e6eef6; pointer-events: none; user-select: none;
 }
 .rotulo-3d.pequeno { font-size: 10px; padding: 2px 6px; font-weight: 600; }
+.rotulo-palete { font: 700 11px var(--mono); color: #ffe2b0; background: #3a2a14cc; padding: 1px 5px; border-radius: 4px; white-space: nowrap; pointer-events: none; user-select: none; }
 .rotulo-zona { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #8fb0cf; white-space: nowrap; pointer-events: none; user-select: none; text-shadow: 0 1px 2px #000; }
 .etiqueta-verde.inferida { background: transparent; border-style: dashed; color: #9fe0ab; }
 .etiqueta-verde { background: #2f8a3e; color: #fff; font-weight: 800; font-size: 12px; padding: 2px 6px; border-radius: 2px; border: 1px solid #c8f0cf; pointer-events: none; }

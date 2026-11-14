@@ -50,6 +50,7 @@ export function LocationPanel() {
   const prateleiras = estrutura?.tipo === 'estante-ligeira' || estrutura?.tipo === 'armario'
   // estruturas com número de corredor seguem o formato oficial: prateleira (letra) + coluna
   const contentor = estrutura?.tipo === 'contentores'
+  const palete = contentor && estrutura.aspeto === 'palete'
   const zonaChao = estrutura?.tipo === 'zona-chao'
   // prateleiras com código próprio (ex.: armário ARM01–ARM05)
   const numerada = !!estrutura && 'prefixoCodigo' in estrutura && !!estrutura.prefixoCodigo && !estrutura.corredor
@@ -109,14 +110,15 @@ export function LocationPanel() {
             </div>
           )}
           {(contentor || zonaChao) && estrutura?.corredor && <div className="campo"><dt>Corredor</dt><dd>{estrutura.corredor}</dd></div>}
-          {contentor && loc.codigo && <div className="campo"><dt>Contentor</dt><dd>{loc.codigo.slice(-1)} <span className="texto-sec">(caixa da posição {loc.codigo.slice(0, -1)})</span></dd></div>}
+          {palete && <div className="campo"><dt>Palete</dt><dd>{loc.modulo} <span className="texto-sec">· posição {loc.codigo?.slice(-1)}</span></dd></div>}
+          {contentor && !palete && loc.codigo && <div className="campo"><dt>Contentor</dt><dd>{loc.codigo.slice(-1)} <span className="texto-sec">(caixa da posição {loc.codigo.slice(0, -1)})</span></dd></div>}
           {!contentor && !numerada && loc.modulo !== null && (
             <div className="campo">
               <dt>{formatoOficial ? 'Coluna' : 'Módulo'}</dt>
               <dd>{formatoOficial ? String(loc.coluna ?? loc.modulo).padStart(2, '0') : loc.modulo}</dd>
             </div>
           )}
-          {!formatoOficial && !numerada && loc.nivel !== null && <div className="campo"><dt>Nível</dt><dd>{nomeNivel ?? loc.nivel}</dd></div>}
+          {!formatoOficial && !numerada && !contentor && loc.nivel !== null && <div className="campo"><dt>Nível</dt><dd>{nomeNivel ?? loc.nivel}</dd></div>}
           <div className="campo"><dt>Código</dt><dd>{ORIGEM_CODIGO[loc.origemCodigo]}</dd></div>
           {loc.notas && <div className="campo"><dt>Notas</dt><dd>{loc.notas}</dd></div>}
         </dl>

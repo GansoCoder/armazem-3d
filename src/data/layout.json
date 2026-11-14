@@ -1,10 +1,10 @@
 {
-  "versao": 6,
+  "versao": 7,
   "codigoZona": "1B",
   "aviso": "Representação aproximada e não à escala. Disposição segundo o esquema desenhado pelo armazém; dimensões, número de colunas e prateleiras estimados a partir das fotografias, vídeos e posições do Excel.",
   "edificio": {
     "xMin": -10,
-    "xMax": 10,
+    "xMax": 17.7,
     "zMin": -7,
     "zMax": 9,
     "altura": 7,
@@ -14,11 +14,11 @@
         "z": -7
       },
       {
-        "x": 10,
+        "x": 17.7,
         "z": -7
       },
       {
-        "x": 10,
+        "x": 17.7,
         "z": 3.9
       },
       {
@@ -63,6 +63,16 @@
         "ate": {
           "x": 3.9,
           "z": 6.81
+        }
+      },
+      {
+        "de": {
+          "x": 10,
+          "z": -7
+        },
+        "ate": {
+          "x": 10,
+          "z": 3.9
         }
       }
     ]
@@ -1075,6 +1085,156 @@
       "estadoGeometria": "estimado",
       "notas": "2 colunas e 6 prateleiras (A–F), segundo as posições do Excel (mínimo; pode haver colunas/prateleiras vazias). Posição e medidas estimadas a partir do esboço da zona 1C e do vídeo. Lado da frente por confirmar.",
       "colunasInvertidas": true
+    },
+    {
+      "id": "PL1A",
+      "codigoZona": "1A",
+      "nome": "Paletes da zona 1A",
+      "rotulo": "Zona 1A",
+      "tipo": "contentores",
+      "aspeto": "palete",
+      "zona": "Zona 1A (paletes)",
+      "posicao": {
+        "x": 13.85,
+        "z": -1.55
+      },
+      "rotacaoY": 0,
+      "corredor": "01",
+      "colunas": 16,
+      "filas": 1,
+      "larguraContentor": 1.1,
+      "profundidadeContentor": 1.1,
+      "alturaContentor": 1.0,
+      "empilhamento": 1,
+      "disposicao": [
+        {
+          "x": 2.89,
+          "z": -4.41,
+          "letras": [
+            "A"
+          ],
+          "referencias": [
+            "17717657"
+          ],
+          "conteudo": "garrafas"
+        },
+        {
+          "x": 2.89,
+          "z": -3.09,
+          "letras": [
+            "B"
+          ]
+        },
+        {
+          "x": 2.89,
+          "z": -1.62,
+          "letras": [
+            "C"
+          ]
+        },
+        {
+          "x": 2.89,
+          "z": -0.2,
+          "letras": [
+            "D"
+          ]
+        },
+        {
+          "x": 2.89,
+          "z": 1.19,
+          "letras": [
+            "E"
+          ]
+        },
+        {
+          "x": 2.89,
+          "z": 2.58,
+          "letras": [
+            "F"
+          ]
+        },
+        {
+          "x": 2.93,
+          "z": 4.58,
+          "letras": [
+            "G",
+            "H"
+          ]
+        },
+        {
+          "x": 1.53,
+          "z": 4.58,
+          "letras": [
+            "I",
+            "J",
+            "K"
+          ]
+        },
+        {
+          "x": 0.2,
+          "z": 4.58,
+          "letras": [
+            "L",
+            "M"
+          ]
+        },
+        {
+          "x": -1.16,
+          "z": 4.58,
+          "letras": [
+            "N",
+            "O"
+          ]
+        },
+        {
+          "x": -2.56,
+          "z": 4.58,
+          "letras": [
+            "P"
+          ]
+        },
+        {
+          "x": -3.21,
+          "z": -2.82,
+          "letras": [
+            "Q"
+          ]
+        },
+        {
+          "x": -3.21,
+          "z": -1.43,
+          "letras": [
+            "R"
+          ]
+        },
+        {
+          "x": -3.21,
+          "z": -0.04,
+          "letras": [
+            "S"
+          ]
+        },
+        {
+          "x": -3.21,
+          "z": 1.34,
+          "letras": [
+            "T"
+          ]
+        },
+        {
+          "x": -3.21,
+          "z": 2.73,
+          "letras": [
+            "U"
+          ],
+          "referencias": [
+            "17213067"
+          ]
+        }
+      ],
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "Paletes no chão, a partir do esquema da zona 1A (medidas estimadas). Posições 1A01A–1A01U: A = garrafas de gás; B–F coluna da direita; G–P paletes de baixo (várias por palete, distribuição a confirmar); Q–U coluna da esquerda. Ordem deduzida das posições do Excel dos materiais desenhados."
     }
   ],
   "zonas": [
@@ -1091,6 +1251,14 @@
       "nome": "Zona 1C",
       "x": 2.6,
       "z": 4.75,
+      "largura": 1,
+      "profundidade": 1
+    },
+    {
+      "id": "z-1a",
+      "nome": "Zona 1A",
+      "x": 13.76,
+      "z": -1.55,
       "largura": 1,
       "profundidade": 1
     }
@@ -1170,6 +1338,16 @@
       "rotacaoY": 90,
       "largura": 0.85,
       "profundidade": 0.5
+    },
+    {
+      "id": "e-portao-3",
+      "tipo": "portao",
+      "posicao": {
+        "x": 13.65,
+        "z": -7
+      },
+      "largura": 2,
+      "rotulo": "Portão 3"
     }
   ]
 }

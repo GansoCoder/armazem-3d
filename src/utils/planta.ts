@@ -58,6 +58,16 @@ export function gerarLocalizacoes(layout: Layout, existentes: Localizacao[] = []
         id: `${e.id}-01`, codigo: null, codigoParcial: corredor ? `${zona}${corredor}` : null, ...base,
         modulo: null, nivel: null, descricao: e.nome, origemCodigo: corredor ? origemCodigo : 'provisorio',
       })
+    } else if (e.tipo === 'contentores' && e.disposicao?.some((c) => c.letras?.length)) {
+      // paletes com posições por letra: <zona><corredor><letra> (ex.: 1A01G); várias letras = faixas da mesma palete
+      e.disposicao.forEach((c, i) => {
+        const letras = c.letras ?? []
+        letras.forEach((l, k) => add({
+          id: `${e.id}-${l}`, codigo: corredor ? `${zona}${corredor}${l}` : null, ...base, modulo: i + 1, nivel: letras.length > 1 ? k : null,
+          descricao: `${e.nome} · palete ${i + 1} · posição ${l}`,
+          origemCodigo: corredor ? origemCodigo : 'provisorio',
+        }))
+      })
     } else if (e.tipo === 'contentores') {
       const n = e.disposicao?.length ?? e.colunas * e.filas
       for (let i = 1; i <= n; i++) {
@@ -132,11 +142,25 @@ export function ligarPosicao(pos: string | null | undefined, layout: Layout, loc
 }
 
 /** Versão para muitas posições seguidas: os índices são criados uma só vez. */
-export function criarLigador(layout: Layout, localizacoes: Localizacao[]): (pos: string | null | undefined) => Ligacao {
+export function criarLigador(layout: Layout, localizacoes: Localizacao[]): (pos: string | null | undefined, referencia?: string | null) => Ligacao {
   const zonas = zonasDoModelo(layout)
   const porCodigo = new Map(localizacoes.filter((l) => l.codigo).map((l) => [l.codigo as string, l]))
   const estruturasDoCorredor = (z: string, corr: string) => layout.estruturas.filter((e) => zonaDe(e, layout) === z && e.corredor === corr)
-  return (pos) => ligarCom(pos, zonas, porCodigo, estruturasDoCorredor, localizacoes)
+  // materiais cuja palete é conhecida pelo esquema (para posições do Excel só com a zona, ex.: "1A")
+  const porId = new Map(localizacoes.map((l) => [l.id, l]))
+  const porReferencia = new Map<string, { zona: string; loc: Localizacao }>()
+  for (const e of layout.estruturas) {
+    if (e.tipo !== 'contentores') continue
+    for (const c of e.disposicao ?? []) {
+      const loc = c.letras?.[0] ? porId.get(`${e.id}-${c.letras[0]}`) : undefined
+      if (loc) for (const r of c.referencias ?? []) porReferencia.set(r, { zona: zonaDe(e, layout), loc })
+    }
+  }
+  return (pos, referencia) => {
+    const conhecida = referencia ? porReferencia.get(referencia) : undefined
+    if (conhecida && pos === conhecida.zona) return { loc: conhecida.loc, caixa: null }
+    return ligarCom(pos, zonas, porCodigo, estruturasDoCorredor, localizacoes)
+  }
 }
 
 function ligarCom(
@@ -148,6 +172,9 @@ function ligarCom(
 ): Ligacao {
   if (!pos) return { motivo: 'Sem posição no Excel' }
   if (pos === 'ND') return { motivo: 'ND (posição não definida)' }
+  // código que existe tal e qual no modelo (ex.: paletes 1A01G)
+  const exato = porCodigo.get(pos)
+  if (exato) return { loc: exato, caixa: null }
   // prateleiras numeradas de um armário: ARM03C = prateleira ARM03, caixa C
   const arm = pos.match(/^([A-Z]+)(\d{2})([A-Z])?$/)
   if (arm && !/^\d/.test(pos)) {
@@ -178,6 +205,10 @@ function ligarCom(
       if (e.tipo === 'zona-chao') {
         const loc = localizacoes.find((l) => l.estrutura === e.id)
         if (loc) return { loc, caixa: null }
+      }
+      // paletes com letras (ex.: 1A01V): a letra não existe nas paletes do esquema
+      if (e.tipo === 'contentores' && e.disposicao?.some((c) => c.letras?.length)) {
+        return { motivo: `Posição ${pos} não está nas paletes do esquema da zona ${z}` }
       }
       // estrutura com uma só coluna: a coluna 01 está implícita
       if (prat && e.tipo !== 'contentores' && (e as EstruturaEstante).modulos === 1) {

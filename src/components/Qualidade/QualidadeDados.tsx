@@ -51,7 +51,7 @@ export function QualidadeDados() {
     const motivos = new Map<string, Peca[]>()
     for (const p of pecas) {
       if (p.localizacaoId) continue
-      const m = p.fonte === 'excel' && ligar ? (ligar(p.posicaoOrigem).motivo ?? 'Sem ligação') : 'Localização por confirmar (registo manual ou observação)'
+      const m = p.fonte === 'excel' && ligar ? (ligar(p.posicaoOrigem, p.referencia).motivo ?? 'Sem ligação') : 'Localização por confirmar (registo manual ou observação)'
       motivos.set(m, [...(motivos.get(m) ?? []), p])
     }
     const doExcel = pecas.filter((p) => p.fonte === 'excel')

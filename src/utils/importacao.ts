@@ -117,7 +117,7 @@ export function construirPecas(
 
   for (const g of grupos) {
     const prev = anterioresPorRef.get(g.material)
-    const { loc, caixa = null, motivo } = ligar(g.posicao)
+    const { loc, caixa = null, motivo } = ligar(g.posicao, g.material)
     if (motivo) motivos.set(motivo, [...(motivos.get(motivo) ?? []), g])
     const unico = contagemMaterial.get(g.material) === 1
     const uqeDeduzida = prev?.uqe ? null : uqeDaDesignacao(g.texto)

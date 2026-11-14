@@ -41,7 +41,7 @@ describe('gerarLocalizacoes', () => {
     expect(porCodigo('1C01H04')?.estrutura).toBe('1C01')
     expect(porCodigo('1C04I03')?.estrutura).toBe('1C04')
     expect(porCodigo('1B04A01')?.estrutura).toBe('EL04')
-    expect([...zonasDoModelo(layout)].sort()).toEqual(['1B', '1C'])
+    expect([...zonasDoModelo(layout)].sort()).toEqual(['1A', '1B', '1C'])
   })
 
   it('mantém os campos editados à mão', () => {
@@ -77,6 +77,16 @@ describe('ligarPosicao', () => {
     expect(r.loc?.codigo).toBe('1C05B02')
     expect(r.caixa).toBe('A')
     expect(ligar('1C08A01A').motivo).toMatch(/Corredor 1C08/)
+  })
+
+  it('zona 1A: paletes com posições por letra e materiais conhecidos pelo esquema', () => {
+    expect(ligar('1A01Q').loc?.codigo).toBe('1A01Q')
+    // várias posições na mesma palete
+    expect(ligar('1A01I').loc?.modulo).toBe(ligar('1A01K').loc?.modulo)
+    // o Excel só diz "1A": liga pela referência desenhada no esquema
+    expect(ligar('1A', '17717657').loc?.codigo).toBe('1A01A')
+    expect(ligar('1A', '99999999').motivo).toMatch(/sem posição detalhada/)
+    expect(ligar('1A01V').motivo).toMatch(/paletes do esquema/)
   })
 
   it('explica porque não liga', () => {

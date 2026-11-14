@@ -157,8 +157,14 @@ export interface EstruturaContentores extends EstruturaBase {
   /**
    * Posição de cada contentor (coordenadas locais, em metros), pela ordem das letras A, B, C…
    * "rodado" = contentor virado 90°. Sem disposição, os contentores ficam numa grelha colunas × filas.
+   *
+   * Paletes (aspeto "palete"): `letras` são as posições de cada palete (ex.: ["G", "H"] → 1A01G e 1A01H;
+   * várias letras dividem a palete em faixas); `referencias` são materiais que se sabe estarem lá
+   * (usados quando o Excel só indica a zona, ex.: "1A"); `conteudo` muda o desenho.
    */
-  disposicao?: { x: number; z: number; rodado?: boolean }[]
+  disposicao?: { x: number; z: number; rodado?: boolean; letras?: string[]; referencias?: string[]; conteudo?: 'garrafas' }[]
+  /** Desenho: contentores gradeados (por omissão) ou paletes no chão. */
+  aspeto?: 'palete'
 }
 
 export interface EstruturaZonaChao extends EstruturaBase {

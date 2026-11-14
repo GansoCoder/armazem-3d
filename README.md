@@ -58,6 +58,7 @@ Formato oficial do armazém (indicado pelo responsável):
 - A zona está em `layout.json → codigoZona`; o corredor de cada estrutura em `estruturas[].corredor`.
 - O código sem caixa (`1B10A02`) é gerado na localização (`locations.json → codigo`); a caixa é guardada na peça (`parts.json → caixa`).
 - Zona 1C (esquema e vídeo, medidas estimadas): corredores 1C01–1C07, numa sala atrás da porta da 1B. Cada estrutura pode ter o seu código de zona (`codigoZona` no layout, ou o campo "Zona" no editor da planta); sem ele, usa o do layout (`1B`).
+- Zona 1A (esquema, medidas estimadas): paletes no chão à direita da 1B, junto ao Portão 3, com as posições `1A01A`–`1A01U` (uma letra por palete nos lados; várias nas paletes de baixo). Em `layout.json`, cada palete tem `letras` e, se o Excel só disser "1A", `referencias` com os materiais que se sabe estarem lá.
 - Corredores no modelo da 1B (esquema do armazém): 01–17, 20 e 21. O 03 é a zona dos rolos brancos (`1B03`), o 13 e o 14 são os contentores de ferro, e as colunas 04 e 05 do corredor 04 são armários. O armário "ARM" junto ao corredor 01 não tem número.
 - Em todas as filas, a coluna 01 está no extremo de cima do esquema (lado das etiquetas). Nas estruturas viradas para a direita isto é indicado com `colunasInvertidas: true`.
 - O armário "ARM" junto ao portão 2 tem as posições `ARM01`–`ARM06` (`prefixoCodigo: "ARM"`): cada número é uma prateleira, com a ARM01 em baixo, e a letra seguinte é a caixa (`ARM03C`). `ESQ-ARM1` continua sem 3D.
@@ -222,7 +223,7 @@ Não existe servidor. As alterações feitas na interface ficam **apenas no `loc
 
 ## Dados que ainda precisam de validação
 
-Ver a lista completa em [`docs/ANALISE.md`](docs/ANALISE.md#4-dúvidas-para-confirmação-humana). Em resumo: onde ficam os corredores 1B18 e 1B19, o armário ESQ-ARM1, M100 e o escritório; se a ordem das prateleiras ARM01–ARM06 (ARM01 em baixo) está certa; esquemas das zonas 1A, 1D e 1E; medidas reais e lado da frente das estantes da 1C; em que extremo começa a coluna 01; tipo e comprimento das estantes 15–17; letra dos contentores da fila de baixo; dimensões reais; onde ficam agora os 6 artigos observados nas fotografias.
+Ver a lista completa em [`docs/ANALISE.md`](docs/ANALISE.md#4-dúvidas-para-confirmação-humana). Em resumo: onde ficam os corredores 1B18 e 1B19, o armário ESQ-ARM1, M100 e o escritório; se a ordem das prateleiras ARM01–ARM06 (ARM01 em baixo) está certa; esquemas das zonas 1D e 1E; letras de cada palete de baixo da 1A; medidas reais e lado da frente das estantes da 1C; em que extremo começa a coluna 01; tipo e comprimento das estantes 15–17; letra dos contentores da fila de baixo; dimensões reais; onde ficam agora os 6 artigos observados nas fotografias.
 
 ## Estrutura do projeto
 
