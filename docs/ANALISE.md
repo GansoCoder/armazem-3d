@@ -96,13 +96,21 @@ O que se aprendeu com ele:
 - **Resultado:** 17 materiais da 1A ligados ao 3D.
 - **Por confirmar:** que letras estão em cada palete de baixo (o modelo assume G–H, I–K, L–M, N–O, P, da direita para a esquerda); se há porta entre a 1B e a 1A; posições exatas (a corrigir depois).
 
+## 3e. Escritório (esquema, 14/11/2026)
+
+- **Onde fica:** por baixo da zona 1A (x 10 a 17,7; z 3,9 a 9). A parede de baixo da 1A passa a ser interior; o resto da planta não mudou. A largura do esquema é a da 1A e a altura vai até à parede de baixo do edifício. Medidas estimadas.
+- **Armários** (encostados à parede com a 1A, da esquerda para a direita): armário castanho pequeno, **ESQ-ARM1**, dois armários e um armário pequeno. Só o ESQ-ARM1 tem código no Excel; cada armário é uma só localização (prateleiras por confirmar).
+- **Mesas:** seis mesas e uma mesa redonda, como no esquema.
+- **ESCRITORIO:** os 38 materiais com esta posição no Excel ficam ligados à sala (o Excel não diz em que armário ou mesa estão). Os 3 do ESQ-ARM1 ficam no armário.
+- **Por confirmar:** onde é a porta do escritório; o que guardam os outros armários e se têm código; as medidas reais.
+
 ## 4. Dúvidas para confirmação humana
 
 **Respondido (3/11/2026):** o código oficial é zona + corredor + prateleira (A = a mais baixa) + coluna + caixa, ex.: `1B09A02C`. A zona fotografada é a **1B**; o corredor **10** é a fila EL-02. Quantidades: ignorar por agora. Faltam estantes e armários no modelo.
 
 1. ~~Que estruturas são os corredores 1B12 e 1B15–1B17?~~ Respondido pelo esquema (4/11/2026). Falta: onde ficam **1B18** e **1B19** (contraplacado)? E as estantes 15–17 são porta-paletes? Quantas colunas têm?
 1b. Os contentores da fila de baixo são o **1B14A01D** e o **1B13A01D**?
-2. ~~Onde ficam os armários ARM01–ARM06?~~ No armário "ARM" junto ao portão 2 (indicação do armazém, 4/11/2026); assumido ARM01 = prateleira de baixo. Falta: **ESQ-ARM1**, a posição **M100** e o **ESCRITORIO**? O compartimento fechado com o postigo é o escritório?
+2. ~~Onde ficam os armários ARM01–ARM06?~~ No armário "ARM" junto ao portão 2 (indicação do armazém, 4/11/2026); assumido ARM01 = prateleira de baixo. **ESQ-ARM1** e o **ESCRITORIO** foram desenhados a 14/11/2026 (ver 3e). Falta a posição **M100**. O compartimento fechado com o postigo, na 1B, é outra sala?
 3. Em que extremo de cada corredor começa a coluna 01? O modelo assume o extremo de cima do esquema (lado dos portões). E quantas colunas e prateleiras tem cada estante? Os valores atuais vêm do Excel.
 4. ~~A zona 1C deve ser desenhada?~~ Desenhada a partir do esquema e do vídeo (13/11/2026, ver 3c). Faltam **1D** e **1E**: é preciso um esquema ou vídeo de cada uma. A **1A** foi desenhada a 14/11/2026 (ver 3d).
 5. Planta real e dimensões do pavilhão; posição do portão.

@@ -52,6 +52,13 @@ export function gerarLocalizacoes(layout: Layout, existentes: Localizacao[] = []
     // corredor lido numa etiqueta → código parcialmente confirmado; deduzido → provisório
     const origemCodigo = corredor && !e.corredorInferido ? 'parcial' : 'provisorio'
 
+    if (e.localizacaoUnica) {
+      // estrutura inteira como uma só localização (ex.: armário ESQ-ARM1, escritório)
+      const cod = e.localizacaoUnica.codigo
+      add({ id: `${e.id}-01`, codigo: cod, ...base, modulo: null, nivel: null, descricao: e.nome, origemCodigo: cod ? 'parcial' : 'provisorio' })
+      continue
+    }
+
     if (e.tipo === 'zona-chao') {
       // zona com número de corredor (ex.: rolos brancos = corredor 03): código parcial sem prateleira/coluna
       add({

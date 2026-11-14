@@ -7421,5 +7421,71 @@
     "descricao": "Paletes da zona 1A · palete 16 · posição U",
     "origemCodigo": "parcial",
     "estadoValidacao": "estimado"
+  },
+  {
+    "id": "ESC-AR1-01",
+    "codigo": null,
+    "zona": "Escritório",
+    "estrutura": "ESC-AR1",
+    "modulo": null,
+    "nivel": null,
+    "descricao": "Armário castanho pequeno (escritório)",
+    "origemCodigo": "provisorio",
+    "estadoValidacao": "estimado"
+  },
+  {
+    "id": "ESC-ESQARM1-01",
+    "codigo": "ESQ-ARM1",
+    "zona": "Escritório",
+    "estrutura": "ESC-ESQARM1",
+    "modulo": null,
+    "nivel": null,
+    "descricao": "Armário ESQ-ARM1 (escritório)",
+    "origemCodigo": "parcial",
+    "estadoValidacao": "estimado"
+  },
+  {
+    "id": "ESC-AR2-01",
+    "codigo": null,
+    "zona": "Escritório",
+    "estrutura": "ESC-AR2",
+    "modulo": null,
+    "nivel": null,
+    "descricao": "Armário (escritório)",
+    "origemCodigo": "provisorio",
+    "estadoValidacao": "estimado"
+  },
+  {
+    "id": "ESC-AR3-01",
+    "codigo": null,
+    "zona": "Escritório",
+    "estrutura": "ESC-AR3",
+    "modulo": null,
+    "nivel": null,
+    "descricao": "Armário (escritório)",
+    "origemCodigo": "provisorio",
+    "estadoValidacao": "estimado"
+  },
+  {
+    "id": "ESC-AR4-01",
+    "codigo": null,
+    "zona": "Escritório",
+    "estrutura": "ESC-AR4",
+    "modulo": null,
+    "nivel": null,
+    "descricao": "Armário pequeno (escritório)",
+    "origemCodigo": "provisorio",
+    "estadoValidacao": "estimado"
+  },
+  {
+    "id": "ESC-SALA-01",
+    "codigo": "ESCRITORIO",
+    "zona": "Escritório",
+    "estrutura": "ESC-SALA",
+    "modulo": null,
+    "nivel": null,
+    "descricao": "Escritório",
+    "origemCodigo": "parcial",
+    "estadoValidacao": "estimado"
   }
 ]

@@ -218,6 +218,16 @@ function Elemento({ el }: { el: ElementoDecorativo }) {
       // mesa de trabalho (tampo de madeira, pés metálicos); largura ao longo de x local
       const w = el.largura ?? 1.2
       const d = el.profundidade ?? 0.6
+      if (el.forma === 'redonda') {
+        conteudo = (
+          <group>
+            <mesh position={[0, 0.74, 0]}><cylinderGeometry args={[w / 2, w / 2, 0.04, 32]} /><meshStandardMaterial color="#c8a06a" roughness={0.8} /></mesh>
+            <mesh position={[0, 0.36, 0]}><cylinderGeometry args={[0.04, 0.04, 0.72, 12]} /><meshStandardMaterial color="#4a5560" /></mesh>
+            <mesh position={[0, 0.01, 0]}><cylinderGeometry args={[0.28, 0.28, 0.02, 20]} /><meshStandardMaterial color="#4a5560" /></mesh>
+          </group>
+        )
+        break
+      }
       conteudo = (
         <group>
           <mesh position={[0, 0.74, 0]}><boxGeometry args={[w, 0.04, d]} /><meshStandardMaterial color="#c8a06a" roughness={0.8} /></mesh>

@@ -54,7 +54,8 @@ export function LocationPanel() {
   const zonaChao = estrutura?.tipo === 'zona-chao'
   // prateleiras com código próprio (ex.: armário ARM01–ARM05)
   const numerada = !!estrutura && 'prefixoCodigo' in estrutura && !!estrutura.prefixoCodigo && !estrutura.corredor
-  const formatoOficial = !contentor && !zonaChao && !numerada && (prateleiras || !!estrutura?.corredor)
+  const unica = !!estrutura?.localizacaoUnica
+  const formatoOficial = !unica && !contentor && !zonaChao && !numerada && (prateleiras || !!estrutura?.corredor)
   const coluna = ehColuna(loc, estrutura?.tipo)
   // numa célula, mostrar também as peças da mesma coluna cuja prateleira ainda não é conhecida
   const idColuna = prateleiras && !coluna ? [...locs.values()].find((l) => l.estrutura === loc.estrutura && l.modulo === loc.modulo && l.nivel === null)?.id : undefined

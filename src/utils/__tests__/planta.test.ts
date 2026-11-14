@@ -89,6 +89,12 @@ describe('ligarPosicao', () => {
     expect(ligar('1A01V').motivo).toMatch(/paletes do esquema/)
   })
 
+  it('escritório: armário ESQ-ARM1 e a sala ESCRITORIO como localizações únicas', () => {
+    expect(ligar('ESQ-ARM1').loc?.estrutura).toBe('ESC-ESQARM1')
+    expect(ligar('ESCRITORIO').loc?.estrutura).toBe('ESC-SALA')
+    expect(locs.filter((l) => l.estrutura === 'ESC-ESQARM1')).toHaveLength(1)
+  })
+
   it('explica porque não liga', () => {
     expect(ligar('M100').motivo).toMatch(/M100/)
     expect(ligar('1D05B02A').motivo).toMatch(/Zona 1D/)

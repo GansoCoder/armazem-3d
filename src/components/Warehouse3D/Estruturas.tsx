@@ -300,13 +300,13 @@ export function Rotulos({ layout, visiveis }: { layout: Layout; visiveis: boolea
   return (
     <>
       {layout.estruturas.map((e) => {
-        // estruturas com número de corredor já mostram a etiqueta verde
-        if (e.corredor) return null
+        // estruturas com número de corredor já mostram a etiqueta verde; sem rótulo, nada a mostrar
+        if (e.corredor || !e.rotulo) return null
         const { altura } = dimensoes(e)
         const p = paraMundo(e, [0, altura + 0.55, 0])
         return (
           <Html key={e.id} position={p} center zIndexRange={[10, 0]} className="rotulo-3d-envolvente">
-            <div className={`rotulo-3d ${e.tipo === 'estante-ligeira' ? 'pequeno' : ''}`}>{e.rotulo}</div>
+            <div className={`rotulo-3d ${e.tipo === 'estante-ligeira' || e.localizacaoUnica ? 'pequeno' : ''}`}>{e.rotulo}</div>
           </Html>
         )
       })}

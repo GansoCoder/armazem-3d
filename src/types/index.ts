@@ -113,6 +113,11 @@ interface EstruturaBase {
   rotacaoY: number
   /** Código da zona do armazém (primeiro elemento do código, ex.: "1C"). Por omissão, o do layout (1B). */
   codigoZona?: string
+  /**
+   * Uma só localização para toda a estrutura (sem prateleiras/colunas), com o código indicado
+   * (ex.: "ESQ-ARM1", "ESCRITORIO") ou null se ainda não tiver código.
+   */
+  localizacaoUnica?: { codigo: string | null }
   /** Número oficial do corredor (ex.: "10"). Null = por confirmar. */
   corredor?: string | null
   /** true quando o número do corredor foi deduzido (ex.: pela sequência) e não lido numa etiqueta. */
@@ -211,6 +216,8 @@ export interface ElementoDecorativo {
   largura?: number
   /** Altura do vão (portões e portas). */
   altura?: number
+  /** Mesas: "redonda" (largura = diâmetro). */
+  forma?: 'redonda'
   profundidade?: number
   quantidade?: number
 }

@@ -1,5 +1,5 @@
 {
-  "versao": 7,
+  "versao": 8,
   "codigoZona": "1B",
   "aviso": "Representação aproximada e não à escala. Disposição segundo o esquema desenhado pelo armazém; dimensões, número de colunas e prateleiras estimados a partir das fotografias, vídeos e posições do Excel.",
   "edificio": {
@@ -19,6 +19,14 @@
       },
       {
         "x": 17.7,
+        "z": 9.0
+      },
+      {
+        "x": 10.0,
+        "z": 9.0
+      },
+      {
+        "x": 10.0,
         "z": 3.9
       },
       {
@@ -27,11 +35,11 @@
       },
       {
         "x": 3.9,
-        "z": 9
+        "z": 9.0
       },
       {
         "x": -10,
-        "z": 9
+        "z": 9.0
       }
     ],
     "paredes": [
@@ -72,6 +80,16 @@
         },
         "ate": {
           "x": 10,
+          "z": 3.9
+        }
+      },
+      {
+        "de": {
+          "x": 10.0,
+          "z": 3.9
+        },
+        "ate": {
+          "x": 17.7,
           "z": 3.9
         }
       }
@@ -1235,6 +1253,193 @@
       "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "Paletes no chão, a partir do esquema da zona 1A (medidas estimadas). Posições 1A01A–1A01U: A = garrafas de gás; B–F coluna da direita; G–P paletes de baixo (várias por palete, distribuição a confirmar); Q–U coluna da esquerda. Ordem deduzida das posições do Excel dos materiais desenhados."
+    },
+    {
+      "id": "ESC-AR1",
+      "nome": "Armário castanho pequeno (escritório)",
+      "rotulo": "",
+      "tipo": "armario",
+      "zona": "Escritório",
+      "posicao": {
+        "x": 11.25,
+        "z": 4.17
+      },
+      "rotacaoY": 0,
+      "corredor": null,
+      "localizacaoUnica": {
+        "codigo": null
+      },
+      "modulos": 1,
+      "larguraModulo": 1.0,
+      "profundidade": 0.51,
+      "niveis": [
+        0.05,
+        0.8
+      ],
+      "altura": 1.0,
+      "cores": {
+        "montantes": "#7a5232",
+        "vigas": "#8a5e3b",
+        "prateleiras": "#a07a4e"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "Armário do escritório, a partir do esquema (medidas estimadas). Sem código no Excel; prateleiras por confirmar."
+    },
+    {
+      "id": "ESC-ESQARM1",
+      "nome": "Armário ESQ-ARM1 (escritório)",
+      "rotulo": "ESQ-ARM1",
+      "tipo": "armario",
+      "zona": "Escritório",
+      "posicao": {
+        "x": 12.57,
+        "z": 4.23
+      },
+      "rotacaoY": 0,
+      "corredor": null,
+      "localizacaoUnica": {
+        "codigo": "ESQ-ARM1"
+      },
+      "modulos": 1,
+      "larguraModulo": 1.46,
+      "profundidade": 0.63,
+      "niveis": [
+        0.05,
+        0.63,
+        1.22,
+        1.8
+      ],
+      "altura": 2.0,
+      "cores": {
+        "montantes": "#9aa3ac",
+        "vigas": "#b3bbc3",
+        "prateleiras": "#c3cad2"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "Armário do escritório, a partir do esquema (medidas estimadas)."
+    },
+    {
+      "id": "ESC-AR2",
+      "nome": "Armário (escritório)",
+      "rotulo": "",
+      "tipo": "armario",
+      "zona": "Escritório",
+      "posicao": {
+        "x": 14.13,
+        "z": 4.24
+      },
+      "rotacaoY": 0,
+      "corredor": null,
+      "localizacaoUnica": {
+        "codigo": null
+      },
+      "modulos": 1,
+      "larguraModulo": 1.46,
+      "profundidade": 0.64,
+      "niveis": [
+        0.05,
+        0.63,
+        1.22,
+        1.8
+      ],
+      "altura": 2.0,
+      "cores": {
+        "montantes": "#9aa3ac",
+        "vigas": "#b3bbc3",
+        "prateleiras": "#c3cad2"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "Armário do escritório, a partir do esquema (medidas estimadas). Sem código no Excel; prateleiras por confirmar."
+    },
+    {
+      "id": "ESC-AR3",
+      "nome": "Armário (escritório)",
+      "rotulo": "",
+      "tipo": "armario",
+      "zona": "Escritório",
+      "posicao": {
+        "x": 15.7,
+        "z": 4.23
+      },
+      "rotacaoY": 0,
+      "corredor": null,
+      "localizacaoUnica": {
+        "codigo": null
+      },
+      "modulos": 1,
+      "larguraModulo": 1.46,
+      "profundidade": 0.63,
+      "niveis": [
+        0.05,
+        0.63,
+        1.22,
+        1.8
+      ],
+      "altura": 2.0,
+      "cores": {
+        "montantes": "#9aa3ac",
+        "vigas": "#b3bbc3",
+        "prateleiras": "#c3cad2"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "Armário do escritório, a partir do esquema (medidas estimadas). Sem código no Excel; prateleiras por confirmar."
+    },
+    {
+      "id": "ESC-AR4",
+      "nome": "Armário pequeno (escritório)",
+      "rotulo": "",
+      "tipo": "armario",
+      "zona": "Escritório",
+      "posicao": {
+        "x": 17.02,
+        "z": 4.17
+      },
+      "rotacaoY": 0,
+      "corredor": null,
+      "localizacaoUnica": {
+        "codigo": null
+      },
+      "modulos": 1,
+      "larguraModulo": 1.01,
+      "profundidade": 0.51,
+      "niveis": [
+        0.05,
+        0.8
+      ],
+      "altura": 1.0,
+      "cores": {
+        "montantes": "#9aa3ac",
+        "vigas": "#b3bbc3",
+        "prateleiras": "#c3cad2"
+      },
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "Armário do escritório, a partir do esquema (medidas estimadas). Sem código no Excel; prateleiras por confirmar."
+    },
+    {
+      "id": "ESC-SALA",
+      "nome": "Escritório",
+      "rotulo": "Escritório",
+      "tipo": "zona-chao",
+      "zona": "Escritório",
+      "posicao": {
+        "x": 13.85,
+        "z": 6.77
+      },
+      "rotacaoY": 0,
+      "corredor": null,
+      "localizacaoUnica": {
+        "codigo": "ESCRITORIO"
+      },
+      "largura": 7.6,
+      "profundidade": 4.35,
+      "fotografias": [],
+      "estadoGeometria": "estimado",
+      "notas": "Materiais com a posição \"ESCRITORIO\" no Excel (sem armário ou mesa indicados)."
     }
   ],
   "zonas": [
@@ -1348,6 +1553,81 @@
       },
       "largura": 2,
       "rotulo": "Portão 3"
+    },
+    {
+      "id": "e-mesa-esc-1",
+      "tipo": "mesa",
+      "posicao": {
+        "x": 11.52,
+        "z": 5.82
+      },
+      "rotacaoY": 90,
+      "largura": 1.17,
+      "profundidade": 0.74
+    },
+    {
+      "id": "e-mesa-esc-2",
+      "tipo": "mesa",
+      "posicao": {
+        "x": 11.49,
+        "z": 7.75
+      },
+      "rotacaoY": 90,
+      "largura": 1.19,
+      "profundidade": 0.74
+    },
+    {
+      "id": "e-mesa-esc-redonda",
+      "tipo": "mesa",
+      "posicao": {
+        "x": 14.27,
+        "z": 5.82
+      },
+      "forma": "redonda",
+      "largura": 0.92
+    },
+    {
+      "id": "e-mesa-esc-3",
+      "tipo": "mesa",
+      "posicao": {
+        "x": 16.59,
+        "z": 5.65
+      },
+      "rotacaoY": 90,
+      "largura": 1.18,
+      "profundidade": 0.75
+    },
+    {
+      "id": "e-mesa-esc-4",
+      "tipo": "mesa",
+      "posicao": {
+        "x": 17.41,
+        "z": 7.01
+      },
+      "rotacaoY": 90,
+      "largura": 1.17,
+      "profundidade": 0.53
+    },
+    {
+      "id": "e-mesa-esc-5",
+      "tipo": "mesa",
+      "posicao": {
+        "x": 16.41,
+        "z": 8.22
+      },
+      "largura": 1.26,
+      "profundidade": 0.69
+    },
+    {
+      "id": "e-mesa-esc-6",
+      "tipo": "mesa",
+      "posicao": {
+        "x": 17.38,
+        "z": 8.39
+      },
+      "rotacaoY": 90,
+      "largura": 1.17,
+      "profundidade": 0.51
     }
   ]
 }
