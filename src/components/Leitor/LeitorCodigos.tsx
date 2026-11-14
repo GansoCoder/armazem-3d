@@ -39,8 +39,11 @@ export function LeitorCodigos() {
   const abrirRef = useRef(abrir)
   useEffect(() => { abrirRef.current = abrir })
 
+  // a câmara fica ligada enquanto se pode ler: passar de "a iniciar" para "a ler" não pode reiniciar
+  // o efeito (a limpeza desligaria a câmara acabada de abrir e o vídeo ficaria preto)
+  const camara = estado === 'a-iniciar' || estado === 'a-ler'
   useEffect(() => {
-    if (estado !== 'a-iniciar') return
+    if (!camara) return
     const Detetor = obterDetetor()
     if (!Detetor) return
     let fluxo: MediaStream | null = null
@@ -55,6 +58,7 @@ export function LeitorCodigos() {
         if (!video.current) return
         video.current.srcObject = f
         await video.current.play().catch(() => undefined)
+        if (parado) return
         setEstado('a-ler')
         const ler = async () => {
           if (parado || !video.current) return
@@ -74,14 +78,14 @@ export function LeitorCodigos() {
       window.clearTimeout(temporizador)
       fluxo?.getTracks().forEach((t) => t.stop())
     }
-  }, [estado])
+  }, [camara])
 
   const submeter = (e: FormEvent) => { e.preventDefault(); abrir(texto) }
 
   return (
     <Modal titulo="Ler código" aoFechar={fechar} largura={560}>
       <div className="leitor">
-        {(estado === 'a-iniciar' || estado === 'a-ler') ? (
+        {camara ? (
           <div className="leitor-video">
             <video ref={video} muted playsInline />
             <div className="leitor-mira" aria-hidden />
