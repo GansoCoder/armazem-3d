@@ -8,12 +8,6 @@ import { estadoStock } from '../../utils/stock'
 import { ehColuna, formatarQuantidade, nomePeca, rotuloLocalizacao } from '../../utils/texto'
 import { EstadoBadge, Estimado, Foto, Modal, TagLocal } from '../common/comum'
 
-const ORIGEM_CODIGO = {
-  etiqueta_visivel: 'Código visível no armazém',
-  parcial: 'Parcialmente confirmado (corredor ou etiqueta confirmados; restantes elementos estimados)',
-  provisorio: 'Código provisório criado para esta aplicação',
-}
-
 function ListaPecas({ pecas, aoAbrir }: { pecas: Peca[]; aoAbrir: (id: string) => void }) {
   return (
     <ul className="lista-pecas-loc">
@@ -120,7 +114,6 @@ export function LocationPanel() {
             </div>
           )}
           {!formatoOficial && !numerada && !contentor && loc.nivel !== null && <div className="campo"><dt>Nível</dt><dd>{nomeNivel ?? loc.nivel}</dd></div>}
-          <div className="campo"><dt>Código</dt><dd>{ORIGEM_CODIGO[loc.origemCodigo]}</dd></div>
           {loc.notas && <div className="campo"><dt>Notas</dt><dd>{loc.notas}</dd></div>}
         </dl>
 
