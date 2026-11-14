@@ -149,6 +149,8 @@ export interface EstruturaEstante extends EstruturaBase {
   prefixoCodigo?: string
   cores: Cores
   divisoriasVerticais?: boolean
+  /** Armários: true = fechado com portas (por omissão, aberto com prateleiras à vista). */
+  portas?: boolean
 }
 
 export interface EstruturaContentores extends EstruturaBase {

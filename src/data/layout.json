@@ -211,9 +211,9 @@
       "zona": "Parede dos portões (corredores 01–03)",
       "posicao": {
         "x": 1.3,
-        "z": -6.65
+        "z": -6.52
       },
-      "rotacaoY": 0,
+      "rotacaoY": 90,
       "corredor": null,
       "modulos": 1,
       "larguraModulo": 0.9,
@@ -235,7 +235,8 @@
       "fotografias": [],
       "estadoGeometria": "estimado",
       "notas": "Marcado \"ARM\" no esquema, entre o corredor 01 e o portão 2. Tem os materiais das posições ARM01 a ARM06 do Excel (indicação do armazém). Cada número foi considerado uma prateleira, com a ARM01 em baixo (como as letras das prateleiras); a letra seguinte é a caixa (ARM03C = prateleira ARM03, caixa C). Ordem das prateleiras por confirmar.",
-      "prefixoCodigo": "ARM"
+      "prefixoCodigo": "ARM",
+      "portas": true
     },
     {
       "id": "R02",
@@ -823,7 +824,8 @@
       },
       "fotografias": [],
       "estadoGeometria": "estimado",
-      "notas": "As duas últimas \"estantes\" do corredor 04 são armários (esquema do armazém). Assumidas como colunas 04 e 05: no Excel são as únicas colunas do corredor 04 com prateleiras E–G (as colunas 01–03 só vão até à D)."
+      "notas": "As duas últimas \"estantes\" do corredor 04 são armários (esquema do armazém). Assumidas como colunas 04 e 05: no Excel são as únicas colunas do corredor 04 com prateleiras E–G (as colunas 01–03 só vão até à D).",
+      "portas": true
     },
     {
       "id": "1C01",
@@ -967,7 +969,7 @@
       "id": "1C-X1",
       "codigoZona": "1C",
       "nome": "Estante ligeira sem identificação (zona 1C)",
-      "rotulo": "Sem nº",
+      "rotulo": "",
       "tipo": "estante-ligeira",
       "zona": "Zona 1C",
       "posicao": {
@@ -1312,13 +1314,14 @@
       ],
       "altura": 2.0,
       "cores": {
-        "montantes": "#9aa3ac",
-        "vigas": "#b3bbc3",
+        "montantes": "#8f99a3",
+        "vigas": "#aeb7c0",
         "prateleiras": "#c3cad2"
       },
       "fotografias": [],
       "estadoGeometria": "estimado",
-      "notas": "Armário do escritório, a partir do esquema (medidas estimadas)."
+      "notas": "Armário do escritório, a partir do esquema (medidas estimadas).",
+      "portas": true
     },
     {
       "id": "ESC-AR2",
@@ -1346,13 +1349,14 @@
       ],
       "altura": 2.0,
       "cores": {
-        "montantes": "#9aa3ac",
-        "vigas": "#b3bbc3",
+        "montantes": "#8f99a3",
+        "vigas": "#aeb7c0",
         "prateleiras": "#c3cad2"
       },
       "fotografias": [],
       "estadoGeometria": "estimado",
-      "notas": "Armário do escritório, a partir do esquema (medidas estimadas). Sem código no Excel; prateleiras por confirmar."
+      "notas": "Armário do escritório, a partir do esquema (medidas estimadas). Sem código no Excel; prateleiras por confirmar.",
+      "portas": true
     },
     {
       "id": "ESC-AR3",
@@ -1380,13 +1384,14 @@
       ],
       "altura": 2.0,
       "cores": {
-        "montantes": "#9aa3ac",
-        "vigas": "#b3bbc3",
+        "montantes": "#8f99a3",
+        "vigas": "#aeb7c0",
         "prateleiras": "#c3cad2"
       },
       "fotografias": [],
       "estadoGeometria": "estimado",
-      "notas": "Armário do escritório, a partir do esquema (medidas estimadas). Sem código no Excel; prateleiras por confirmar."
+      "notas": "Armário do escritório, a partir do esquema (medidas estimadas). Sem código no Excel; prateleiras por confirmar.",
+      "portas": true
     },
     {
       "id": "ESC-AR4",
@@ -1628,6 +1633,18 @@
       "rotacaoY": 90,
       "largura": 1.17,
       "profundidade": 0.51
+    },
+    {
+      "id": "e-porta-escritorio",
+      "tipo": "portao",
+      "posicao": {
+        "x": 10,
+        "z": 8.51
+      },
+      "rotacaoY": 90,
+      "largura": 0.8,
+      "altura": 2.1,
+      "rotulo": "Porta"
     }
   ]
 }

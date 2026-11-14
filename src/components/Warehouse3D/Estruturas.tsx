@@ -28,14 +28,16 @@ function construirLotes(estruturas: Estrutura[]): Lotes {
     if (e.tipo === 'contentores' || e.tipo === 'zona-chao') continue
     const theta = graus(e.rotacaoY)
     const grupo = PRATELEIRAS.has(e.tipo) ? e.id : 'fixo'
-    const add = (cor: string, p: [number, number, number], s: [number, number, number], inclinacao = 0) => {
+    const add = (cor: string, p: [number, number, number], s: [number, number, number], inclinacao = 0, parte = '') => {
       const [x, y, z] = paraMundo(e, p)
       tmp.position.set(x, y, z)
       tmp.rotation.set(inclinacao, theta, 0, 'YXZ')
       tmp.scale.set(...s)
       tmp.updateMatrix()
-      const chave = `${grupo}|${cor}`
-      const lote = lotes.get(chave) ?? { grupo, cor, matrizes: [] }
+      // as portas dos armários são um grupo à parte, para ficarem transparentes ao selecionar uma prateleira
+      const g = parte ? `${grupo}:${parte}` : grupo
+      const chave = `${g}|${cor}`
+      const lote = lotes.get(chave) ?? { grupo: g, cor, matrizes: [] }
       lote.matrizes.push(tmp.matrix.clone())
       lotes.set(chave, lote)
     }
@@ -46,7 +48,7 @@ function construirLotes(estruturas: Estrutura[]): Lotes {
 
 function construirEstante(
   e: EstruturaEstante,
-  add: (cor: string, p: [number, number, number], s: [number, number, number], inclinacao?: number) => void,
+  add: (cor: string, p: [number, number, number], s: [number, number, number], inclinacao?: number, parte?: string) => void,
 ) {
   const w = e.larguraModulo
   const L = e.modulos * w
@@ -114,7 +116,7 @@ function construirEstante(
 /** Armário: laterais, fundo e tampo fechados, prateleiras interiores e frente aberta (para ver as células). */
 function construirArmario(
   e: EstruturaEstante,
-  add: (cor: string, p: [number, number, number], s: [number, number, number], inclinacao?: number) => void,
+  add: (cor: string, p: [number, number, number], s: [number, number, number], inclinacao?: number, parte?: string) => void,
 ) {
   const w = e.larguraModulo
   const L = e.modulos * w
@@ -132,6 +134,19 @@ function construirArmario(
   // aro frontal
   add(e.cores.vigas, [0, h - 0.02, d / 2], [L, 0.04, 0.02])
   add(e.cores.vigas, [0, 0.03, d / 2], [L, 0.06, 0.02])
+  if (e.portas) {
+    // armário fechado: duas portas por módulo, com puxadores ao centro
+    const folga = 0.012
+    for (let m = 0; m < e.modulos; m++) {
+      const x0 = -L / 2 + m * w
+      for (const lado of [0, 1]) {
+        const cx = x0 + (lado + 0.5) * (w / 2)
+        add(e.cores.vigas, [cx, h / 2, d / 2 + 0.012], [w / 2 - folga, h - 0.08, 0.02], 0, 'portas')
+        const xp = x0 + w / 2 + (lado ? 1 : -1) * 0.05
+        add('#4a5560', [xp, h * 0.52, d / 2 + 0.03], [0.02, Math.min(0.3, h * 0.2), 0.02], 0, 'portas')
+      }
+    }
+  }
 }
 
 function Lote({ cor, matrizes, fantasma }: { cor: string; matrizes: THREE.Matrix4[]; fantasma: boolean }) {
