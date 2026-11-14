@@ -119,7 +119,7 @@ Os dados estão separados da interface em `src/data/`. `src/data/fonte.ts` é o 
 - `uqe`: `"nenhuma"`, `"2300"` ou `"3500"` (sem o campo = nenhuma). Com `"uqe"` em `camposEstimados`, foi deduzida da designação.
 - `caixa`: letra da caixa dentro da posição (último elemento do código), ou `null`.
 
-A integridade (ids únicos, quantidades válidas, localizações existentes) é verificada ao arrancar; os avisos aparecem na consola e na janela "Sobre o modelo" (ícone ⓘ).
+A integridade (ids únicos, quantidades válidas, localizações existentes) é verificada ao arrancar; os avisos aparecem na consola e em Ferramentas → Qualidade dos dados.
 
 ### Localizações — `src/data/locations.json`
 

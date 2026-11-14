@@ -1,4 +1,4 @@
-import { Box, ClipboardList, FileSpreadsheet, Info, List, Network, Plus, QrCode, ScanLine, ShieldCheck, SlidersHorizontal, Wrench } from 'lucide-react'
+import { Box, ClipboardList, FileSpreadsheet, List, Network, Plus, QrCode, ScanLine, ShieldCheck, SlidersHorizontal, Wrench } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useApp } from '../../hooks/useApp'
 import { useInventario } from '../../hooks/useInventario'
@@ -8,7 +8,7 @@ import { SearchBar } from '../SearchBar/SearchBar'
 
 export function Header() {
   const { pecas } = useInventario()
-  const { vista, setVista, filtros, abrirEditor, setSobreAberto, setFerramenta, recolha } = useApp()
+  const { vista, setVista, filtros, abrirEditor, setFerramenta, recolha } = useApp()
   const [filtrosAbertos, setFiltrosAbertos] = useState(false)
   const [menuAberto, setMenuAberto] = useState(false)
   const caixaFiltros = useRef<HTMLDivElement>(null)
@@ -116,9 +116,6 @@ export function Header() {
 
         <button className="btn btn-secundario" onClick={() => abrirEditor(null)} title="Criar peça (rascunho local)">
           <Plus size={16} aria-hidden /> <span className="ocultar-movel">Nova peça</span>
-        </button>
-        <button className="btn-icone" onClick={() => setSobreAberto(true)} aria-label="Sobre o modelo e os dados" title="Sobre o modelo e os dados">
-          <Info size={18} />
         </button>
       </div>
     </header>

@@ -58,7 +58,7 @@ function ContornoEdicao({ layout, id }: { layout: Layout; id: string }) {
 
 export default function Warehouse3D({ visivel }: { visivel: boolean }) {
   const { dados, layout, localizacoes, locs, pecasPorLocalizacao, plantaEmEdicao, setPlantaEmEdicao, plantaGuardada } = useInventario()
-  const { localizacaoSelecionada, selecionarLocalizacao, pedidoFoco, setSobreAberto, estruturaEditada, setEstruturaEditada, recolhaNo3D, setRecolhaNo3D, setFerramenta, recolhidas } = useApp()
+  const { localizacaoSelecionada, selecionarLocalizacao, pedidoFoco, estruturaEditada, setEstruturaEditada, recolhaNo3D, setRecolhaNo3D, setFerramenta, recolhidas } = useApp()
   const editando = !!plantaEmEdicao
   const rota = useRotaRecolha()
   const mostrarRota = recolhaNo3D && !editando && rota.paragens.length > 0
@@ -205,11 +205,10 @@ export default function Warehouse3D({ visivel }: { visivel: boolean }) {
         <WarehouseControls controlo={controlo} rotulos={rotulos} setRotulos={setRotulos} />
         <Legenda filtroAtivo={filtroAtivo} />
 
-        <button className="aviso-escala" onClick={() => setSobreAberto(true)}>
+        <div className="aviso-escala" role="note">
           <Info size={14} aria-hidden />
           <span>Representação aproximada — não está à escala.</span>
-          <span className="sublinhado">Saber mais</span>
-        </button>
+        </div>
 
         {mostrarRota && (
           <div className="barra-recolha" role="status">

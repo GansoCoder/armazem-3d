@@ -41,7 +41,7 @@ function Grupo({ titulo, pecas, aoAbrir, aberto = false, explicacao }: {
 }
 
 export function QualidadeDados() {
-  const { pecas, layout, localizacoes } = useInventario()
+  const { pecas, layout, localizacoes, dados } = useInventario()
   const { setFerramenta, abrirPeca } = useApp()
   const fechar = () => setFerramenta(null)
   const abrir = (id: string) => { abrirPeca(id); fechar() }
@@ -79,6 +79,15 @@ export function QualidadeDados() {
           <div><strong>{pct(a.total - a.semFoto)}</strong><span>com fotografia ({a.total - a.semFoto})</span></div>
           <div><strong>{pct(a.total - a.semCategoria)}</strong><span>com categoria</span></div>
         </div>
+
+        {dados && dados.avisos.length > 0 && (
+          <div className="alerta alerta-aviso" role="status">
+            <span>
+              <strong>Avisos de integridade dos ficheiros de dados</strong>
+              <ul className="lista-pontos">{dados.avisos.map((t) => <li key={t}>{t}</li>)}</ul>
+            </span>
+          </div>
+        )}
 
         <section>
           <h3>A corrigir</h3>

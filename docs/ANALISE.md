@@ -124,4 +124,4 @@ O que se aprendeu com ele:
 - Recortes de contentores com etiqueta colada → usados como fotografia do **contentor** da referência (tipo `contentor`).
 - R76467100 → recorte marcado como **fotografia da etiqueta/localização**, não da peça.
 - Artigos observados sem referência → recorte “no local” (tipo `no_local`).
-- Fotografias gerais → fotografias de referência das estruturas e janela “Sobre o modelo”.
+- Fotografias gerais → fotografias de referência das estruturas (a janela “Sobre o modelo” foi retirada a 14/11/2026).

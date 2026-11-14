@@ -1,6 +1,5 @@
 import { Download, RotateCcw, TriangleAlert, X } from 'lucide-react'
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
-import { SobreModelo } from './components/About/SobreModelo'
 import { PartEditor } from './components/Editor/PartEditor'
 import { Header } from './components/Header/Header'
 import { PartDetails } from './components/PartDetails/PartDetails'
@@ -155,7 +154,7 @@ function useLigacaoDireta() {
 function Conteudo() {
   useLigacaoDireta()
   const { carregado } = useInventario()
-  const { vista, editor, sobreAberto, pecaSelecionada, editorLigacoes, ferramenta, pedidoRecolha } = useApp()
+  const { vista, editor, pecaSelecionada, editorLigacoes, ferramenta, pedidoRecolha } = useApp()
   // A vista 3D fica montada depois da primeira visita, para manter a câmara ao alternar de vista.
   const [visitou3D, setVisitou3D] = useState(vista === '3d')
   if (vista === '3d' && !visitou3D) setVisitou3D(true)
@@ -179,7 +178,6 @@ function Conteudo() {
         <PartDetails key={pecaSelecionada ?? 'nenhuma'} />
       </main>
       {editor.aberto && <PartEditor key={`${editor.pecaId}-${editor.localizacaoInicial}`} />}
-      {sobreAberto && <SobreModelo />}
       {ferramenta?.tipo === 'etiquetas' && <Etiquetas />}
       {ferramenta?.tipo === 'leitor' && <LeitorCodigos />}
       {ferramenta?.tipo === 'recolha' && <ListaRecolha />}

@@ -35,8 +35,6 @@ interface App {
   /** pecaId null = nova peça; localizacaoInicial pré-preenche a localização de uma peça nova. */
   abrirEditor: (pecaId: string | null, localizacaoInicial?: string | null) => void
   fecharEditor: () => void
-  sobreAberto: boolean
-  setSobreAberto: (v: boolean) => void
   /** Estrutura escolhida no editor da planta (null = editor fechado ou nenhuma escolhida). */
   estruturaEditada: string | null
   setEstruturaEditada: (id: string | null) => void
@@ -108,7 +106,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [pedidoFoco, setPedidoFoco] = useState<App['pedidoFoco']>(null)
   const [notificacoes, setNotificacoes] = useState<Notificacao[]>([])
   const [editor, setEditor] = useState<App['editor']>({ aberto: false, pecaId: null, localizacaoInicial: null })
-  const [sobreAberto, setSobreAberto] = useState(false)
   const [estruturaEditada, setEstruturaEditada] = useState<string | null>(null)
   const [focoOrganograma, setFocoOrganograma] = useState<string | null>(null)
   const [editorLigacoes, abrirEditorLigacoes] = useState<App['editorLigacoes']>(null)
@@ -195,7 +192,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       editor,
       abrirEditor: (pecaId, localizacaoInicial = null) => setEditor({ aberto: true, pecaId, localizacaoInicial }),
       fecharEditor: () => setEditor({ aberto: false, pecaId: null, localizacaoInicial: null }),
-      sobreAberto, setSobreAberto,
       estruturaEditada, setEstruturaEditada,
       focoOrganograma,
       abrirOrganograma: (chave) => {
@@ -229,7 +225,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       recolhaNo3D, setRecolhaNo3D,
     }),
     [vista, setVista, consulta, filtros, localizacaoSelecionada, pecaSelecionada, pedidoFoco,
-      selecionarLocalizacao, localizarPeca, notificacoes, notificar, dispensar, editor, sobreAberto, estruturaEditada,
+      selecionarLocalizacao, localizarPeca, notificacoes, notificar, dispensar, editor, estruturaEditada,
       focoOrganograma, editorLigacoes, abrirDestino, ferramenta, recolhaEstado, gravarRecolha, recolhaNo3D, pedidoRecolha],
   )
 
